@@ -1,0 +1,19 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="MongoDB.Driver" Version="3.9.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\BuildingBlocks\Ecommerce.Infrastructure\Ecommerce.Infrastructure.csproj" />
+    <ProjectReference Include="..\..\..\BuildingBlocks\Mongo\Ecommerce.Mongo\Ecommerce.Mongo.csproj" />
+    <ProjectReference Include="..\Ecommerce.Order.Modules.Application\Ecommerce.Order.Modules.Application.csproj" />
+  </ItemGroup>
+
+</Project>

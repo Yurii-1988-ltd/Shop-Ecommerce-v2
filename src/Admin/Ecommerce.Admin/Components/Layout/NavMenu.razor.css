@@ -1,0 +1,29 @@
+.sidebar-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 20px 16px;
+    border-bottom: 1px solid var(--mud-palette-lines-default);
+    margin-bottom: 8px;
+}
+
+    .sidebar-header .mud-icon-root {
+        color: var(--mud-palette-primary);
+    }
+
+    .sidebar-header .mud-typography {
+        font-weight: 600;
+    }
+
+.mud-nav-link {
+    border-radius: 8px;
+    margin: 2px 8px;
+}
+
+    .mud-nav-link:hover {
+        background-color: rgba(255,255,255,.06);
+    }
+
+.mud-nav-group {
+    margin-top: 8px;
+}

@@ -1,0 +1,42 @@
+﻿@using Ecommerce.Admin.ApiClients.Carts.Models
+
+<EditForm Model="Model" OnValidSubmit="HandleSubmit">
+    <DataAnnotationsValidator />
+
+    <MudPaper Class="form-card">
+
+       <MudTextField T="string"
+              Label="Customer Id"
+              @bind-Value="Model.CustomerId"
+              Variant="Variant.Outlined"
+              Required="true" />
+
+        <MudStack Row="true"
+                  Justify="Justify.FlexEnd"
+                  Class="form-actions">
+
+            <MudButton ButtonType="ButtonType.Submit"
+                       Variant="Variant.Filled"
+                       Color="Color.Primary"
+                       StartIcon="@Icons.Material.Filled.Save">
+                Save
+            </MudButton>
+
+        </MudStack>
+
+    </MudPaper>
+</EditForm>
+
+@code
+{
+    [Parameter, EditorRequired]
+    public CartFormModel Model { get; set; } = default!;
+
+    [Parameter, EditorRequired]
+    public EventCallback<CartFormModel> OnSubmit { get; set; }
+
+    private async Task HandleSubmit()
+    {
+        await OnSubmit.InvokeAsync(Model);
+    }
+}

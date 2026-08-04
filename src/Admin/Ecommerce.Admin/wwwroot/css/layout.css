@@ -1,0 +1,35 @@
+﻿.mud-nav-link {
+    color: rgba(255,255,255,.9);
+    font-weight: 500;
+    border-left: 4px solid transparent;
+    transition: all .2s ease;
+}
+
+.mud-nav-link .mud-icon-root {
+    color: rgba(255,255,255,.95);
+    font-size: 1.35rem;
+}
+
+.mud-nav-link:hover {
+    background: rgba(255,255,255,.08);
+}
+
+.mud-nav-link:hover .mud-icon-root {
+    color: #FF9900;
+}
+
+.mud-nav-link.active {
+    border-left: 4px solid #FF9900;
+    background: rgba(255,255,255,.10);
+}
+
+.mud-nav-link.active .mud-icon-root {
+    color: #FF9900;
+}
+.mud-nav-group-header {
+    font-weight: 600;
+}
+
+.mud-navmenu {
+    padding-top: 8px;
+}

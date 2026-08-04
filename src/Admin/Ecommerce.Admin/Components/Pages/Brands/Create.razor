@@ -1,0 +1,34 @@
+﻿@page "/brands/create"
+
+
+@using Ecommerce.Admin.ApiClients.Categories.Contracts
+
+
+@inject IBrandApiClient BrandApi
+@inject NavigationManager Navigation
+
+<PageTitle>Create Brand</PageTitle>
+
+<PageHeader Title="Create Brand"
+            Subtitle="Add a new brand to your catalog" />
+
+<BrandForm Model="_model"
+              OnSubmit="CreateBrand" />
+
+@code
+{
+    private readonly BrandFormModel _model = new();
+
+    private async Task CreateBrand(BrandFormModel model)
+    {
+        var request = new ApiClients.Brands.Contracts.CreateBrandRequest
+        {
+            Name = model.Name,
+            Description = model.Description
+        };
+
+        await BrandApi.CreateAsync(request);
+
+        Navigation.NavigateTo("/brands");
+    }
+}

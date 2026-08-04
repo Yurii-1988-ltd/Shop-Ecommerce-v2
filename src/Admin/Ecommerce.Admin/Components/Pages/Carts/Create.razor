@@ -1,0 +1,26 @@
+﻿@page "/carts/create"
+@using Ecommerce.Admin.ApiClients.Carts
+@using Ecommerce.Admin.ApiClients.Carts.Contracts
+@using Ecommerce.Admin.ApiClients.Carts.Models
+@inject NavigationManager Navigation;
+<PageTitle> Create Cart</PageTitle>
+
+<PageHeader Title="Create Cart"
+            Subtitle="Add a new cart to your customer" />
+<CartForm Model="Model"
+             OnSubmit="CreateCart" />
+ @code
+ {
+     [Inject] ICartApiClient ApiClient { get; set; } = default!;
+     private CartFormModel Model { get; set; } = new();
+
+   private async Task CreateCart(CartFormModel model)
+{
+    var request = new CreateCartRequest(Guid.Parse(model.CustomerId));
+
+    await ApiClient.CreateAsync(request);
+
+    Navigation.NavigateTo("/carts");
+}
+ }
+            

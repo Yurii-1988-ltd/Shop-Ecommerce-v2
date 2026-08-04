@@ -1,0 +1,41 @@
+﻿@page "/carts/{customerId:guid}/items/{productId:guid}/quantity"
+@using Ecommerce.Admin.ApiClients.Carts.Contracts
+@using Ecommerce.Admin.ApiClients.Carts.Models
+
+@inject ICartApiClient CartApi
+@inject NavigationManager Navigation
+
+<PageHeader Title="Change Quantity"
+            Subtitle="Update product quantity in cart" />
+
+<ChangeQuantityForm
+    Model="Model"
+    OnSubmit="Save" />
+
+@code
+{
+    [Parameter] public Guid customerId { get; set; }
+
+    [Parameter] public Guid productId { get; set; }
+
+    private ChangeQuantityFormModel Model = new();
+
+    protected override void OnInitialized()
+    {
+        Model.CustomerId = customerId;
+        Model.ProductId = productId;
+    }
+
+    private async Task Save(ChangeQuantityFormModel model)
+    {
+        await CartApi.ChangeQuantityAsync(
+            model.CustomerId,
+            model.ProductId,
+            new ChangeCartItemQuantityRequest(
+                model.CustomerId,
+                model.ProductId,
+                model.Quantity));
+
+        Navigation.NavigateTo($"/carts/{model.CustomerId}");
+    }
+}

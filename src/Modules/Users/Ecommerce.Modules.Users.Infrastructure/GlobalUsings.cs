@@ -1,0 +1,20 @@
+﻿global using Ecommerce.Application.Abstractions;
+global using Ecommerce.Application.Abstractions.Security;
+global using Ecommerce.Infrastructure.Repositories;
+global using Ecommerce.Modules.Users.Domain.Repositories;
+global using Ecommerce.Modules.Users.Infrastructure.Data;
+global using Ecommerce.Modules.Users.Infrastructure.Repositories;
+global using Microsoft.EntityFrameworkCore;
+global using Microsoft.Extensions.Configuration;
+global using Microsoft.Extensions.DependencyInjection;
+global using Ecommerce.Domain.Domain;
+global using Ecommerce.Modules.Users.Application.Abstractions;
+global using Ecommerce.Modules.Users.Contracts.Abstractions;
+global using Ecommerce.Modules.Users.Contracts.Requests;
+global using Ecommerce.Modules.Users.Domain.Entities;
+global using Ecommerce.Modules.Users.Domain.Errors;
+global using Ecommerce.Infrastructure.Persistence.Interceptors;
+global using Ecommerce.Modules.Users.Application;
+global using Ecommerce.Modules.Users.Infrastructure.Services;
+global using Ecommerce.ServiceDefaults.HealthChecks;
+

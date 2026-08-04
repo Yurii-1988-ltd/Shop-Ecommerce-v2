@@ -1,0 +1,114 @@
+﻿/* ---------- Page ---------- */
+
+.page-header {
+    margin-bottom: 1.5rem;
+}
+
+.page-title {
+    font-weight: 600;
+}
+
+.page-subtitle {
+    margin-top: .25rem;
+    color: var(--mud-palette-text-secondary);
+}
+
+/* ---------- Toolbar ---------- */
+
+.search-toolbar {
+    margin-bottom: 1rem;
+}
+
+.search-box {
+    width: 320px;
+}
+
+/* ---------- Cards ---------- */
+
+.entity-card {
+    padding: 1rem;
+    border-radius: 16px;
+}
+
+/* ---------- Tables ---------- */
+
+.entity-table .mud-table-cell,
+.cart-table .mud-table-cell {
+    padding-top: 14px;
+    padding-bottom: 14px;
+    vertical-align: middle;
+}
+
+.product-column {
+    min-width: 320px;
+}
+
+.product-name {
+    font-weight: 600;
+    text-decoration: none;
+}
+
+.product-sku {
+    font-size: .8rem;
+    color: var(--mud-palette-text-secondary);
+}
+
+.actions {
+    white-space: nowrap;
+}
+
+/* ---------- Details ---------- */
+
+.details-label {
+    margin-bottom: 4px;
+    font-size: .8rem;
+    font-weight: 600;
+    color: var(--mud-palette-text-secondary);
+}
+
+.details-title {
+    font-weight: 600;
+}
+
+.details-value {
+    margin-top: 6px;
+}
+
+.details-section {
+    margin-top: 20px;
+}
+
+.price-value {
+    font-weight: 600;
+    letter-spacing: .3px;
+}
+
+/* ---------- Forms ---------- */
+
+.form-card {
+    max-width: 900px;
+    padding: 1.5rem;
+}
+
+.form-actions {
+    margin-top: 2rem;
+}
+
+/* ---------- Cart ---------- */
+
+.cart-table .mud-table {
+    min-width: 900px;
+}
+
+.cart-customer {
+    font-weight: 600;
+    font-family: monospace;
+}
+
+.cart-total {
+    font-weight: 600;
+}
+
+.cart-actions {
+    white-space: nowrap;
+}

@@ -1,0 +1,71 @@
+﻿@page "/orders"
+
+@inject IOrderApiClient OrderApiClient
+
+<PageTitle>Orders</PageTitle>
+
+<PageHeader Title="Orders" />
+
+<MudPaper Class="pa-4">
+
+    <MudTable Items="_orders.Items" Hover="true" Dense="true" Striped="true">
+
+        <HeaderContent>
+            <MudTh>Id</MudTh>
+            <MudTh>Customer</MudTh>
+            <MudTh>Status</MudTh>
+            <MudTh align="right">Quantity</MudTh>
+            <MudTh align="right">Amount</MudTh>
+            <MudTh>Created</MudTh>
+            <MudTh></MudTh>
+        </HeaderContent>
+
+        <RowTemplate>
+
+            <MudTd>@context.Id</MudTd>
+
+            <MudTd>@context.CustomerName</MudTd>
+
+            <MudTd>@context.Status</MudTd>
+
+            <MudTd Align="Align.Right">
+                @context.TotalQuantity
+            </MudTd>
+
+            <MudTd Align="Align.Right">
+                @($"{context.TotalAmount} {context.Currency}")
+            </MudTd>
+
+            <MudTd>
+                @context.CreatedAtUtc.ToLocalTime()
+            </MudTd>
+
+            <MudTd Align="Align.Right">
+
+                <MudButton Variant="Variant.Text"
+                           Color="Color.Primary"
+                           Href="@($"/orders/{context.Id}")">
+
+                    Details
+
+                </MudButton>
+
+            </MudTd>
+
+        </RowTemplate>
+
+    </MudTable>
+
+</MudPaper>
+
+@code
+{
+    private PagedResult<OrderListResponse> _orders = new();
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        _orders = await OrderApiClient.GetAllAsync(1, 10)
+           ?? new PagedResult<OrderListResponse>();
+    }
+}

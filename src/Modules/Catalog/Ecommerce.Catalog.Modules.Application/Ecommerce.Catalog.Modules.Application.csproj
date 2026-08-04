@@ -1,0 +1,15 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\BuildingBlocks\Ecommerce.Application\Ecommerce.Application.csproj" />
+    <ProjectReference Include="..\..\..\BuildingBlocks\Mongo\Ecommerce.Mongo\Ecommerce.Mongo.csproj" />
+    <ProjectReference Include="..\Ecommerce.Catalog.Modules.Domain\Ecommerce.Catalog.Modules.Domain.csproj" />
+  </ItemGroup>
+
+</Project>

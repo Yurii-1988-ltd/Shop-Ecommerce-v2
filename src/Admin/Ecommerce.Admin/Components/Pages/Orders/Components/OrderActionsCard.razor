@@ -1,0 +1,27 @@
+﻿<!-- OrderActionsCard.razor -->
+<MudCard>
+    <MudCardContent>
+        <MudStack Spacing="2">
+            <!-- Ваши существующие кнопки -->
+            <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="OnSubmit">
+                Submit Order
+            </MudButton>
+
+            <MudButton Variant="Variant.Outlined" Color="Color.Secondary" OnClick="OnChangeStatus">
+                Change Status
+            </MudButton>
+
+            <!-- Кнопка для Force Change -->
+            <MudButton Variant="Variant.Filled" Color="Color.Error" OnClick="OnForceChangeStatus">
+                Force Change Status
+            </MudButton>
+        </MudStack>
+    </MudCardContent>
+</MudCard>
+
+@code {
+    [Parameter] public OrderResponse Order { get; set; } = default!;
+    [Parameter] public EventCallback OnSubmit { get; set; }
+    [Parameter] public EventCallback OnChangeStatus { get; set; }
+    [Parameter] public EventCallback OnForceChangeStatus { get; set; }
+}

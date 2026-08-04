@@ -1,0 +1,80 @@
+﻿@using Ecommerce.Admin.ApiClients.Orders.Enums
+
+<MudDialog>
+    <TitleContent>
+        <MudText Typo="Typo.h6">
+            <MudIcon Icon="@Icons.Material.Filled.Sync" Class="me-2" />
+            Change Order Status
+        </MudText>
+    </TitleContent>
+
+    <DialogContent>
+        <MudStack Spacing="3" Class="pt-2">
+
+            <MudText Typo="Typo.body2">
+                Order: <b>@OrderNumber</b>
+            </MudText>
+
+            <MudSelect T="OrderStatus"
+                       Label="New Status"
+                       @bind-Value="_selectedStatus">
+
+                @foreach (var status in GetAvailableStatuses())
+                {
+                    <MudSelectItem Value="@status">
+                        @status
+                    </MudSelectItem>
+                }
+
+            </MudSelect>
+
+        </MudStack>
+    </DialogContent>
+
+    <DialogActions>
+        <MudButton OnClick="Cancel">
+            Cancel
+        </MudButton>
+
+        <MudButton Color="Color.Primary"
+                   Variant="Variant.Filled"
+                   OnClick="Save">
+            Save
+        </MudButton>
+    </DialogActions>
+
+</MudDialog>
+
+
+@code{
+    [CascadingParameter]
+    private IMudDialogInstance MudDialog { get; set; } = default!;
+
+    [Parameter]
+    public string OrderNumber { get; set; } = string.Empty;
+
+    [Parameter]
+    public OrderStatus CurrentStatus { get; set; }
+
+    private OrderStatus _selectedStatus;
+
+    protected override void OnInitialized()
+    {
+        _selectedStatus = CurrentStatus;
+    }
+
+    private void Save()
+    {
+        MudDialog.Close(DialogResult.Ok(_selectedStatus));
+    }
+
+    private void Cancel()
+    {
+        MudDialog.Cancel();
+    }
+   private IEnumerable<OrderStatus> GetAvailableStatuses()
+{
+    return Enum.GetValues<OrderStatus>();
+}
+    
+}

@@ -1,0 +1,34 @@
+﻿@page "/categories/create"
+
+
+@using Ecommerce.Admin.ApiClients.Categories.Contracts
+@using Ecommerce.Admin.ApiClients.Categories.Models
+
+@inject ICategoryApiClient CategoryApi
+@inject NavigationManager Navigation
+
+<PageTitle>Create Category</PageTitle>
+
+<PageHeader Title="Create Category"
+            Subtitle="Add a new category to your catalog" />
+
+<CategoryForm Model="_model"
+              OnSubmit="CreateCategory" />
+
+@code
+{
+    private readonly CategoryFormModel _model = new();
+
+    private async Task CreateCategory(CategoryFormModel model)
+    {
+        var request = new CreateCategoryRequest
+        {
+            Name = model.Name,
+            Description = model.Description
+        };
+
+        await CategoryApi.CreateAsync(request);
+
+        Navigation.NavigateTo("/categories");
+    }
+}

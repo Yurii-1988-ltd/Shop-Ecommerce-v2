@@ -1,0 +1,50 @@
+﻿<MudStack Class="search-toolbar"
+          Row="true"
+          Justify="Justify.SpaceBetween"
+          AlignItems="AlignItems.Center">
+
+    <MudTextField T="string"
+                  Value="@SearchText"
+                  ValueChanged="OnSearchChanged"
+                  Class="search-box"
+                  Placeholder="@Placeholder"
+                  Variant="Variant.Outlined"
+                  Margin="Margin.Dense"
+                  Adornment="Adornment.Start"
+                  AdornmentIcon="@Icons.Material.Filled.Search" />
+
+    <MudButton Variant="Variant.Text"
+               StartIcon="@Icons.Material.Filled.Refresh"
+               OnClick="Refresh">
+
+        Refresh
+
+    </MudButton>
+
+</MudStack>
+
+@code {
+
+    [Parameter]
+    public string Placeholder { get; set; } = "Search...";
+
+    [Parameter]
+    public string? SearchText { get; set; }
+
+    [Parameter]
+    public EventCallback<string?> SearchTextChanged { get; set; }
+
+    [Parameter]
+    public EventCallback OnRefresh { get; set; }
+
+    private async Task OnSearchChanged(string? value)
+    {
+        SearchText = value;
+        await SearchTextChanged.InvokeAsync(value);
+    }
+
+    private async Task Refresh()
+    {
+        await OnRefresh.InvokeAsync();
+    }
+}

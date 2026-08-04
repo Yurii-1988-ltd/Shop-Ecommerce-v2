@@ -1,0 +1,102 @@
+﻿@page "/carts/{CustomerId:guid}"
+
+@using Ecommerce.Admin.ApiClients.Carts
+
+@inject ICartApiClient CartApi
+@inject NavigationManager Navigation
+
+@if (_cart is null)
+{
+    <MudProgressCircular Indeterminate="true" />
+}
+else
+{
+    <MudTable Items="_cart.Items">
+
+        <HeaderContent>
+            <MudTh>Product</MudTh>
+            <MudTh>Price</MudTh>
+            <MudTh>Quantity</MudTh>
+            <MudTh>Total Price</MudTh>
+            <MudTh></MudTh>
+        </HeaderContent>
+
+        <RowTemplate>
+
+            <MudTd>@context.Name</MudTd>
+
+            <MudTd>
+                @($"{context.Price:N2} {context.Currency}")
+            </MudTd>
+
+            <MudTd>
+                @context.Quantity
+            </MudTd>
+
+            <MudTd>
+                @($"{context.TotalPrice:N2} {context.Currency}")
+            </MudTd>
+
+            <MudTd>
+
+                <MudIconButton
+                    Icon="@Icons.Material.Filled.Edit"
+                    Color="Color.Primary"
+                    Href="@($"/carts/{_cart.CustomerId}/items/{context.ProductId}/quantity")" />
+                    <MudButton Color="Color.Warning"
+           Variant="Variant.Outlined"
+           StartIcon="@Icons.Material.Filled.DeleteSweep"
+                   OnClick="ClearCart">
+            Clear Cart
+        </MudButton>
+
+                <MudIconButton
+                    Icon="@Icons.Material.Filled.Delete"
+                    Color="Color.Error"
+                    OnClick="@(() => RemoveItem(context.ProductId))" />
+
+            </MudTd>
+
+        </RowTemplate>
+
+    </MudTable>
+}
+
+@code
+{
+    private bool _loading;
+    [Parameter]
+    public Guid CustomerId { get; set; }
+
+    private CartResponse? _cart;
+
+    protected override async Task OnInitializedAsync()
+    {
+        _cart = await CartApi.GetAsync(CustomerId);
+    }
+    private async Task LoadAsync()
+    {
+        _loading = true;
+
+        _cart = await CartApi.GetAsync(CustomerId);
+
+        _loading = false;
+    }
+    private async Task RemoveItem(Guid productId)
+    {
+        if (_cart is null)
+            return;
+
+        await CartApi.RemoveItemAsync(
+            _cart.CustomerId,
+            productId);
+
+        await LoadAsync();
+    }
+    private async Task ClearCart()
+{
+    await CartApi.ClearAsync(CustomerId);
+
+    await LoadAsync();
+}
+}

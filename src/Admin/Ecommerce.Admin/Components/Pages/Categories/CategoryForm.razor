@@ -1,0 +1,44 @@
+﻿@using Ecommerce.Admin.ApiClients.Categories.Models
+<EditForm Model="Model" OnValidSubmit="Submit">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <MudStack Spacing="3">
+
+        <MudTextField T="string"
+                      Label="Name"
+                      @bind-Value="Model.Name"
+                      Variant="Variant.Outlined"
+                      Required="true" />
+        <MudTextField T="string"
+                      Label="Description (optional)"
+                      @bind-Value="Model.Description"
+                      Variant="Variant.Outlined"
+                      Lines="2"
+                      AutoGrow="false" />
+
+       
+        <MudStack Row="true" Justify="Justify.FlexEnd">
+
+            <MudButton ButtonType="ButtonType.Submit"
+                       Variant="Variant.Filled"
+                       Color="Color.Primary">
+                Save
+            </MudButton>
+
+        </MudStack>
+
+    </MudStack>
+</EditForm>
+
+@code
+{
+    [Parameter]
+    public CategoryFormModel Model { get; set; } = default!;
+
+    [Parameter]
+    public EventCallback<CategoryFormModel> OnSubmit { get; set; }
+
+    private Task Submit()
+        => OnSubmit.InvokeAsync(Model);
+}

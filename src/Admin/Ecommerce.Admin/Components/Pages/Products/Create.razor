@@ -1,0 +1,34 @@
+﻿@page "/products/create"
+@using Ecommerce.Admin.ApiClients.Catalog.Contracts
+@using Ecommerce.Admin.ApiClients.Categories
+
+<PageTitle> Create Product</PageTitle>
+
+<PageHeader Title="Create Product"
+            Subtitle="Add a new product to your catalog" />
+<ProductForm Model="Model"
+             OnSubmit="CreateProduct" />
+@code {
+    [Inject]
+    private ICatalogApiClient CatalogApi { get; set; } = default!;
+
+
+
+    private ProductFormModel Model { get; set; } = new();
+
+    private async Task CreateProduct(ProductFormModel model)
+    {
+        var request = new CreateProductRequest
+        {
+            Name = model.Name,
+            Description = model.Description,
+            Sku = model.Sku,
+            Price = model.Price,
+            Currency = model.Currency
+        };
+
+        await CatalogApi.CreateAsync(request);
+
+        Navigation.NavigateTo("/products");
+    }
+}

@@ -1,0 +1,84 @@
+﻿
+
+<EditForm Model="Model" OnValidSubmit="Submit">
+    <DataAnnotationsValidator />
+
+    <MudGrid>
+
+        <MudItem xs="12">
+
+            <MudTextField @bind-Value="Model.Name"
+            Label="Name"
+            Required="true" />
+
+        </MudItem>
+
+        <MudItem xs="12">
+
+            <MudTextField @bind-Value="Model.Description"
+            Label="Description"
+            Lines="4" />
+
+        </MudItem>
+
+        <MudItem xs="6">
+
+            <MudTextField @bind-Value="Model.Sku"
+            Label="SKU" />
+
+        </MudItem>
+
+        <MudItem xs="3">
+
+            <MudNumericField @bind-Value="Model.Price"
+            Label="Price" />
+
+        </MudItem>
+
+        <MudItem xs="3">
+
+            <MudTextField @bind-Value="Model.Currency"
+            Label="Currency" />
+
+        </MudItem>
+
+    </MudGrid>
+
+    <MudStack Row="true"
+    Justify="Justify.FlexEnd"
+    AlignItems="AlignItems.Center"
+    Class="mt-4">
+
+        <MudButton Variant="Variant.Text"
+        Href="/products">
+
+            Cancel
+
+        </MudButton>
+
+        <MudButton ButtonType="ButtonType.Submit"
+        Color="Color.Primary"
+        Variant="Variant.Filled">
+
+            Save
+
+        </MudButton>
+
+    </MudStack>
+
+</EditForm>
+
+@code
+{
+    [Parameter]
+    public ProductFormModel Model { get; set; } = default!;
+
+    [Parameter]
+    public EventCallback<ProductFormModel> OnSubmit { get; set; }
+
+    private async Task Submit()
+    {
+        await OnSubmit.InvokeAsync(Model);
+    }
+
+}

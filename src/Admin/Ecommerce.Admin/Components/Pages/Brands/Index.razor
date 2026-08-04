@@ -1,0 +1,147 @@
+﻿@page "/brands"
+
+
+@inject IBrandApiClient Api
+@inject IDialogService DialogService
+@inject NavigationManager Navigation
+
+<PageHeader Title="Brands"
+            Subtitle="Manage your brand catalog">
+
+    <Actions>
+
+        <MudButton Variant="Variant.Filled"
+                   Color="Color.Primary"
+                   StartIcon="@Icons.Material.Filled.Add"
+                   Href="/brands/create">
+
+            Add Brand
+
+        </MudButton>
+
+    </Actions>
+
+</PageHeader>
+
+<SearchToolbar Placeholder="Search brand..."
+               OnRefresh="LoadBrands" />
+
+<MudPaper Class="entity-card" Elevation="2">
+
+    <MudTable Class="entity-table"
+              Items="_brands"
+              Hover="true"
+              Dense="true"
+              Striped="true">
+
+        <HeaderContent>
+
+            <MudTh>Brand Name</MudTh>
+           
+            <MudTh>Status</MudTh>
+            <MudTh Align="Align.Right">Actions</MudTh>
+
+        </HeaderContent>
+
+        <RowTemplate>
+
+            <MudTd Class="product-column">
+
+                <MudStack Spacing="0">
+
+                    <MudLink Class="product-name"
+                             Href="@($"/brands/{context.Id}")">
+
+                        @context.Name
+
+                    </MudLink>
+
+                    
+
+                </MudStack>
+
+            </MudTd>
+
+            
+           
+
+            <MudTd>
+
+                <StatusChip IsActive="@context.IsActive" />
+
+            </MudTd>
+
+            <MudTd Align="Align.Right">
+
+                <EntityActions
+                    OnDetails="@(() => Details(context.Id))"
+                    OnEdit="@(() => Edit(context.Id))"
+                    OnDelete="@(() => Delete(context))" />
+
+            </MudTd>
+
+        </RowTemplate>
+
+        <NoRecordsContent>
+
+            <EmptyState Title="No brand"
+                        Description="Create your first brand."
+                        ActionText="Add category"
+                        ActionHref="/brands/create" />
+
+        </NoRecordsContent>
+
+    </MudTable>
+
+</MudPaper>
+
+@code
+{
+    private readonly List<BrandListItemResponse> _brands = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadBrands();
+    }
+
+    private async Task LoadBrands()
+    {
+        var result = await Api.GetAllAsync(1, 20);
+
+        _brands.Clear();
+
+        if (result is not null)
+            _brands.AddRange(result.Items);
+    }
+
+    private void Details(Guid id)
+        => Navigation.NavigateTo($"/brands/{id}");
+
+    private void Edit(Guid id)
+        => Navigation.NavigateTo($"/brands/edit/{id}");
+
+    private async Task Delete(BrandListItemResponse brand)
+    {
+        var parameters = new DialogParameters
+        {
+            { nameof(ConfirmationDialog.Title), "Delete brand.`" },
+            {
+                nameof(ConfirmationDialog.Message),
+                $"Are you sure you want to delete '{brand.Name}'?\n\nThis action cannot be undone."
+            }
+        };
+
+        var dialog = await DialogService.ShowAsync<ConfirmationDialog>(
+            "Delete brand",
+            parameters);
+
+        var result = await dialog.Result;
+
+        if (result.Canceled)
+            return;
+
+        await Api.DeleteAsync(brand.Id);
+
+        await LoadBrands();
+    }
+}

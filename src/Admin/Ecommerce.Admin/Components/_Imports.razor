@@ -1,0 +1,36 @@
+﻿@using System.Net.Http
+@using System.Net.Http.Json
+@using BlazorSortable
+@using Ecommerce.Admin
+@using Ecommerce.Admin.ApiClients.Brands.Api
+@using Ecommerce.Admin.ApiClients.Brands.Models
+@using Ecommerce.Admin.ApiClients.Carts
+@using Ecommerce.Admin.ApiClients.Catalog
+@using Ecommerce.Admin.ApiClients.Catalog.Models
+@using Ecommerce.Admin.ApiClients.Categories
+@using Ecommerce.Admin.ApiClients.Images
+@using Ecommerce.Admin.ApiClients.Images.Models
+@using Ecommerce.Admin.Components
+@using Ecommerce.Admin.Components.Shared
+@using Ecommerce.Admin.Contracts
+@using Microsoft.AspNetCore.Components.Forms
+@using Microsoft.AspNetCore.Components.Routing
+@using Microsoft.AspNetCore.Components.Web
+@using Microsoft.AspNetCore.Components.Web.Virtualization
+@using Microsoft.JSInterop
+@using MudBlazor
+@using static Microsoft.AspNetCore.Components.Web.RenderMode
+@using Microsoft.AspNetCore.Components.Sections
+@using Ecommerce.Admin.ApiClients.Orders.Enums
+@using Ecommerce.Admin.Components.Pages.Orders.Components;
+
+
+
+@inject ICatalogApiClient Api
+
+@inject IDialogService DialogService
+@inject NavigationManager Navigation
+@inject  ICartApiClient CartApi
+@inject IOrderApiClient OrderApi
+@inject ISnackbar Snackbar
+

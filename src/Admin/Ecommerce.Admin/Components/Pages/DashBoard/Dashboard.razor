@@ -1,0 +1,71 @@
+﻿@page "/"
+
+<PageTitle>Dashboard</PageTitle>
+
+<MudText Typo="Typo.h4" Class="mb-4">
+    Dashboard
+</MudText>
+
+<MudGrid>
+
+    <MudItem xs="12" sm="6" md="3">
+        <DashboardStatCard
+            CssClass="products-card"
+            Icon="@Icons.Material.Filled.Inventory2"
+            Title="Products"
+            Value="125"
+            Growth="+12" />
+    </MudItem>
+
+    <MudItem xs="12" sm="6" md="3">
+        <DashboardStatCard
+            CssClass="customers-card"
+            Icon="@Icons.Material.Filled.People"
+            Title="Customers"
+            Value="510"
+            Growth="+21" />
+    </MudItem>
+
+    <MudItem xs="12" sm="6" md="3">
+        <DashboardStatCard
+            CssClass="orders-card"
+            Icon="@Icons.Material.Filled.ShoppingCart"
+            Title="Orders"
+            Value="43"
+            Growth="+8" />
+    </MudItem>
+
+    <MudItem xs="12" sm="6" md="3">
+        <DashboardStatCard
+            CssClass="revenue-card"
+            Icon="@Icons.Material.Filled.AttachMoney"
+            Title="Revenue"
+            Value="$12.5K"
+            Growth="+15" />
+    </MudItem>
+
+</MudGrid>
+
+<MudGrid Class="mt-4">
+
+    <MudItem xs="12" md="8">
+        <SalesOverview />
+    </MudItem>
+
+    <MudItem xs="12" md="4">
+        <LowStockProducts />
+    </MudItem>
+
+</MudGrid>
+
+<MudGrid Class="mt-4">
+
+    <MudItem xs="12" md="8">
+        <RecentOrders />
+    </MudItem>
+
+    <MudItem xs="12" md="4">
+        <ActiveCarts />
+    </MudItem>
+
+</MudGrid>

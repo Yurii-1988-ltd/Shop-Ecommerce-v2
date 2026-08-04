@@ -1,0 +1,18 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\BuildingBlocks\Ecommerce.Presentation\Ecommerce.Presentation.csproj" />
+    <ProjectReference Include="..\Ecommerce.Modules.Users.Application\Ecommerce.Modules.Users.Application.csproj" />
+    <ProjectReference Include="..\Ecommerce.Modules.Users.Infrastructure\Ecommerce.Modules.Users.Infrastructure.csproj" />
+  </ItemGroup>
+	<ItemGroup>
+		<FrameworkReference Include="Microsoft.AspNetCore.App" />
+	</ItemGroup>
+
+</Project>

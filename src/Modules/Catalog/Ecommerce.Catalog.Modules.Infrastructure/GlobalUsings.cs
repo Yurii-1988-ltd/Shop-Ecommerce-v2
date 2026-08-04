@@ -1,0 +1,11 @@
+﻿global using Ecommerce.Catalog.Modules.Application.Abstractions.Data;
+global using Ecommerce.Catalog.Modules.Application.Abstractions.Storage;
+global using Ecommerce.Catalog.Modules.Application.Features.Products.CreateProduct;
+global using Ecommerce.Catalog.Modules.Domain.Repositories;
+global using Ecommerce.Catalog.Modules.Infrastructure.Abstractions.Storage;
+global using Ecommerce.Catalog.Modules.Infrastructure.Database;
+global using Ecommerce.Catalog.Modules.Infrastructure.Repositories;
+global using Microsoft.Extensions.Configuration;
+global using Microsoft.Extensions.DependencyInjection;
+global using Microsoft.Extensions.Options;
+global using MongoDB.Driver;

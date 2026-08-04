@@ -1,0 +1,26 @@
+﻿@using Ecommerce.Admin.Theme
+@inherits LayoutComponentBase
+
+<MudThemeProvider Theme="@AppTheme.Theme" />
+<MudPopoverProvider />
+<MudDialogProvider />
+<MudSnackbarProvider />
+
+<MudLayout>
+
+    <NavMenu />
+
+    <MudMainContent>
+
+        <TopBar />
+
+        <MudContainer MaxWidth="MaxWidth.False"
+                      Class="page-container">
+
+            @Body
+
+        </MudContainer>
+
+    </MudMainContent>
+
+</MudLayout>

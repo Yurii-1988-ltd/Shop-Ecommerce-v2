@@ -1,0 +1,29 @@
+﻿@page "/carts/add-item"
+@using Ecommerce.Admin.ApiClients.Carts.Contracts
+@using Ecommerce.Admin.ApiClients.Carts.Models
+
+@inject ICartApiClient CartApi
+@inject NavigationManager Navigation
+
+<PageTitle>Add Cart Item</PageTitle>
+
+<PageHeader Title="Add Item"
+            Subtitle="Add product to cart" />
+
+<CartItemForm Model="_model"
+              OnSubmit="Save" />
+
+@code {
+
+    private readonly CartItemFormModel _model = new();
+
+    private async Task Save(CartItemFormModel model)
+    {
+        var request = new AddCartItemRequest(model.ProductId,
+            model.Name,model.Price, model.Currency,model.Quantity);
+
+        await CartApi.AddItemAsync(model.CustomerId,request);
+
+        Navigation.NavigateTo($"/carts/{model.CustomerId}");
+    }
+}

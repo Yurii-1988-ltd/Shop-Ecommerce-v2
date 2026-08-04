@@ -1,0 +1,24 @@
+﻿<MudAppBar Elevation="1">
+
+    <MudIconButton Icon="@Icons.Material.Filled.Menu"
+                   Color="Color.Inherit"
+                   OnClick="ToggleDrawer" />
+
+    <MudText Typo="Typo.h6">
+        Ecommerce Admin
+    </MudText>
+
+    <MudSpacer />
+
+    <MudIconButton Icon="@Icons.Material.Filled.Notifications" />
+
+    <MudAvatar Size="Size.Medium">
+        Y
+    </MudAvatar>
+
+</MudAppBar>
+@code
+{
+    [Parameter]
+    public EventCallback ToggleDrawer { get; set; }
+}

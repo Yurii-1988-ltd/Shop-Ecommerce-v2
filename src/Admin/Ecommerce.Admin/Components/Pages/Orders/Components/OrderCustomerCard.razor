@@ -1,0 +1,31 @@
+﻿<MudPaper Class="pa-4">
+    <MudText Typo="Typo.h6">
+        <MudIcon Icon="@Icons.Material.Filled.Person" Class="me-2" />
+        Customer
+    </MudText>
+    <MudDivider Class="my-3" />
+
+    <MudStack Row="true" Spacing="2" AlignItems="AlignItems.Center">
+        <MudAvatar Color="Color.Primary" Size="Size.Large">
+            @CustomerName[0]
+        </MudAvatar>
+
+        <MudStack Spacing="0">
+            <MudText Typo="Typo.h6">@CustomerName</MudText>
+            <MudChip T="string" Size="Size.Small" Variant="Variant.Outlined">
+                @GetCustomerNumber(CustomerId)
+            </MudChip>
+        </MudStack>
+    </MudStack>
+</MudPaper>
+
+@code {
+    [Parameter, EditorRequired] public string CustomerName { get; set; } = string.Empty;
+    [Parameter, EditorRequired] public Guid CustomerId { get; set; }
+
+    private static string GetCustomerNumber(Guid id)
+    {
+        var value = id.ToString("N").ToUpper();
+        return $"CUS-{value[..4]}-{value[4..8]}";
+    }
+}

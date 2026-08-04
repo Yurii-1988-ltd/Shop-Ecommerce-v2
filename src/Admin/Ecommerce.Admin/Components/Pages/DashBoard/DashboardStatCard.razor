@@ -1,0 +1,41 @@
+﻿<MudPaper Class="@($"dashboard-card {CssClass} pa-4")">
+
+    <MudStack Row AlignItems="AlignItems.Center" Justify="Justify.SpaceBetween">
+
+        <MudIcon Icon="@Icon"
+                 Size="Size.Large"
+                 Color="Color.Primary" />
+
+        <MudChip T="decimal"
+                 Size="Size.Small"
+                 Color="@(Growth >= 0 ? Color.Success : Color.Error)"
+                 Variant="Variant.Filled">
+
+            @(Growth >= 0 ? "+" : "")@Growth%
+
+        </MudChip>
+
+    </MudStack>
+
+    <MudText Typo="Typo.h3" Class="mt-4">
+        @Value
+    </MudText>
+
+    <MudText Typo="Typo.subtitle1">
+        @Title
+    </MudText>
+
+</MudPaper>
+
+@code {
+
+    [Parameter] public string Title { get; set; } = string.Empty;
+
+    [Parameter] public string Value { get; set; } = string.Empty;
+
+    [Parameter] public decimal Growth { get; set; } 
+
+    [Parameter] public string Icon { get; set; } = string.Empty;
+
+    [Parameter] public string CssClass { get; set; } = string.Empty;
+}

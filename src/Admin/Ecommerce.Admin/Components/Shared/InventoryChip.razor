@@ -1,0 +1,33 @@
+﻿<MudChip T="string"
+         Variant="Variant.Filled"
+         Color="@GetColor()">
+
+    @GetText()
+
+</MudChip>
+
+@code
+{
+    [Parameter]
+    public int StockQuantity { get; set; }
+
+    private string GetText()
+    {
+        return StockQuantity switch
+        {
+            0 => "Out of stock",
+            <= 5 => $"Low stock ({StockQuantity})",
+            _ => $"{StockQuantity} in stock"
+        };
+    }
+
+    private Color GetColor()
+    {
+        return StockQuantity switch
+        {
+            0 => Color.Error,
+            <= 5 => Color.Warning,
+            _ => Color.Success
+        };
+    }
+}

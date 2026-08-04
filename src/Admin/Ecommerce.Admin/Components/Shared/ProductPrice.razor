@@ -1,0 +1,36 @@
+﻿<MudStack Row="true"
+          AlignItems="AlignItems.Center"
+          Spacing="1">
+
+    <MudText Typo="@Typo"
+             Class="price-value">
+
+        @Price.ToString(Format)
+
+    </MudText>
+
+    <MudChip T="string"
+             Variant="Variant.Outlined"
+             Size="Size.Small"
+             Color="Color.Primary">
+
+        @Currency
+
+    </MudChip>
+
+</MudStack>
+
+@code
+{
+    [Parameter]
+    public decimal Price { get; set; }
+
+    [Parameter]
+    public string Currency { get; set; } = string.Empty;
+
+    [Parameter]
+    public Typo Typo { get; set; } = Typo.body1;
+
+    [Parameter]
+    public string Format { get; set; } = "N2";
+}

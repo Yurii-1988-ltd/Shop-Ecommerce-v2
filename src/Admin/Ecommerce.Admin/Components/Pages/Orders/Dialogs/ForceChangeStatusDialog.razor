@@ -1,0 +1,98 @@
+﻿@using Ecommerce.Admin.ApiClients.Orders.Enums
+
+<MudDialog>
+    <TitleContent>
+        <MudText Typo="Typo.h6">
+            <MudIcon Icon="@Icons.Material.Filled.AdminPanelSettings" Class="me-2" />
+            Force Change Status
+        </MudText>
+    </TitleContent>
+
+    <DialogContent>
+        <MudStack Spacing="3" Class="pt-2">
+
+            <MudText Typo="Typo.body2">
+                Order: <b>@OrderNumber</b>
+            </MudText>
+
+            <MudText Typo="Typo.body2">
+                Current Status:
+                <MudChip T="OrderStatus"
+                         Color="Color.Info"
+                         Variant="Variant.Outlined">
+                    @CurrentStatus
+                </MudChip>
+            </MudText>
+
+            <MudSelect T="OrderStatus"
+                       Label="New Status"
+                       @bind-Value="_selectedStatus">
+
+                @foreach (var status in Enum.GetValues<OrderStatus>())
+                {
+                    <MudSelectItem T="OrderStatus" Value="@status">
+                        @status
+                    </MudSelectItem>
+                }
+
+            </MudSelect>
+
+            <MudTextField T="string"
+                          Label="Reason"
+                          @bind-Value="_reason"
+                          Lines="3"
+                          Variant="Variant.Outlined"
+                          Required="true"
+                          Immediate="true" />
+
+        </MudStack>
+    </DialogContent>
+
+    <DialogActions>
+        <MudButton OnClick="Cancel">
+            Cancel
+        </MudButton>
+
+        <MudButton Color="Color.Error"
+                   Variant="Variant.Filled"
+                   Disabled="@(string.IsNullOrWhiteSpace(_reason) || _selectedStatus == CurrentStatus)"
+                   OnClick="Save">
+            Force Change
+        </MudButton>
+    </DialogActions>
+</MudDialog>
+
+@code {
+    [CascadingParameter]
+    private IMudDialogInstance MudDialog { get; set; } = default!;
+
+    [Parameter]
+    public string OrderNumber { get; set; } = string.Empty;
+
+    [Parameter]
+    public OrderStatus CurrentStatus { get; set; }
+
+    private OrderStatus _selectedStatus;
+    private string _reason = string.Empty;
+
+    protected override void OnInitialized()
+    {
+        _selectedStatus = CurrentStatus;
+    }
+
+    private void Save()
+    {
+        MudDialog.Close(DialogResult.Ok(new ForceChangeStatusResult(
+            _selectedStatus,
+            _reason)));
+    }
+
+    private void Cancel()
+    {
+        MudDialog.Cancel();
+    }
+
+    public sealed record ForceChangeStatusResult(
+        OrderStatus Status,
+        string Reason);
+}

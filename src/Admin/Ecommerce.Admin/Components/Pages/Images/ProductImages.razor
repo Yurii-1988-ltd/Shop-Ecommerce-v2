@@ -1,0 +1,89 @@
+﻿
+<MudPaper Class="pa-4">
+
+    <MudText Typo="Typo.h6" Class="mb-3">
+        Product Images
+    </MudText>
+
+    <ProductImageUpload ProductId="@ProductId"
+                        OnImagesChanged="LoadImages" />
+
+    <MudDivider Class="my-4" />
+    <Sortable Items="Images" Handle=".drag-handle" Context="image">
+        <MudCard Style="width:260px;">
+            <ProductImageCard Image="@image"
+                              ProductId="@ProductId"
+                              OnDelete="DeleteImage"
+                              OnSetPrimary="SetPrimaryImage" />
+        </MudCard>
+    </Sortable>
+
+</MudPaper>
+
+@code
+{
+    [Parameter]
+    public Guid ProductId { get; set; }
+
+    [Inject]
+    private ICatalogApiClient CatalogApi { get; set; } = default!;
+
+    [Inject]
+    private IImageApiClient ImageApi { get; set; } = default!;
+
+
+    private List<ProductImageResponse> Images = new List<ProductImageResponse>();
+
+    protected override async Task OnParametersSetAsync()
+    {
+        await LoadImages();
+    }
+
+    private async Task LoadImages()
+    {
+        if (ProductId == Guid.Empty)
+            return;
+
+        var product = await CatalogApi.GetAsync(ProductId);
+
+        Images = product?.Images?
+            .OrderBy(x => x.DisplayOrder)
+            .ToList()
+            ?? new List<ProductImageResponse>();
+    }
+
+    private async Task HandleSort(SortableEventArgs<ProductImageResponse> e)
+    {
+        Images.RemoveAt(e.OldIndex);
+        Images.Insert(e.NewIndex, e.Item);
+
+        try
+        {
+            await ImageApi.ChangeImageOrderAsync(
+                ProductId,
+                e.Item.Id,
+                e.NewIndex);
+
+            Snackbar.Add("Image order saved.", Severity.Success);
+        }
+        catch (Exception ex)
+        {
+            Snackbar.Add(ex.Message, Severity.Error);
+            await LoadImages();
+        }
+    }
+
+    private async Task DeleteImage(Guid imageId)
+    {
+        await ImageApi.RemoveProductImageAsync(ProductId, imageId);
+
+        await LoadImages();
+    }
+
+    private async Task SetPrimaryImage(Guid imageId)
+    {
+        await ImageApi.SetPrimaryImageAsync(ProductId, imageId);
+
+        await LoadImages();
+    }
+}

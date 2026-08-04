@@ -1,0 +1,21 @@
+﻿<MudPaper Class="entity-card">
+
+    <MudText Typo="Typo.h6">
+        @Title
+    </MudText>
+
+    <MudDivider Class="my-3"/>
+
+    @ChildContent
+
+</MudPaper>
+
+@code{
+
+    [Parameter]
+    public string Title { get; set; } = "";
+
+    [Parameter]
+    public RenderFragment? ChildContent { get; set; }
+
+}

@@ -1,0 +1,60 @@
+﻿@using Ecommerce.Admin.ApiClients.Carts.Models
+<EditForm Model="Model" OnInvalidSubmit="HandleSubmit">
+    <DataAnnotationsValidator />
+
+    <MudPaper Class="form-card">
+
+        <MudTextField T="Guid"
+                      Label="Customer Id"
+                      @bind-Value="Model.CustomerId" />
+
+        <MudTextField T="Guid"
+                      Label="Product Id"
+                      @bind-Value="Model.ProductId" />
+
+        <MudTextField T="string"
+                      Label="Product Name"
+                      @bind-Value="Model.Name" />
+
+        <MudNumericField T="decimal"
+                         Label="Price"
+                         @bind-Value="Model.Price" />
+
+        <MudTextField T="string"
+                      Label="Currency"
+                      @bind-Value="Model.Currency" />
+
+        <MudNumericField T="int"
+                         Label="Quantity"
+                         @bind-Value="Model.Quantity" />
+
+        <MudStack Row="true"
+                  Justify="Justify.FlexEnd"
+                  Class="form-actions">
+
+            <MudButton ButtonType="ButtonType.Submit"
+                       Variant="Variant.Filled"
+                       Color="Color.Primary">
+                Save
+            </MudButton>
+
+        </MudStack>
+
+    </MudPaper>
+
+</EditForm>
+
+
+@code{
+    [Parameter,EditorRequired]
+    public CartItemFormModel Model { get; set; }
+    [Parameter,EditorRequired]
+
+    public EventCallback<CartItemFormModel> OnSubmit { get; set; }
+
+    private async Task HandleSubmit()
+    {
+        await OnSubmit.InvokeAsync(Model);
+    }
+
+}

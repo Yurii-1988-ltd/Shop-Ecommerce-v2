@@ -1,0 +1,19 @@
+﻿
+global using Ecommerce.Identity.Modules.Application.Abstractions;
+global using Ecommerce.Identity.Modules.Application.Abstrctions;
+global using Ecommerce.Identity.Modules.Application.Options;
+global using Ecommerce.Identity.Modules.Domain.Repositories;
+global using Ecommerce.Identity.Modules.Infrastructure.Data;
+global using Ecommerce.Identity.Modules.Infrastructure.Interfaces;
+global using Ecommerce.Identity.Modules.Infrastructure.Repositories;
+global using Microsoft.AspNetCore.Authentication.JwtBearer;
+global using Microsoft.EntityFrameworkCore;
+global using Microsoft.Extensions.Configuration;
+global using Microsoft.Extensions.DependencyInjection;
+global using Ecommerce.Identity.Modules.Domain.Entities;
+global using Microsoft.EntityFrameworkCore.Design;
+global using Ecommerce.Identity.Modules.Infrastructure.Configurations;
+global using Microsoft.EntityFrameworkCore.Metadata.Builders;
+global using System.Security.Cryptography;
+global using Ecommerce.Identity.Modules.Application.Features.Register;
+global using Microsoft.IdentityModel.Tokens;

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="DataSourceManagerImpl" format="xml" multifile-model="true">
+    <data-source source="LOCAL" name="mongo" uuid="16f4f597-2f73-48e2-9354-a30d5c4bf6d1">
+      <driver-ref>mongo.4</driver-ref>
+      <synchronize>true</synchronize>
+      <jdbc-driver>com.dbschema.MongoJdbcDriver</jdbc-driver>
+      <jdbc-url>mongodb://admin:h5gafUhd5Jddc5uFHMcRMT@localhost:5617/?authSource=admin&amp;authMechanism=SCRAM-SHA-256</jdbc-url>
+      <jdbc-additional-properties>
+        <property name="aspireResourceId" value="mongo-fzyycfha" />
+      </jdbc-additional-properties>
+      <working-dir>$ProjectFileDir$</working-dir>
+    </data-source>
+    <data-source source="LOCAL" name="sql" uuid="500acf85-63b9-4001-95cd-276f1ec9c2c9">
+      <driver-ref>sqlserver.jb</driver-ref>
+      <synchronize>true</synchronize>
+      <jdbc-driver>com.jetbrains.jdbc.sqlserver.SqlServerDriver</jdbc-driver>
+      <jdbc-url>Server=127.0.0.1,5618;User ID=sa;Password=x4k0~AyZ~7pvgbGpYXKDcW;TrustServerCertificate=true</jdbc-url>
+      <jdbc-additional-properties>
+        <property name="aspireResourceId" value="sql-rywqqkaj" />
+      </jdbc-additional-properties>
+      <working-dir>$ProjectFileDir$</working-dir>
+    </data-source>
+  </component>
+</project>

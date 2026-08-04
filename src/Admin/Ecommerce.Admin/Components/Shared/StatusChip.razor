@@ -1,0 +1,13 @@
+﻿<MudChip T="string"
+         Variant="Variant.Outlined"
+         Color="@(IsActive ? Color.Success : Color.Default)">
+
+    @(IsActive ? "Active" : "Archived")
+
+</MudChip>
+
+@code
+{
+    [Parameter]
+    public bool IsActive { get; set; }
+}

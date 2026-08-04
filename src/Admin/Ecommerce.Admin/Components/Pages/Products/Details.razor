@@ -1,0 +1,196 @@
+﻿@page "/products/{Id:guid}"
+
+
+
+@inject ICatalogApiClient Api
+@inject NavigationManager Navigation
+
+<PageTitle>Product Details</PageTitle>
+
+@if (_product is null)
+{
+    <MudProgressCircular Indeterminate="true" />
+}
+else
+{
+    <PageHeader Title="@_product.Name"
+                Subtitle="View product information">
+
+        <Actions>
+
+            <MudButton Variant="Variant.Text"
+                       StartIcon="@Icons.Material.Filled.ArrowBack"
+                       Href="/products">
+                Back
+            </MudButton>
+
+            <MudButton Variant="Variant.Filled"
+                       Color="Color.Primary"
+                       StartIcon="@Icons.Material.Filled.Edit"
+                       Href="@($"/products/edit/{Id}")">
+                Edit
+            </MudButton>
+
+        </Actions>
+
+    </PageHeader>
+
+    <DetailCard Title="Product">
+
+        <MudText Typo="Typo.h5">
+            @_product.Name
+        </MudText>
+
+        <MudText Color="Color.Secondary">
+            SKU: @_product.Sku
+        </MudText>
+
+        <MudDivider Class="my-4" />
+
+        <MudText Typo="Typo.subtitle2">
+            Description
+        </MudText>
+
+        <MudText>
+            @(string.IsNullOrWhiteSpace(_product.Description)
+                ? "No description"
+                : _product.Description)
+        </MudText>
+
+    </DetailCard>
+
+    <MudGrid Class="mt-4">
+
+        <MudItem xs="12" md="6">
+
+            <DetailCard Title="Pricing">
+
+                <ProductPrice Price="@_product.Price"
+                              Currency="@_product.Currency"
+                              Typo="Typo.h4" />
+
+            </DetailCard>
+
+        </MudItem>
+
+        <MudItem xs="12" md="6">
+
+            <DetailCard Title="Inventory">
+
+                <MudChip T="string"
+                         Variant="Variant.Filled"
+                         Color="@GetInventoryColor()">
+
+                    @GetInventoryText()
+
+                </MudChip>
+
+            </DetailCard>
+
+        </MudItem>
+
+    </MudGrid>
+
+    <MudGrid Class="mt-4">
+
+        <MudItem xs="12" md="6">
+
+            <DetailCard Title="Status">
+
+                <MudChip T="Color"
+                         Variant="Variant.Outlined"
+                         Color="@(_product.IsActive
+                            ? Color.Success
+                            : Color.Default)">
+
+                    @(_product.IsActive
+                        ? "Active"
+                        : "Archived")
+
+                </MudChip>
+
+            </DetailCard>
+
+        </MudItem>
+
+        <MudItem xs="12" md="6">
+
+            <DetailCard Title="History">
+
+                <MudStack Spacing="2">
+
+                    <div>
+
+                        <MudText Class="details-label">
+                            Created
+                        </MudText>
+
+                        <MudText>
+                            @_product.CreatedAtUtc:g
+                        </MudText>
+
+                    </div>
+
+                    <div>
+
+                        <MudText Class="details-label">
+                            Updated
+                        </MudText>
+
+                        <MudText>
+                            @(_product.UpdatedAtUtc?.ToString("g") ?? "-")
+                        </MudText>
+
+                    </div>
+
+                </MudStack>
+
+            </DetailCard>
+
+        </MudItem>
+
+    </MudGrid>
+}
+
+@code
+{
+    [Parameter]
+    public Guid Id { get; set; }
+
+    private ProductResponse? _product;
+
+    protected override async Task OnInitializedAsync()
+    {
+        _product = await Api.GetAsync(Id);
+
+        if (_product is null)
+        {
+            Navigation.NavigateTo("/products");
+        }
+    }
+
+    private string GetInventoryText()
+    {
+        return _product!.StockQuantity switch
+        {
+            0 => "Out of stock",
+            <= 5 => $"Low stock ({_product.StockQuantity})",
+            _ => $"{_product.StockQuantity} in stock"
+        };
+    }
+
+    private Color GetInventoryColor()
+    {
+        return _product!.StockQuantity switch
+        {
+            0 => Color.Error,
+            <= 5 => Color.Warning,
+            _ => Color.Success
+        };
+    }
+    // private static string GetProductNumber(Guid id)
+    // {
+    //     var value = id.ToString("N").ToUpper();
+    //     return $"ORD-{value[..4]}-{value[4..8]}";
+    // }
+}

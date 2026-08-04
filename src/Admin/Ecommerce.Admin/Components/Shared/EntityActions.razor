@@ -1,0 +1,58 @@
+﻿<MudStack Row="true"
+          Wrap="Wrap.NoWrap"
+          Justify="Justify.FlexEnd"
+          AlignItems="AlignItems.Center"
+          Spacing="0">
+
+    @if (ShowDetails)
+    {
+        <MudTooltip Text="Details">
+            <MudIconButton Icon="@Icons.Material.Filled.Visibility"
+                           Color="Color.Info"
+                           Size="Size.Small"
+                           OnClick="OnDetails" />
+        </MudTooltip>
+    }
+
+    @if (ShowEdit)
+    {
+        <MudTooltip Text="Edit">
+            <MudIconButton Icon="@Icons.Material.Filled.Edit"
+                           Color="Color.Primary"
+                           Size="Size.Small"
+                           OnClick="OnEdit" />
+        </MudTooltip>
+    }
+
+    @if (ShowDelete)
+    {
+        <MudTooltip Text="Delete">
+            <MudIconButton Icon="@Icons.Material.Filled.Delete"
+                           Color="Color.Error"
+                           Size="Size.Small"
+                           OnClick="OnDelete" />
+        </MudTooltip>
+    }
+
+</MudStack>
+
+@code
+{
+    [Parameter]
+    public bool ShowDetails { get; set; } = true;
+
+    [Parameter]
+    public bool ShowEdit { get; set; } = true;
+
+    [Parameter]
+    public bool ShowDelete { get; set; } = true;
+
+    [Parameter]
+    public EventCallback OnDetails { get; set; }
+
+    [Parameter]
+    public EventCallback OnEdit { get; set; }
+
+    [Parameter]
+    public EventCallback OnDelete { get; set; }
+}

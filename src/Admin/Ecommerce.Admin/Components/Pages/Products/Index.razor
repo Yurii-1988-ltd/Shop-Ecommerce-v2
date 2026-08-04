@@ -1,0 +1,185 @@
+﻿@page "/products"
+
+@using Ecommerce.Admin.ApiClients.Catalog
+@using Ecommerce.Admin.ApiClients.Catalog.Models
+@using Ecommerce.Admin.ApiClients.Categories
+@using Ecommerce.Admin.Components.Shared
+
+@inject ICatalogApiClient Api
+@inject IDialogService DialogService
+@inject NavigationManager Navigation
+
+<PageHeader Title="Products"
+            Subtitle="Manage your product catalog">
+
+    <Actions>
+
+        <MudButton Variant="Variant.Filled"
+                   Color="Color.Primary"
+                   StartIcon="@Icons.Material.Filled.Add"
+                   Href="/products/create">
+
+            Add Product
+
+        </MudButton>
+
+    </Actions>
+
+</PageHeader>
+
+<SearchToolbar Placeholder="Search products..."
+               OnRefresh="LoadProducts" />
+
+<MudPaper Class="entity-card" Elevation="2">
+
+    <MudTable Class="entity-table"
+              Items="_products"
+              Hover="true"
+              Dense="true"
+              Striped="true">
+
+        <HeaderContent>
+
+            <MudTh>Product</MudTh>
+            <MudTh Width="80px"></MudTh>
+            <MudTh>Price</MudTh>
+            <MudTh>Inventory</MudTh>
+            <MudTh>Status</MudTh>
+            <MudTh Align="Align.Right">Actions</MudTh>
+
+        </HeaderContent>
+
+        <RowTemplate>
+            <MudTd Width="80px">
+
+                @if (!string.IsNullOrEmpty(context.ImageUrl))
+                {
+                    <MudAvatar Size="Size.Large">
+
+                        <MudImage Src="@context.ImageUrl" />
+
+                    </MudAvatar>
+                }
+                else
+                {
+                    <MudAvatar Size="Size.Large">
+                        <MudIcon Icon="@Icons.Material.Filled.Image"/>
+                    </MudAvatar>
+                }
+
+            </MudTd>
+
+            <MudTd Class="product-column">
+
+                <MudStack Spacing="0">
+
+                    <MudLink Class="product-name"
+                             Href="@($"/products/{context.Id}")">
+
+                        @context.Name
+
+                    </MudLink>
+
+                    <MudText Class="product-sku">
+
+                        SKU: @context.Sku
+
+                    </MudText>
+
+                </MudStack>
+
+            </MudTd>
+
+            <MudTd>
+
+                <ProductPrice Price="@context.Price"
+                              Currency="@context.Currency" />
+
+            </MudTd>
+
+            <MudTd>
+
+                <InventoryChip StockQuantity="@context.StockQuantity" />
+
+            </MudTd>
+
+            <MudTd>
+
+                <StatusChip IsActive="@context.IsActive" />
+
+            </MudTd>
+
+            <MudTd Align="Align.Right">
+
+                <EntityActions
+                    OnDetails="@(() => Details(context.Id))"
+                    OnEdit="@(() => Edit(context.Id))"
+                    OnDelete="@(() => Delete(context))" />
+
+            </MudTd>
+
+        </RowTemplate>
+
+        <NoRecordsContent>
+
+            <EmptyState Title="No products"
+                        Description="Create your first product."
+                        ActionText="Add Product"
+                        ActionHref="/products/create" />
+
+        </NoRecordsContent>
+
+    </MudTable>
+
+</MudPaper>
+
+@code
+{
+    private readonly List<ProductListItemResponse> _products = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadProducts();
+    }
+
+    private async Task LoadProducts()
+    {
+        var result = await Api.GetProductsAsync(1, 20);
+
+        _products.Clear();
+
+        if (result is not null)
+            _products.AddRange(result.Items);
+    }
+
+    private void Details(Guid id)
+        => Navigation.NavigateTo($"/products/{id}");
+
+    private void Edit(Guid id)
+        => Navigation.NavigateTo($"/products/edit/{id}");
+
+    private async Task Delete(ProductListItemResponse product)
+    {
+        var parameters = new DialogParameters
+        {
+            { nameof(ConfirmationDialog.Title), "Delete Product" },
+            {
+                nameof(ConfirmationDialog.Message),
+                $"Are you sure you want to delete '{product.Name}'?\n\nThis action cannot be undone."
+            }
+        };
+
+        var dialog = await DialogService.ShowAsync<ConfirmationDialog>(
+            "Delete Product",
+            parameters);
+
+        var result = await dialog.Result;
+
+        if (result.Canceled)
+            return;
+
+        await Api.DeleteAsync(product.Id);
+
+        await LoadProducts();
+    }
+}

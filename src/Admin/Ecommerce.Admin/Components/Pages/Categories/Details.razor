@@ -1,0 +1,149 @@
+﻿@page "/categories/{Id:guid}"
+@using Ecommerce.Admin.ApiClients.Categories.Models
+
+
+
+@inject ICategoryApiClient Api
+@inject NavigationManager Navigation
+
+<PageTitle> Category Details</PageTitle>
+
+@if (_category is null)
+{
+    <MudProgressCircular Indeterminate="true" />
+}
+else
+{
+    <PageHeader Title="@_category.Name"
+                Subtitle="View category information">
+
+        <Actions>
+
+            <MudButton Variant="Variant.Text"
+                       StartIcon="@Icons.Material.Filled.ArrowBack"
+                       Href="/categories">
+                Back
+            </MudButton>
+
+            <MudButton Variant="Variant.Filled"
+                       Color="Color.Primary"
+                       StartIcon="@Icons.Material.Filled.Edit"
+                       Href="@($"/categories/edit/{Id}")">
+                Edit
+            </MudButton>
+
+        </Actions>
+
+    </PageHeader>
+
+    <DetailCard Title="Category">
+
+        <MudText Typo="Typo.h5">
+            @_category.Name
+        </MudText>
+
+        
+        <MudDivider Class="my-4" />
+
+        <MudText Typo="Typo.subtitle2">
+            Description
+        </MudText>
+
+        <MudText>
+            @(string.IsNullOrWhiteSpace(_category.Description)
+                ? "No description"
+                : _category.Description)
+        </MudText>
+
+    </DetailCard>
+
+    <MudGrid Class="mt-4">
+
+   
+
+        
+
+    </MudGrid>
+
+    <MudGrid Class="mt-4">
+
+        <MudItem xs="12" md="6">
+
+            <DetailCard Title="Status">
+
+                <MudChip T="bool"
+                         Variant="Variant.Outlined"
+                         Color="@(_category.IsActive
+                            ? Color.Success
+                            : Color.Default)">
+
+                    @(_category.IsActive
+                        ? "Active"
+                        : "Archived")
+
+                </MudChip>
+
+            </DetailCard>
+
+        </MudItem>
+
+        <MudItem xs="12" md="6">
+
+            <DetailCard Title="History">
+
+                <MudStack Spacing="2">
+
+                    <div>
+
+                        <MudText Class="details-label">
+                            Created
+                        </MudText>
+
+                        <MudText>
+                            @_category.CreatedAtUtc:g
+                        </MudText>
+
+                    </div>
+
+                    <div>
+
+                        <MudText Class="details-label">
+                            Updated
+                        </MudText>
+
+                        <MudText>
+                            @(_category.UpdatedAtUtc?.ToString("g") ?? "-")
+                        </MudText>
+
+                    </div>
+
+                </MudStack>
+
+            </DetailCard>
+
+        </MudItem>
+
+    </MudGrid>
+}
+
+@code
+{
+    [Parameter]
+    public Guid Id { get; set; }
+
+    private CategoryResponse? _category;
+
+    protected override async Task OnInitializedAsync()
+    {
+        _category = await Api.GetAsync(Id);
+
+        if (_category is null)
+        {
+            Navigation.NavigateTo("/categories");
+        }
+    }
+
+   
+
+    
+}

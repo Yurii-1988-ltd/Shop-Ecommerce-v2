@@ -1,0 +1,82 @@
+﻿@inject HttpClient HttpClient
+
+<MudCard Class="d-flex flex-column justify-space-between"
+         Style="height:320px;width:100%;">
+          <MudCardHeader>
+
+        <MudIconButton Icon="@Icons.Material.Filled.DragIndicator"
+                       Class="drag-handle"
+                       Color="Color.Default" />
+
+    </MudCardHeader>
+
+    <div class="d-flex align-center justify-center p-2"
+         style="height:180px;overflow:hidden;background:#f5f5f5;">
+
+        @if (Image is not null && !string.IsNullOrWhiteSpace(Image.Url))
+        {
+       
+            var relativeUri = Image.Url.TrimStart('/');
+
+            var baseUri = HttpClient.BaseAddress?.ToString().TrimEnd('/') ?? "";
+
+            var fullSrc = $"{baseUri}/{relativeUri}";
+
+            <MudText Typo="Typo.caption">
+                @fullSrc
+            </MudText>
+
+            <img src="@fullSrc"
+                 alt="@Image.AltText"
+                 style="max-width:100%;max-height:100%;object-fit:contain;" />
+        }
+        else
+        {
+            <MudText>No image</MudText>
+        }
+
+    </div>
+
+    <MudCardContent>
+        @if (Image?.IsPrimary == true)
+        {
+            <MudChip T="bool" Color="Color.Success">
+                Main
+            </MudChip>
+        }
+    </MudCardContent>
+
+    <MudCardActions>
+
+        <MudButton Color="Color.Primary"
+                   Disabled="@(Image == null || Image.IsPrimary)"
+                   OnClick="@(() => OnSetPrimary.InvokeAsync(Image!.Id))">
+            Set Main
+        </MudButton>
+       
+
+        <MudButton Color="Color.Error"
+                   OnClick="@(() => OnDelete.InvokeAsync(Image!.Id))">
+            Delete
+        </MudButton>
+
+    </MudCardActions>
+
+</MudCard>
+
+@code {
+
+    [Parameter]
+    public Guid ProductId { get; set; }
+
+    [Parameter]
+    public ProductImageResponse? Image { get; set; }
+
+    [Parameter]
+    public EventCallback<Guid> OnDelete { get; set; }
+
+    [Parameter]
+    public EventCallback<Guid> OnSetPrimary { get; set; }
+  
+
+}

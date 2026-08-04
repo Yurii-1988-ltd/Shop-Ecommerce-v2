@@ -1,0 +1,120 @@
+﻿@page "/carts"
+
+@using Ecommerce.Admin.ApiClients.Carts
+@using Ecommerce.Application.Pagination
+
+@inject ICartApiClient CartApi
+@inject NavigationManager Navigation
+
+<PageTitle>Carts</PageTitle>
+
+<PageHeader Title="Shopping Carts"
+            Subtitle="Manage customer shopping carts" />
+
+<MudPaper Class="entity-card">
+
+    <MudStack Row="true"
+              Justify="Justify.SpaceBetween"
+              AlignItems="AlignItems.Center"
+              Class="mb-4">
+
+        <MudText Typo="Typo.h6">
+            Customer Carts
+        </MudText>
+
+        <MudButton Href="/carts/create"
+                   Variant="Variant.Filled"
+                   Color="Color.Primary"
+                   StartIcon="@Icons.Material.Filled.Add">
+            Create Cart
+        </MudButton>
+
+    </MudStack>
+
+    <MudTable Items="_carts.Items"
+              Hover="true"
+              Dense="true"
+              Loading="_loading"
+              Class="cart-table">
+
+        <HeaderContent>
+            <MudTh>Customer</MudTh>
+            <MudTh Align="Align.Center">Items</MudTh>
+            <MudTh Align="Align.Right">Total</MudTh>
+            <MudTh Align="Align.Center">Actions</MudTh>
+        </HeaderContent>
+
+        <RowTemplate>
+
+            <MudTd DataLabel="Customer">
+                @context.CustomerId
+            </MudTd>
+
+            <MudTd Align="Align.Center">
+                @context.TotalItems
+            </MudTd>
+
+            <MudTd Align="Align.Right">
+                <MudChip T="string"
+                         Color="Color.Success"
+                         Variant="Variant.Filled">
+                    @($"{context.TotalAmount:N2} {context.Currency}")
+                </MudChip>
+            </MudTd>
+
+            <MudTd Align="Align.Center">
+
+                <MudIconButton Icon="@Icons.Material.Filled.Visibility"
+                               Color="Color.Primary"
+                               Href="@($"/carts/{context.CustomerId}")" />
+
+                <MudIconButton Icon="@Icons.Material.Filled.DeleteSweep"
+                               Color="Color.Error"
+                               OnClick="@(() => RemoveCart(context.CustomerId))" />
+            </MudTd>
+
+        </RowTemplate>
+
+        <NoRecordsContent>
+            <MudText>No carts found.</MudText>
+        </NoRecordsContent>
+
+    </MudTable>
+
+</MudPaper>
+
+@code
+{
+    private bool _loading;
+
+    private PagedResult<CartListResponse> _carts = new()
+    {
+        Items = [],
+        Page = 1,
+        PageSize = 10,
+        TotalCount = 0
+    };
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadAsync();
+    }
+
+    private async Task LoadAsync()
+    {
+        _loading = true;
+
+        var result = await CartApi.GetAllAsync(1, 10);
+
+        if (result is not null)
+            _carts = result;
+
+        _loading = false;
+    }
+    private async Task RemoveCart(Guid customerId)
+    {
+        await CartApi.RemoveFromCartAsync(customerId);
+
+        await LoadAsync();
+    }
+}

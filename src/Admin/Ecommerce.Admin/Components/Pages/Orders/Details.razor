@@ -1,0 +1,41 @@
+﻿@page "/orders/{Id:guid}"
+@using Ecommerce.Admin.Components.Pages.Orders.Components
+
+@if (_order is null)
+{
+    <div class="d-flex justify-content-center my-6">
+        <MudProgressCircular Indeterminate="true" Color="Color.Primary" Size="Size.Large" />
+    </div>
+}
+else
+{
+    <MudGrid Spacing="3">
+        <!-- LEFT COLUMN -->
+        <MudItem xs="12" md="8" Class="d-flex flex-column">
+            <OrderInfoCard Order="_order" />
+            <OrderItemsTable Items="_order.Items" />
+        </MudItem>
+
+        <!-- RIGHT COLUMN -->
+        <MudItem xs="12" md="4">
+            <MudStack Spacing="3">
+                <OrderCustomerCard CustomerName="@_order.CustomerName" CustomerId="@_order.CustomerId" />
+                
+                <OrderShippingAddressCard Address="@_order.ShippingAddress" />
+                
+                <OrderSummaryCard TotalQuantity="@_order.TotalQuantity" 
+                                  Currency="@_order.Currency" 
+                                  TotalAmount="@_order.TotalAmount" />
+                                  
+             @*    <OrderActionsCard Order="@_order"
+                                  OnSubmit="OpenSubmitDialogAsync"
+                                  OnChangeStatus="OpenChangeStatusDialogAsync" /> *@
+            <OrderActionsCard Order="@_order"
+                  OnSubmit="OpenSubmitDialogAsync"
+                  OnChangeStatus="OpenChangeStatusDialogAsync"
+                  OnForceChangeStatus="OpenForceChangeStatusDialogAsync" />
+
+            </MudStack>
+        </MudItem>
+    </MudGrid>
+}

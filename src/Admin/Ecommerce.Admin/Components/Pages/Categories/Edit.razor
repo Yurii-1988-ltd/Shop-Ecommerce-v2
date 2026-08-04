@@ -1,0 +1,69 @@
+﻿@page "/categories/edit/{Id:guid}"
+
+@using Ecommerce.Admin.ApiClients.Categories.Models
+
+@inject ICategoryApiClient Api
+@inject NavigationManager Navigation
+
+<PageTitle>Edit Category</PageTitle>
+
+<PageHeader Title="Edit Category"
+            Subtitle="Update category information">
+    <Actions>
+        <MudButton Variant="Variant.Text"
+                   StartIcon="@Icons.Material.Filled.ArrowBack"
+                   Href="/categories">
+            Back
+        </MudButton>
+    </Actions>
+</PageHeader>
+
+@if (_model is null)
+{
+    <MudProgressCircular Indeterminate="true" Color="Color.Primary" />
+}
+else
+{
+    @* Передаем загруженную модель в компонент формы *@
+    <CategoryForm Model="_model" OnSubmit="UpdateCategory" />
+}
+
+@code
+{
+    [Parameter]
+    public Guid Id { get; set; }
+
+    // Локальная модель для этой страницы, которая будет передана в форму
+    private CategoryFormModel? _model;
+
+    protected override async Task OnInitializedAsync()
+    {
+        // 1. Загружаем текущие данные продукта по Id из API
+        var category = await Api.GetAsync(Id);
+
+        if (category is not null)
+        {
+            // 2. Маппим данные из ответа API в модель формы
+            _model = new CategoryFormModel
+            {
+                Name = category.Name,
+                Description = category.Description,
+           
+                
+            };
+        }
+    }
+
+    private async Task UpdateCategory(CategoryFormModel model)
+    {
+        var request = new ApiClients.Categories.Contracts.UpdateCategoryRequest
+        {
+            Name = model.Name,
+            Description = model.Description,
+           
+        };
+
+        await Api.UpdateAsync(Id, request);
+        Navigation.NavigateTo("/categories");
+    }
+}
