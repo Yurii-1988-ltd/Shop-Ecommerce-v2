@@ -28,6 +28,7 @@ internal static class OrderMappings
                 order.ShippingAddress.ZipCode),
             order.Items
                 .Select(x => new OrderItemResponse(
+                    x.Id,
                     x.ProductId,
                     x.ProductName,
                     x.SKU,

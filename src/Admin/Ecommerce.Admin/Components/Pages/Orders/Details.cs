@@ -8,34 +8,33 @@ namespace Ecommerce.Admin.Components.Pages.Orders;
 
 public partial class Details
 {
-    [Parameter] public Guid Id { get; set; }
+    [Parameter]
+    public Guid Id { get; set; }
 
     private OrderResponse? _order;
 
+    // Свойство проверки режима "Только для чтения"
+    private bool IsReadOnly => _order?.Status != OrderStatus.Draft;
 
-    [Parameter]
-    public IReadOnlyCollection<OrderItemResponse> Items { get; set; } = [];
-
-    [Parameter]
-    public EventCallback OnAddItem { get; set; }
-
-    [Parameter]
-    public EventCallback<Guid> OnRemoveItem { get; set; }
-
-    [Parameter]
-    public EventCallback<(Guid ItemId, int Quantity)> OnChangeQuantity { get; set; }
-
-    protected override async Task OnParametersSetAsync()
+    protected override async Task OnInitializedAsync()
     {
         await LoadOrderAsync();
     }
 
     private async Task LoadOrderAsync()
     {
-        _order = await OrderApi.GetAsync(Id);
-
-        if (_order is null)
+        try
         {
+            _order = await OrderApi.GetAsync(Id);
+
+            if (_order is null)
+            {
+                Navigation.NavigateTo("/orders");
+            }
+        }
+        catch (Exception ex)
+        {
+            Snackbar.Add($"Error loading order: {ex.Message}", Severity.Error);
             Navigation.NavigateTo("/orders");
         }
     }
@@ -168,38 +167,84 @@ public partial class Details
             Snackbar.Add(ex.Message, Severity.Error);
         }
     }
+
     private async Task OpenAddItemDialogAsync()
     {
-        var products = await CatalogApi.GetProductsAsync(
-            page: 1,
-            pageSize: 100);
+        if (_order is null || IsReadOnly) return;
 
-        var parameters = new DialogParameters
-{
-    { nameof(OrderAddItemDialog.Products), products?.Items }
-};
+        try
+        {
+            var products = await CatalogApi.GetProductsAsync(page: 1, pageSize: 100);
 
-        var dialog = await DialogService.ShowAsync<OrderAddItemDialog>(
-            "Add Product",
-            parameters);
+            var parameters = new DialogParameters<OrderAddItemDialog>
+            {
+                { x => x.Products, products?.Items }
+            };
 
-        var result = await dialog.Result;
+            var dialog = await DialogService.ShowAsync<OrderAddItemDialog>(
+                "Add Product",
+                parameters);
 
-        if (result.Canceled)
-            return;
+            var result = await dialog.Result;
 
-        if (result.Data is not OrderAddItemDialogResult data)
-            return;
+            if (result.Canceled || result.Data is not OrderAddItemDialogResult data)
+                return;
 
-        await OrderApi.AddOrderItemAsync(
-            _order!.Id,
-            new AddOrderItemRequest(
-                data.ProductId,
-                data.Quantity));
+            await OrderApi.AddOrderItemAsync(
+                _order.Id,
+                new AddOrderItemRequest(
+                    data.ProductId,
+                    data.Quantity));
 
-        Snackbar.Add("Product added.", Severity.Success);
+            Snackbar.Add("Product added.", Severity.Success);
 
-        await LoadOrderAsync();
+            await LoadOrderAsync();
+        }
+        catch (Exception ex)
+        {
+            Snackbar.Add(ex.Message, Severity.Error);
+        }
     }
 
+    private async Task ChangeItemQuantityAsync(
+        (Guid OrderItemId, ChangeOrderItemQuantityRequest Request) model)
+    {
+        if (_order is null || IsReadOnly) return;
+
+        try
+        {
+            await OrderApi.ChangeOrderItemQuantityAsync(
+                _order.Id,
+                model.OrderItemId,
+                model.Request);
+
+            Snackbar.Add("Quantity updated.", Severity.Success);
+
+            await LoadOrderAsync();
+        }
+        catch (Exception ex)
+        {
+            Snackbar.Add(ex.Message, Severity.Error);
+        }
+    }
+
+    private async Task RemoveOrderItemAsync(Guid orderItemId)
+    {
+        if (_order is null || IsReadOnly) return;
+
+        try
+        {
+            await OrderApi.RemoveOrderItemAsync(
+                _order.Id,
+                orderItemId);
+
+            Snackbar.Add("Item removed.", Severity.Success);
+
+            await LoadOrderAsync();
+        }
+        catch (Exception ex)
+        {
+            Snackbar.Add(ex.Message, Severity.Error);
+        }
+    }
 }

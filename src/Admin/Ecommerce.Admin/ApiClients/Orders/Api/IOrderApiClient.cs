@@ -6,8 +6,8 @@ namespace Ecommerce.Admin.ApiClients.Orders.Api;
 
 public interface IOrderApiClient
 {
-    Task<PagedResult<OrderListResponse>?> GetAllAsync(int page, 
-        int pageSize, CancellationToken  cancellation = default);
+    Task<PagedResult<OrderListResponse>?> GetAllAsync(int page,
+        int pageSize, CancellationToken cancellation = default);
     Task AddOrderItemAsync(Guid orderId, AddOrderItemRequest request,
                             CancellationToken cancellationToken = default);
     Task CancelAsync(Guid orderId, CancellationToken cancellationToken = default);
@@ -19,7 +19,7 @@ public interface IOrderApiClient
     Task ChangeStatusAsync(Guid orderId, ChangeStatusRequest statusRequest,
         CancellationToken cancellationToken = default);
     Task<OrderResponse?> GetAsync(Guid orderId,
-                                       
+
                                         CancellationToken cancellationToken = default);
     Task SubmitAsync(Guid orderId, CancellationToken cancellationToken = default);
     Task UpdateShippingAddressAsync(Guid orderId, UpdateShippingAddressRequest request, CancellationToken cancellationToken = default);
@@ -27,4 +27,6 @@ public interface IOrderApiClient
 CreateOrderRequest request,
 CancellationToken cancellationToken = default);
     Task ForceChangeStatusAsync(Guid orderId, ForceChangeStatusRequest request, CancellationToken cancellationToken = default);
+    Task RemoveOrderItemAsync(Guid orderId, Guid orderItemId, CancellationToken cancellationToken = default);
+
 }

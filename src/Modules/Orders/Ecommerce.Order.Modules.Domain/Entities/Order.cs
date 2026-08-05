@@ -159,14 +159,28 @@ public sealed class Order: Entity
     {
         return current switch
         {
+            // 1. Черновик: можно отправить на оформление (Pending) или отменить (Cancelled)
             OrderStatus.Draft => next is OrderStatus.Pending or OrderStatus.Cancelled,
+
+            // 2. Ожидает оплаты: можно оплатить (Paid) или отменить (Cancelled)
             OrderStatus.Pending => next is OrderStatus.Paid or OrderStatus.Cancelled,
-            OrderStatus.Paid => next is OrderStatus.Processing or OrderStatus.Shipped or OrderStatus.Refunded,
-            OrderStatus.Processing => next is OrderStatus.Shipped or OrderStatus.Cancelled or OrderStatus.Refunded,
-            OrderStatus.Shipped => next is OrderStatus.Delivered or OrderStatus.Refunded,
+
+            // 3. Оплачен: передается в комплектацию/обработку (Processing)
+            OrderStatus.Paid => next is OrderStatus.Processing,
+
+            // 4. В обработке: передается в доставку (Shipped)
+            OrderStatus.Processing => next is OrderStatus.Shipped,
+
+            // 5. Отправлен: переходит в доставлен (Delivered)
+            OrderStatus.Shipped => next is OrderStatus.Delivered,
+
+            // 6. Доставлен: доступен только возврат (Refunded)
             OrderStatus.Delivered => next is OrderStatus.Refunded,
+
+            // Финальные статусы — переходы из них запрещены
             OrderStatus.Cancelled => false,
             OrderStatus.Refunded => false,
+
             _ => false
         };
     }
@@ -190,23 +204,21 @@ public sealed class Order: Entity
         return Result.Success();
     }
 
-    
+
     public Result Submit()
     {
-        if(Status !=OrderStatus.Draft)
-        {
+        if (Status != OrderStatus.Draft)
             return OrderErrors.InvalidStatusTransition(Status, OrderStatus.Pending);
-        }
-        if(!_items.Any())
-        {
+
+        if (!_items.Any())
             return OrderErrors.EmptyOrder();
-        }
-        if(ShippingAddress is null)
-        {
+
+        if (ShippingAddress is null)
             return OrderErrors.ShippimhAddressRequired();
-        }
+
         Status = OrderStatus.Pending;
         UpdatedAtUtc = DateTime.UtcNow;
+
         return Result.Success();
     }
     public Result Cancel()

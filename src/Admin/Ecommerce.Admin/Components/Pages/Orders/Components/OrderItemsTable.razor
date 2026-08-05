@@ -1,4 +1,7 @@
-﻿<MudPaper Class="pa-4 flex-grow-1">
+﻿@using Ecommerce.Admin.ApiClients.Orders.Contracts
+@using Ecommerce.Admin.ApiClients.Orders.Models
+
+<MudPaper Class="pa-4 flex-grow-1">
 
     <MudStack Row="true"
               Justify="Justify.SpaceBetween"
@@ -9,9 +12,11 @@
             Order Items
         </MudText>
 
+        @* Заблокировали кнопку, если ReadOnly *@
         <MudButton Variant="Variant.Filled"
                    Color="Color.Primary"
                    StartIcon="@Icons.Material.Filled.Add"
+                   Disabled="ReadOnly"
                    OnClick="OnAddItem">
             Add Product
         </MudButton>
@@ -20,7 +25,10 @@
 
     <MudDivider Class="my-3" />
 
-    <MudTable Items="Items" Dense Hover Striped>
+    <MudTable Items="Items"
+              Dense
+              Hover
+              Striped>
 
         <HeaderContent>
             <MudTh>Product</MudTh>
@@ -28,28 +36,64 @@
             <MudTh Align="Align.Right">Price</MudTh>
             <MudTh Align="Align.Center">Qty</MudTh>
             <MudTh Align="Align.Right">Total</MudTh>
+            <MudTh Align="Align.Center"></MudTh>
         </HeaderContent>
 
         <RowTemplate>
+
             <MudTd>
                 <MudText Typo="Typo.subtitle2">
                     @context.ProductName
                 </MudText>
             </MudTd>
 
-            <MudTd>@context.SKU</MudTd>
+            <MudTd>
+                @context.SKU
+            </MudTd>
 
             <MudTd Align="Align.Right">
-                @context.TotalPrice
+                @($"{context.Amount:N2} {context.Currency}")
             </MudTd>
 
             <MudTd Align="Align.Center">
-                @context.Quantity
+
+                <MudStack Row="true"
+                          AlignItems="AlignItems.Center"
+                          Justify="Justify.Center"
+                          Spacing="1">
+
+                    @* Кнопка отключается только по ReadOnly *@
+                    <MudIconButton Icon="@Icons.Material.Filled.Remove"
+                                   Size="Size.Small"
+                                   Disabled="ReadOnly"
+                                   OnClick="@(() => DecreaseQuantity(context))" />
+
+                    <MudText Style="min-width:32px;text-align:center">
+                        @context.Quantity
+                    </MudText>
+
+                    <MudIconButton Icon="@Icons.Material.Filled.Add"
+                                   Size="Size.Small"
+                                   Disabled="ReadOnly"
+                                   OnClick="@(() => IncreaseQuantity(context))" />
+
+                </MudStack>
+
             </MudTd>
 
             <MudTd Align="Align.Right">
-                @context.TotalPrice
+                @($"{context.TotalPrice:N2} {context.Currency}")
             </MudTd>
+
+            <MudTd Align="Align.Center">
+
+                <MudIconButton Icon="@Icons.Material.Filled.Delete"
+                               Color="Color.Error"
+                               Disabled="ReadOnly"
+                               OnClick="@(() => OnRemoveItem.InvokeAsync(context.Id))" />
+
+            </MudTd>
+
         </RowTemplate>
 
     </MudTable>
@@ -57,11 +101,38 @@
 </MudPaper>
 
 @code {
-
-    [Parameter, EditorRequired]
+    [Parameter]
     public IEnumerable<OrderItemResponse> Items { get; set; } = Enumerable.Empty<OrderItemResponse>();
+
+    [Parameter]
+    public bool ReadOnly { get; set; }
 
     [Parameter]
     public EventCallback OnAddItem { get; set; }
 
+    [Parameter]
+    public EventCallback<Guid> OnRemoveItem { get; set; }
+
+    [Parameter]
+    public EventCallback<(Guid OrderItemId, ChangeOrderItemQuantityRequest Request)> OnQuantityChanged { get; set; }
+
+    private Task IncreaseQuantity(OrderItemResponse item)
+    {
+        return OnQuantityChanged.InvokeAsync((
+            item.Id,
+            new ChangeOrderItemQuantityRequest(item.Quantity + 1)));
+    }
+
+    private Task DecreaseQuantity(OrderItemResponse item)
+    {
+        // Если уменьшаем с 1 до 0 — вызываем удаление элемента из корзины
+        if (item.Quantity <= 1)
+        {
+            return OnRemoveItem.InvokeAsync(item.Id);
+        }
+
+        return OnQuantityChanged.InvokeAsync((
+            item.Id,
+            new ChangeOrderItemQuantityRequest(item.Quantity - 1)));
+    }
 }

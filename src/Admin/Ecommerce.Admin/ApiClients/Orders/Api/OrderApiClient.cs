@@ -24,20 +24,36 @@ internal sealed class OrderApiClient(HttpClient httpClient) : IOrderApiClient
         
     }
 
+    //public async Task ChangeOrderItemQuantityAsync(
+    // Guid orderId,
+    // Guid orderItemId,
+    // ChangeOrderItemQuantityRequest request,
+    // CancellationToken cancellationToken = default)
+    //{
+    //    var response = await httpClient.PatchAsJsonAsync(
+    //        $"{OrderUrl}/{orderId}/items/{orderItemId}/quantity",
+    //        request,
+    //        cancellationToken);
+
+    //    response.EnsureSuccessStatusCode();
+    //}
     public async Task ChangeOrderItemQuantityAsync(
-     Guid orderId,
-     Guid orderItemId,
-     ChangeOrderItemQuantityRequest request,
-     CancellationToken cancellationToken = default)
+    Guid orderId,
+    Guid orderItemId,
+    ChangeOrderItemQuantityRequest request,
+    CancellationToken cancellationToken = default)
     {
         var response = await httpClient.PatchAsJsonAsync(
             $"{OrderUrl}/{orderId}/items/{orderItemId}/quantity",
             request,
             cancellationToken);
 
-        response.EnsureSuccessStatusCode();
+        if (!response.IsSuccessStatusCode)
+        {
+            var errorJson = await response.Content.ReadAsStringAsync(cancellationToken);
+            throw new HttpRequestException($"API Error 400: {errorJson}");
+        }
     }
-
     public async Task ChangeStatusAsync(Guid orderId, ChangeStatusRequest statusRequest, CancellationToken cancellationToken = default)
     {
         var response = await httpClient.PatchAsJsonAsync($"{OrderUrl}/{orderId}/status",
@@ -86,6 +102,12 @@ internal sealed class OrderApiClient(HttpClient httpClient) : IOrderApiClient
 
         return await response.Content.ReadFromJsonAsync<OrderResponse>(cancellationToken)
             ?? throw new InvalidOperationException("Order response was null.");
+    }
+
+    public async Task RemoveOrderItemAsync(Guid orderId, Guid orderItemId, CancellationToken cancellationToken = default)
+    {
+        var response = await httpClient.DeleteAsync($"{OrderUrl}/{orderId}/items/{orderItemId}", cancellationToken);
+        response.EnsureSuccessStatusCode();
     }
 
     public async Task SubmitAsync(Guid orderId, CancellationToken cancellationToken = default)

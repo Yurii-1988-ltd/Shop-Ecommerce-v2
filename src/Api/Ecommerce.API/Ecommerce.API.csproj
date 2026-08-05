@@ -16,6 +16,7 @@
     <ProjectReference Include="..\..\Modules\Cart\Ecommerce.Cart.Modules.Presentation\Ecommerce.Cart.Modules.Presentation.csproj" />
     <ProjectReference Include="..\..\Modules\Catalog\Ecommerce.Catalog.Modules.Presentation\Ecommerce.Catalog.Modules.Presentation.csproj" />
     <ProjectReference Include="..\..\Modules\Identity\Ecommerce.Identity.Modules.Presentation\Ecommerce.Identity.Modules.Presentation.csproj" />
+    <ProjectReference Include="..\..\Modules\Inventory\Ecommerce.Inventory.Modules.Presentation\Ecommerce.Inventory.Modules.Presentation.csproj" />
     <ProjectReference Include="..\..\Modules\Orders\Ecommerce.Order.Modules.Presentation\Ecommerce.Order.Modules.Presentation.csproj" />
     <ProjectReference Include="..\..\Modules\Users\Ecommerce.Modules.Users.Presentation\Ecommerce.Modules.Users.Presentation.csproj" />
   </ItemGroup>

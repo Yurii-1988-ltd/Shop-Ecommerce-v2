@@ -2,10 +2,6 @@
 
 using Ecommerce.Order.Modules.Application.Features.GetOrder;
 using Ecommerce.Order.Modules.Application.Features.Responses;
-using MediatR;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Routing;
 
 namespace Ecommerce.Order.Modules.Presentation.Orders;
 
