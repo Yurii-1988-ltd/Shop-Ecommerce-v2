@@ -1,4 +1,5 @@
 ﻿using Ecommerce.Admin.ApiClients.Orders.Enums;
+using Ecommerce.Admin.ApiClients.Orders.Models;
 using Ecommerce.Admin.Components.Pages.Orders.Dialogs;
 using Microsoft.AspNetCore.Components;
 using MudBlazor;
@@ -10,6 +11,19 @@ public partial class Details
     [Parameter] public Guid Id { get; set; }
 
     private OrderResponse? _order;
+
+
+    [Parameter]
+    public IReadOnlyCollection<OrderItemResponse> Items { get; set; } = [];
+
+    [Parameter]
+    public EventCallback OnAddItem { get; set; }
+
+    [Parameter]
+    public EventCallback<Guid> OnRemoveItem { get; set; }
+
+    [Parameter]
+    public EventCallback<(Guid ItemId, int Quantity)> OnChangeQuantity { get; set; }
 
     protected override async Task OnParametersSetAsync()
     {
@@ -154,4 +168,38 @@ public partial class Details
             Snackbar.Add(ex.Message, Severity.Error);
         }
     }
+    private async Task OpenAddItemDialogAsync()
+    {
+        var products = await CatalogApi.GetProductsAsync(
+            page: 1,
+            pageSize: 100);
+
+        var parameters = new DialogParameters
+{
+    { nameof(OrderAddItemDialog.Products), products?.Items }
+};
+
+        var dialog = await DialogService.ShowAsync<OrderAddItemDialog>(
+            "Add Product",
+            parameters);
+
+        var result = await dialog.Result;
+
+        if (result.Canceled)
+            return;
+
+        if (result.Data is not OrderAddItemDialogResult data)
+            return;
+
+        await OrderApi.AddOrderItemAsync(
+            _order!.Id,
+            new AddOrderItemRequest(
+                data.ProductId,
+                data.Quantity));
+
+        Snackbar.Add("Product added.", Severity.Success);
+
+        await LoadOrderAsync();
+    }
+
 }

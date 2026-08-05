@@ -1,11 +1,27 @@
 ﻿<MudPaper Class="pa-4 flex-grow-1">
-    <MudText Typo="Typo.h6">
-        <MudIcon Icon="@Icons.Material.Filled.ShoppingBag" Class="me-2" />
-        Order Items
-    </MudText>
+
+    <MudStack Row="true"
+              Justify="Justify.SpaceBetween"
+              AlignItems="AlignItems.Center">
+
+        <MudText Typo="Typo.h6">
+            <MudIcon Icon="@Icons.Material.Filled.ShoppingBag" Class="me-2" />
+            Order Items
+        </MudText>
+
+        <MudButton Variant="Variant.Filled"
+                   Color="Color.Primary"
+                   StartIcon="@Icons.Material.Filled.Add"
+                   OnClick="OnAddItem">
+            Add Product
+        </MudButton>
+
+    </MudStack>
+
     <MudDivider Class="my-3" />
 
     <MudTable Items="Items" Dense Hover Striped>
+
         <HeaderContent>
             <MudTh>Product</MudTh>
             <MudTh>SKU</MudTh>
@@ -13,16 +29,39 @@
             <MudTh Align="Align.Center">Qty</MudTh>
             <MudTh Align="Align.Right">Total</MudTh>
         </HeaderContent>
+
         <RowTemplate>
-            <MudTd><MudText Typo="Typo.subtitle2">@context.ProductName</MudText></MudTd>
+            <MudTd>
+                <MudText Typo="Typo.subtitle2">
+                    @context.ProductName
+                </MudText>
+            </MudTd>
+
             <MudTd>@context.SKU</MudTd>
-            <MudTd Align="Align.Right">@context.TotalPrice</MudTd>
-            <MudTd Align="Align.Center">@context.Quantity</MudTd>
-            <MudTd Align="Align.Right">@context.TotalPrice</MudTd>
+
+            <MudTd Align="Align.Right">
+                @context.TotalPrice
+            </MudTd>
+
+            <MudTd Align="Align.Center">
+                @context.Quantity
+            </MudTd>
+
+            <MudTd Align="Align.Right">
+                @context.TotalPrice
+            </MudTd>
         </RowTemplate>
+
     </MudTable>
+
 </MudPaper>
 
 @code {
-    [Parameter, EditorRequired] public IEnumerable<OrderItemResponse> Items { get; set; } = Enumerable.Empty<OrderItemResponse>();
+
+    [Parameter, EditorRequired]
+    public IEnumerable<OrderItemResponse> Items { get; set; } = Enumerable.Empty<OrderItemResponse>();
+
+    [Parameter]
+    public EventCallback OnAddItem { get; set; }
+
 }

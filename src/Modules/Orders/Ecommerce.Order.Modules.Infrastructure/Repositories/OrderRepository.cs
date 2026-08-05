@@ -1,9 +1,12 @@
 ﻿
 using Ecommerce.Domain.Domain;
 using Ecommerce.Mongo;
+using Ecommerce.Order.Modules.Domain.Enums;
 using Ecommerce.Order.Modules.Domain.Errors;
 using Ecommerce.Order.Modules.Domain.Repositories;
+using MongoDB.Bson;
 using MongoDB.Driver;
+using System.Text.RegularExpressions;
 using System.Xml.Linq;
 
 namespace Ecommerce.Order.Modules.Infrastructure.Repositories;
@@ -41,9 +44,61 @@ internal sealed class OrderRepository : IOrderRepository
     public async Task<(List<Domain.Entities.Order> Items, int TotalCount)> GetPagedAsync(
      int page,
      int pageSize,
+     string? search,
+     OrderStatus? status,
+     Guid? customerId,
+     DateTime? from,
+     DateTime? to,
+     OrderSortBy sortBy,
+     bool descending,
      CancellationToken cancellationToken = default)
     {
-        var filter = Builders<Domain.Entities.Order>.Filter.Empty;
+        var builder = Builders<Domain.Entities.Order>.Filter;
+        var filter = builder.Empty;
+
+        if (status is not null)
+        {
+            filter &= builder.Eq(x => x.Status, status.Value);
+        }
+
+        if (customerId is not null)
+        {
+            filter &= builder.Eq(x => x.CustomerId, customerId.Value);
+        }
+
+        if (from is not null)
+        {
+            filter &= builder.Gte(x => x.CreatedAtUtc, from.Value);
+        }
+
+        if (to is not null)
+        {
+            filter &= builder.Lte(x => x.CreatedAtUtc, to.Value);
+        }
+
+        if (!string.IsNullOrWhiteSpace(search))
+        {
+            filter &= builder.Regex(x => x.OrderNumber, new BsonRegularExpression(Regex.Escape(search), "i"));
+        }
+
+        var sort = sortBy switch
+        {
+            OrderSortBy.OrderNumber => descending
+                ? Builders<Domain.Entities.Order>.Sort.Descending(x => x.OrderNumber)
+                : Builders<Domain.Entities.Order>.Sort.Ascending(x => x.OrderNumber),
+
+            OrderSortBy.Status => descending
+                ? Builders<Domain.Entities.Order>.Sort.Descending(x => x.Status)
+                : Builders<Domain.Entities.Order>.Sort.Ascending(x => x.Status),
+
+            OrderSortBy.TotalQuantity => descending
+                ? Builders<Domain.Entities.Order>.Sort.Descending(x => x.TotalQuantity)
+                : Builders<Domain.Entities.Order>.Sort.Ascending(x => x.TotalQuantity),
+
+            _ => descending
+                ? Builders<Domain.Entities.Order>.Sort.Descending(x => x.CreatedAtUtc)
+                : Builders<Domain.Entities.Order>.Sort.Ascending(x => x.CreatedAtUtc)
+        };
 
         var totalCount = (int)await _collection.CountDocumentsAsync(
             filter,
@@ -51,13 +106,13 @@ internal sealed class OrderRepository : IOrderRepository
 
         var items = await _collection
             .Find(filter)
+            .Sort(sort)
             .Skip((page - 1) * pageSize)
             .Limit(pageSize)
             .ToListAsync(cancellationToken);
 
         return (items, totalCount);
     }
-
 
     public Task InsertAsync(Domain.Entities.Order order, CancellationToken cancellationToken = default)
 

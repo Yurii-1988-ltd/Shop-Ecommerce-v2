@@ -25,12 +25,13 @@
 @using Ecommerce.Admin.Components.Pages.Orders.Components;
 
 
-
-@inject ICatalogApiClient Api
-
 @inject IDialogService DialogService
 @inject NavigationManager Navigation
+
+@inject ICatalogApiClient CatalogApi
 @inject  ICartApiClient CartApi
 @inject IOrderApiClient OrderApi
+
+ @inject IImageApiClient ImageApi 
 @inject ISnackbar Snackbar
 

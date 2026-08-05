@@ -1,24 +1,31 @@
-﻿
-namespace Ecommerce.Order.Modules.Presentation.Orders
+﻿using Ecommerce.Application.Pagination;
+using Ecommerce.Order.Modules.Application.Features.GetOrders;
+using Ecommerce.Order.Modules.Application.Features.Responses;
+using MediatR;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Routing;
+
+namespace Ecommerce.Order.Modules.Presentation.Orders;
+
+internal sealed class GetOrdersEndpoint
 {
-    internal sealed class GetOrdersEndpoint
+    public void MapEndpoint(IEndpointRouteBuilder app)
     {
-        public void MapEndpoint(IEndpointRouteBuilder app)
+        app.MapGet("/orders", async (
+            [AsParameters] GetOrdersQuery query,
+            ISender sender,
+            CancellationToken cancellationToken) =>
         {
-            app.MapGet("/orders", async (
-        [FromQuery] int page = 1,
-        [FromQuery] int pageSize = 10,
-        ISender sender = default!) =>
-            {
-                var result = await sender.Send(new GetOrdersQuery(page, pageSize));
+            var result = await sender.Send(query, cancellationToken);
 
-                if (result.IsFailure)
-                    return Results.BadRequest(result.Error);
-
-                return Results.Ok(result.Value);
-            })
-                .WithTags(Tags.Orders)
-                .WithName("GetOrders");
-        }
+            return result.IsSuccess
+                ? Results.Ok(result.Value)
+                : Results.BadRequest(result.Error);
+        })
+        .WithTags(Tags.Orders)
+        .WithName("GetOrders")
+        .Produces<PagedResult<OrderListResponse>>(StatusCodes.Status200OK)
+        .Produces<ProblemDetails>(StatusCodes.Status400BadRequest);
     }
 }

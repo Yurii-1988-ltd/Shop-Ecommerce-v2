@@ -25,11 +25,8 @@
     [Parameter]
     public Guid ProductId { get; set; }
 
-    [Inject]
-    private ICatalogApiClient CatalogApi { get; set; } = default!;
 
-    [Inject]
-    private IImageApiClient ImageApi { get; set; } = default!;
+ 
 
 
     private List<ProductImageResponse> Images = new List<ProductImageResponse>();

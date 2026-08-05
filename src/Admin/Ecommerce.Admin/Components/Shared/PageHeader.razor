@@ -1,7 +1,7 @@
-﻿<MudStack Class="page-header"
-          Row="true"
+﻿<MudStack Row="true"
           Justify="Justify.SpaceBetween"
-          AlignItems="AlignItems.Center">
+          AlignItems="AlignItems.Center"
+          Class="page-header">
 
     <MudStack Spacing="0">
 
@@ -22,7 +22,11 @@
 
     @if (Actions is not null)
     {
-        @Actions
+        <MudStack Row="true"
+                  Spacing="2"
+                  AlignItems="AlignItems.Center">
+            @Actions
+        </MudStack>
     }
 
 </MudStack>

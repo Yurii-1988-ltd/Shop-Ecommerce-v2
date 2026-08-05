@@ -63,7 +63,7 @@ else
 
     protected override async Task OnInitializedAsync()
     {
-        var product = await Api.GetAsync(Id);
+        var product = await CatalogApi.GetAsync(Id);
 
         if (product is null)
         {
@@ -92,7 +92,7 @@ else
             Currency = model.Currency
         };
 
-        await Api.UpdateAsync(Id, request);
+        await CatalogApi.UpdateAsync(Id, request);
 
         Navigation.NavigateTo("/products");
     }

@@ -1,0 +1,75 @@
+﻿@using Ecommerce.Admin.ApiClients.Orders.Models
+@using MudBlazor
+<MudDialog>
+    <TitleContent>Add Product</TitleContent>
+
+<DialogContent>
+    <MudAutocomplete T="ProductListItemResponse"
+        Label="Product"
+        Variant="Variant.Outlined"
+        Dense="true"
+        SearchFunc="SearchProducts"
+                     ToStringFunc="@(p => p?.Name)"
+                     @bind-Value="_selectedProduct"/>
+        <MudNumericField T="int"
+                         Label="Quantity"
+                         Variant="Variant.Outlined"
+                         Min="0"
+                         @bind-Value="_quantity" />
+</DialogContent>
+<DialogActions>
+    <MudButton OnClick="Cancel">
+        Cancel
+
+    </MudButton>
+    <MudButton Color="Color.Primary"
+                Variant="Variant.Filled"
+                OnClick="Save"
+                Disabled="_selectedProduct is null">
+                Add
+      </MudButton>
+</DialogActions>
+</MudDialog>
+
+
+@code{
+    [CascadingParameter]
+    private IMudDialogInstance MudDialog { get; set; } = default!;
+    [Parameter]
+    public IReadOnlyList<ProductListItemResponse> Products { get; set; } = [];
+    private ProductListItemResponse? _selectedProduct;
+    private int _quantity = 1;
+
+    private void Cancel()
+    {
+        MudDialog.Cancel();
+    }
+    private void Save()
+    {
+        if (_selectedProduct is null)
+            return;
+
+        if (_quantity <= 0)
+            return;
+
+        MudDialog.Close(DialogResult.Ok(
+            new OrderAddItemDialogResult(
+                _selectedProduct.Id,
+                _quantity)));
+    }
+    private Task<IEnumerable<ProductListItemResponse>> SearchProducts(
+    string value,
+    CancellationToken cancellationToken)
+    {
+        IEnumerable<ProductListItemResponse> result = Products;
+
+        if (!string.IsNullOrWhiteSpace(value))
+        {
+            result = result.Where(x =>
+                x.Name.Contains(value, StringComparison.OrdinalIgnoreCase) ||
+                x.Sku.Contains(value, StringComparison.OrdinalIgnoreCase));
+        }
+
+        return Task.FromResult(result);
+    }
+}
