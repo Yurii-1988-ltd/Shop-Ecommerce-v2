@@ -3,7 +3,7 @@
 
 namespace Ecommerce.Order.Modules.Presentation.Orders;
 
-internal class CancelOrderEndpoint
+internal sealed class CancelOrderEndpoint
 {
     public void MapEndpoint(IEndpointRouteBuilder app)
     {

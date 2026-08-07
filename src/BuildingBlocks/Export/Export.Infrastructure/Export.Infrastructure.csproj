@@ -7,11 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="ValueObjects\" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\..\..\BuildingBlocks\Ecommerce.Domain\Ecommerce.Domain.csproj" />
+    <ProjectReference Include="..\Export.Application\Export.Application.csproj" />
   </ItemGroup>
 
 </Project>

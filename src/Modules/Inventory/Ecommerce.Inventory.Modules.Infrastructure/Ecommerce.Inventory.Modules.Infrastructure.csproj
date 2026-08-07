@@ -7,6 +7,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Dapper" Version="2.1.79" />
+    <PackageReference Include="Npgsql" Version="9.0.4" />
+    <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="9.0.4" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\..\..\BuildingBlocks\Ecommerce.Infrastructure\Ecommerce.Infrastructure.csproj" />
     <ProjectReference Include="..\Ecommerce.Inventory.Modules.Application\Ecommerce.Inventory.Modules.Application.csproj" />
   </ItemGroup>

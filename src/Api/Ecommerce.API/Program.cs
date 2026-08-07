@@ -1,15 +1,4 @@
-using Ecommerce.API.ExceptionHandling;
-using Ecommerce.API.Extensions;
-using Ecommerce.Application.Behaviours;
-using Ecommerce.Cart.Modules.Presentation.Carts;
-using Ecommerce.Catalog.Modules.Infrastructure;
-using Ecommerce.Catalog.Modules.Presentation.Products;
-using Ecommerce.Mongo;
-using Ecommerce.Order.Modules.Presentation.Orders;
-using Ecommerce.ServiceDefaults;
-using MediatR;
-using System.Text.Json;
-using System.Text.Json.Serialization;
+
 
 internal class Program
 {
@@ -33,7 +22,9 @@ internal class Program
             .AddModule<IdentityModule>(builder.Configuration)
             .AddModule<ProductsModule>(builder.Configuration)
             .AddModule<CartsModule>(builder.Configuration)
-            .AddModule<OrdersModule>(builder.Configuration);
+            .AddModule<OrdersModule>(builder.Configuration)
+            .AddModule<InventoriesModule>(builder.Configuration);
+
 
         //Mongo
         builder.Services.AddSingleton<IMongoContext, MongoContext>();

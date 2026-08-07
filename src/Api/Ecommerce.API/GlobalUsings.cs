@@ -1,0 +1,13 @@
+﻿global using Ecommerce.API.ExceptionHandling;
+global using Ecommerce.API.Extensions;
+global using Ecommerce.Application.Behaviours;
+global using Ecommerce.Cart.Modules.Presentation.Carts;
+global using Ecommerce.Catalog.Modules.Infrastructure;
+global using Ecommerce.Catalog.Modules.Presentation.Products;
+global using Ecommerce.Inventory.Modules.Presentation.Inventory;
+global using Ecommerce.Mongo;
+global using Ecommerce.Order.Modules.Presentation.Orders;
+global using Ecommerce.ServiceDefaults;
+global using MediatR;
+global using System.Text.Json;
+global using System.Text.Json.Serialization;
