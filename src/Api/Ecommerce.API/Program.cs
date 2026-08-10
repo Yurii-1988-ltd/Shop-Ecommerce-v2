@@ -1,18 +1,23 @@
-
+using Ecommerce.Inventory.Modules.Infrastructure;
+using Export.Infrastructure;
 
 internal class Program
 {
-    private static void Main(string[] args)
+    private static async Task Main(string[] args)
     {
         var builder = WebApplication.CreateBuilder(args);
 
-        // Жестко привязываем WebRootPath для Aspire / Docker до сборки приложения
-        builder.Environment.WebRootPath = Path.Combine(builder.Environment.ContentRootPath, "wwwroot");
+        builder.Environment.WebRootPath =
+            Path.Combine(builder.Environment.ContentRootPath, "wwwroot");
 
         builder.AddServiceDefaults<GlobalExceptionHandler>();
+
         builder.Services.AddSwaggerDocumentation();
         builder.Services.AddAntiforgery();
         builder.Services.AddCors();
+
+        builder.Services.AddExportModule();
+
         builder.Services.AddTransient(
             typeof(IPipelineBehavior<,>),
             typeof(ValidationBehavior<,>));
@@ -25,45 +30,40 @@ internal class Program
             .AddModule<OrdersModule>(builder.Configuration)
             .AddModule<InventoriesModule>(builder.Configuration);
 
-
-        //Mongo
         builder.Services.AddSingleton<IMongoContext, MongoContext>();
-
 
         builder.Services.ConfigureHttpJsonOptions(options =>
         {
-         
-            options.SerializerOptions.Converters.Add(new JsonStringEnumConverter(JsonNamingPolicy.CamelCase));
+            options.SerializerOptions.Converters.Add(
+                new JsonStringEnumConverter(JsonNamingPolicy.CamelCase));
+
             options.SerializerOptions.PropertyNameCaseInsensitive = true;
         });
 
         var app = builder.Build();
+
         app.UseCors(policy => policy
             .AllowAnyOrigin()
             .AllowAnyMethod()
             .AllowAnyHeader());
 
+        await app.MigrateDatabaseAsync();
 
         app.UseExceptionHandler();
         app.UseHttpsRedirection();
 
-
         app.UseStaticFiles();
 
-
-
-
-
         ProductModuleExtensions.UseWebApplicationExtensions(app);
+
         app.UseSwaggerDocumentation();
 
         app.UseAuthentication();
         app.UseAuthorization();
 
-        // 4. Маппинг конечных точек
         app.MapDefaultEndpoints();
         app.MapModules();
 
-        app.Run();
+        await app.RunAsync();
     }
 }

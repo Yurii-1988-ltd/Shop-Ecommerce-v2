@@ -11,6 +11,8 @@ public sealed class InventoriesModule : IModule
         new DeductStockEndpoint().MapEndpoint(app);
         new ReplenishStockEndpoint().MapEndpoint(app);
         new ReserveStockEndpoint().MapEndpoint(app);
+        new GetInventoryReportEndpoint().MapEndpoint(app);
+        new CreateInventoryItemEndpoint().MapEndpoint(app);
     }
 
     public void RegisterServices(IServiceCollection services, IConfiguration config)

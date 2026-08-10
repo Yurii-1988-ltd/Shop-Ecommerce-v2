@@ -5,9 +5,9 @@ internal sealed class CommitReservationCommandHandler(IInventoryRepository repos
 {
     public async Task<Result> Handle(CommitReservationCommand request, CancellationToken cancellationToken)
     {
-        var inventoryItem = await repository.GetAsync(request.inventoryItemId, cancellationToken);
+        var inventoryItem = await repository.GetAsync(request.InventoryItemId, cancellationToken);
         if(inventoryItem is null)
-            return InventoryErrors.NotFound(request.inventoryItemId);
+            return InventoryErrors.NotFound(request.InventoryItemId);
         inventoryItem.CommitReservation(request.Quantity);
         
         await unitOfWork.SaveChangesAsync(cancellationToken);

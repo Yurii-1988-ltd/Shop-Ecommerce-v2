@@ -1,4 +1,5 @@
-﻿using Ecommerce.Inventory.Modules.Domain.Entities;
+﻿using Ecommerce.Domain.Domain;
+using Ecommerce.Inventory.Modules.Domain.Entities;
 
 public interface IInventoryRepository
 {
@@ -9,4 +10,5 @@ public interface IInventoryRepository
     Task AddAsync(
         InventoryItem inventoryItem,
         CancellationToken cancellationToken = default);
+   
 }

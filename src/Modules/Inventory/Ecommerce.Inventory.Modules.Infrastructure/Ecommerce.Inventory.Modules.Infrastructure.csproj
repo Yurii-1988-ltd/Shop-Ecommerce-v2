@@ -6,14 +6,27 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="Dapper" Version="2.1.79" />
-    <PackageReference Include="Npgsql" Version="9.0.4" />
-    <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="9.0.4" />
-  </ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="Dapper" Version="2.1.79" />
+
+		<PackageReference Include="Microsoft.EntityFrameworkCore" Version="9.0.14" />
+
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="9.0.4">
+		  <PrivateAssets>all</PrivateAssets>
+		  <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+		</PackageReference>
+
+		<PackageReference Include="Npgsql" Version="9.0.4" />
+		<PackageReference Include="Npgsql.DependencyInjection" Version="9.0.4" />
+		<PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="9.0.4" />
+	</ItemGroup>
+	<ItemGroup>
+		<FrameworkReference Include="Microsoft.AspNetCore.App" />
+	</ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\..\..\BuildingBlocks\Ecommerce.Infrastructure\Ecommerce.Infrastructure.csproj" />
+    <ProjectReference Include="..\..\..\BuildingBlocks\Export\Export.Infrastructure\Export.Infrastructure.csproj" />
     <ProjectReference Include="..\Ecommerce.Inventory.Modules.Application\Ecommerce.Inventory.Modules.Application.csproj" />
   </ItemGroup>
 

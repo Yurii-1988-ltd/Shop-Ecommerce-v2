@@ -21,7 +21,13 @@ public sealed class InventoryItem : Entity
 
     private InventoryItem() { }
 
-    public InventoryItem(Guid productId, string sku, int onHandQuantity, int reservedQuantity, int minimumQuantity, DateTime updatedUtc)
+    private InventoryItem(
+     Guid productId,
+     string sku,
+     int onHandQuantity,
+     int reservedQuantity,
+     int minimumQuantity,
+     DateTime updatedUtc)
     {
         ProductId = productId;
         SKU = sku;
@@ -32,6 +38,27 @@ public sealed class InventoryItem : Entity
     }
 
     #region Domain Methods
+
+    public static Result<InventoryItem> Create(Guid productId, string sku,
+        int quantity, int minimumQuantity)
+    {
+        if (productId == Guid.Empty)
+            return InventoryErrors.InvalidProductId;
+        if (string.IsNullOrEmpty(sku))
+            return InventoryErrors.InvalidSku;
+        if (quantity < 0)
+            return InventoryErrors.InvalidQuantity;
+        if (minimumQuantity < 0)
+            return InventoryErrors.InvalidMinimumQuantity;
+        var inventoryItem = new InventoryItem(
+            productId,
+            sku,
+            quantity,
+            reservedQuantity: 0,
+            minimumQuantity,
+            DateTime.UtcNow);
+        return Result.Success(inventoryItem);
+    }
 
     public Result Reserve(int quantity)
     {

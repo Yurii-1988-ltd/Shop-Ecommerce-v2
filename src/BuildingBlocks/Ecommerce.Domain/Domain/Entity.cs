@@ -5,7 +5,7 @@ namespace Ecommerce.Domain.Domain;
 public abstract class Entity
 {
     private List<IDomainEvent> _domainEvents = new();
-    public Guid Id { get; protected set; }
+    public Guid Id { get; protected set; } = Guid.NewGuid();
     public IReadOnlyCollection<IDomainEvent> DomainEvents
         => _domainEvents.AsReadOnly();
 

@@ -1,14 +1,16 @@
-﻿
+﻿using Ecommerce.Inventory.Modules.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Ecommerce.Inventory.Modules.Infrastructure.Database.Configurations;
 
-internal sealed class InventoryItemConfiguration : IEntityTypeConfiguration<InventoryItem>
+internal sealed class InventoryItemConfiguration
+    : IEntityTypeConfiguration<InventoryItem>
 {
-    public void Configure(EntityTypeBuilder<InventoryItem> builder)
+    public void Configure(
+        EntityTypeBuilder<InventoryItem> builder)
     {
-        builder.ToTable("inventory_items");
+        builder.ToTable("inventories");
 
         builder.HasKey(x => x.Id);
 
@@ -33,6 +35,7 @@ internal sealed class InventoryItemConfiguration : IEntityTypeConfiguration<Inve
 
         builder.Property(x => x.UpdatedUtc)
             .IsRequired();
+
         builder.Ignore(x => x.AvailableQuantity);
     }
 }
