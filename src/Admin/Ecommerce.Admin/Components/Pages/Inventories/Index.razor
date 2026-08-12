@@ -1,0 +1,62 @@
+﻿@using Ecommerce.Admin.ApiClients.Inventories.Responses
+@using Ecommerce.Admin.Components.Pages.Inventories.Dialogs
+@inject IJSRuntime JS
+@rendermode InteractiveServer
+@page "/inventories"
+
+<PageHeader Title="Inventories" Subtitle="Manage your inventories">
+    <Actions>
+        <MudButton Variant="Variant.Filled"
+                   Color="Color.Primary"
+                   StartIcon="@Icons.Material.Filled.Add"
+                   Href="/inventories/create">
+            Add Inventory
+        </MudButton>
+
+        <MudBlazor.MudMenu Icon="@Icons.Material.Filled.FileDownload"
+                           Label="Export"
+                           Variant="Variant.Outlined">
+            <MudMenuItem OnClick="ExportExcel">
+                <MudIcon Icon="@Icons.Material.Filled.TableView" Class="me-2" /> Excel
+            </MudMenuItem>
+            <MudMenuItem OnClick="ExportPdf">
+                <MudIcon Icon="@Icons.Material.Filled.PictureAsPdf" Class="me-2" /> PDF
+            </MudMenuItem>
+        </MudBlazor.MudMenu>
+    </Actions>
+</PageHeader>
+
+<MudPaper Class="entity-card" Elevation="2">
+    <MudTable Class="entity-table" Items="_inventories" Hover="true" Dense="true" Striped="true">
+        <HeaderContent>
+            <MudTh>SKU</MudTh>
+            <MudTh>On Hand</MudTh>
+            <MudTh>Reserved</MudTh>
+            <MudTh>Available</MudTh>
+            <MudTh>Minimum</MudTh>
+            <MudTh Align="Align.Right">Actions</MudTh>
+        </HeaderContent>
+        <RowTemplate>
+            <MudTd DataLabel="SKU">@context.SKU</MudTd>
+            <MudTd DataLabel="On Hand">@context.OnHandQuantity</MudTd>
+            <MudTd DataLabel="Reserved">
+                <MudChip T="int" Size="Size.Small" Color="Color.Warning" Variant="Variant.Outlined">
+                    @context.ReservedQuantity
+                </MudChip>
+            </MudTd>
+            <MudTd DataLabel="Available">
+                <InventoryStatusChip Available="@context.AvailableQuantity" Minimum="@context.MinimumQuantity" />
+            </MudTd>
+            <MudTd DataLabel="Minimum">@context.MinimumQuantity</MudTd>
+            <MudTd DataLabel="Actions" Align="Align.Right">
+                <MudBlazor.MudMenu Icon="@Icons.Material.Filled.MoreVert" Size="Size.Small" AnchorOrigin="Origin.BottomRight" TransformOrigin="Origin.TopRight">
+                    <MudMenuItem OnClick="@(() => Replenish(context))">Replenish</MudMenuItem>
+                    <MudMenuItem OnClick="@(() => Deduct(context))">Deduct</MudMenuItem>
+                    <MudMenuItem OnClick="@(() => Reserve(context))">Reserve</MudMenuItem>
+                    <MudMenuItem OnClick="@(() => CancelReservation(context))">Cancel Reservation</MudMenuItem>
+                    <MudMenuItem OnClick="@(() => CommitReservation(context))">Commit Reservation</MudMenuItem>
+                </MudBlazor.MudMenu>
+            </MudTd>
+        </RowTemplate>
+    </MudTable>
+</MudPaper>

@@ -14,6 +14,7 @@ internal sealed class InventoryQueries(
     {
         const string sql = """
             SELECT
+                "Id" AS "InventoryItemId",
                 "ProductId",
                 "SKU",
                 "OnHandQuantity",

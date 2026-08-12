@@ -1,12 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿namespace Ecommerce.Inventory.Modules.Application.Responses;
 
-namespace Ecommerce.Inventory.Modules.Application.Responses;
-
-    public sealed record InventoryReportItem(
+public sealed record InventoryReportItem(
+    Guid InventoryItemId,
     Guid ProductId,
     string SKU,
     int OnHandQuantity,

@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 
-internal sealed class InventoryRepository
+public sealed class InventoryRepository
     : IInventoryRepository
 {
     private readonly InventoryContext context;

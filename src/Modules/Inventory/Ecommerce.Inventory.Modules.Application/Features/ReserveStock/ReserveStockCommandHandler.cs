@@ -5,9 +5,12 @@ namespace Ecommerce.Inventory.Modules.Application.Features.ReserveStock;
 internal sealed class ReserveStockCommandHandler :ICommandHandler<ReserveStockCommand>
 {
     private readonly IInventoryRepository _repository;
-    public ReserveStockCommandHandler(IInventoryRepository repository)
+    private IUnitOfWork _unitOfWork;
+    public ReserveStockCommandHandler(IInventoryRepository repository,IUnitOfWork unitOfWork)
     {
         _repository = repository;
+        _unitOfWork = unitOfWork;
+
     }
     public async Task<Result> Handle(ReserveStockCommand request, CancellationToken cancellationToken)
     {
@@ -21,6 +24,8 @@ internal sealed class ReserveStockCommandHandler :ICommandHandler<ReserveStockCo
         {
             return result;
         }
+        await _unitOfWork.SaveChangesAsync(cancellationToken);
+        
         return Result.Success();
     }
 

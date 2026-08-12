@@ -17,7 +17,7 @@
 	</ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\..\..\Modules\Inventory\Ecommerce.Inventory.Modules.Application\Ecommerce.Inventory.Modules.Application.csproj" />
+    <ProjectReference Include="..\..\..\..\Modules\Inventory\Ecommerce.Inventory.Modules.Infrastructure\Ecommerce.Inventory.Modules.Infrastructure.csproj" />
   </ItemGroup>
 
 </Project>

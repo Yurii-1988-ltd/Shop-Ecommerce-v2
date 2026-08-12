@@ -2,7 +2,7 @@ using Ecommerce.Inventory.Modules.Domain.Entities;
 
 namespace Ecommerce.Inventory.Modules.Application.Features.CreateInventoryItem;
 
-internal sealed class CreateInventoryItemCommandHandler(IInventoryRepository repository, IUnitOfWork unitOfWork) : ICommandHandler<CreateInventoryItemCommand, Guid>
+public sealed class CreateInventoryItemCommandHandler(IInventoryRepository repository, IUnitOfWork unitOfWork) : ICommandHandler<CreateInventoryItemCommand, Guid>
 {
     public async Task<Result<Guid>> Handle(
       CreateInventoryItemCommand request,

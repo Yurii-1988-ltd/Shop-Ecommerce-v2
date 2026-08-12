@@ -1,12 +1,13 @@
 using Ecommerce.Inventory.Modules.Infrastructure;
 using Export.Infrastructure;
+using QuestPDF.Infrastructure;
 
 internal class Program
 {
     private static async Task Main(string[] args)
     {
         var builder = WebApplication.CreateBuilder(args);
-
+        QuestPDF.Settings.License = LicenseType.Community;
         builder.Environment.WebRootPath =
             Path.Combine(builder.Environment.ContentRootPath, "wwwroot");
 

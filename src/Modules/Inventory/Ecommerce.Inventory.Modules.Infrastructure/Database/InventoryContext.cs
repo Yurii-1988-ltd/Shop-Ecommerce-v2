@@ -1,4 +1,4 @@
-﻿internal sealed class InventoryContext : DbContext, IUnitOfWork
+﻿public sealed class InventoryContext : DbContext, IUnitOfWork
 {
     public InventoryContext(
         DbContextOptions<InventoryContext> options)

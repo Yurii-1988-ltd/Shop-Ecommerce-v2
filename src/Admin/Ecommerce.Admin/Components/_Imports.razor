@@ -10,19 +10,20 @@
 @using Ecommerce.Admin.ApiClients.Categories
 @using Ecommerce.Admin.ApiClients.Images
 @using Ecommerce.Admin.ApiClients.Images.Models
+@using Ecommerce.Admin.ApiClients.Inventories.Api
+@using Ecommerce.Admin.ApiClients.Orders.Enums
 @using Ecommerce.Admin.Components
+@using Ecommerce.Admin.Components.Pages.Orders.Components;
 @using Ecommerce.Admin.Components.Shared
 @using Ecommerce.Admin.Contracts
 @using Microsoft.AspNetCore.Components.Forms
 @using Microsoft.AspNetCore.Components.Routing
+@using Microsoft.AspNetCore.Components.Sections
 @using Microsoft.AspNetCore.Components.Web
 @using Microsoft.AspNetCore.Components.Web.Virtualization
 @using Microsoft.JSInterop
 @using MudBlazor
 @using static Microsoft.AspNetCore.Components.Web.RenderMode
-@using Microsoft.AspNetCore.Components.Sections
-@using Ecommerce.Admin.ApiClients.Orders.Enums
-@using Ecommerce.Admin.Components.Pages.Orders.Components;
 
 
 @inject IDialogService DialogService
@@ -31,6 +32,8 @@
 @inject ICatalogApiClient CatalogApi
 @inject  ICartApiClient CartApi
 @inject IOrderApiClient OrderApi
+@inject IInventoryApiClient InventoryApi
+
 
  @inject IImageApiClient ImageApi 
 @inject ISnackbar Snackbar

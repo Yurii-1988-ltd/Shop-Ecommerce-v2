@@ -2,7 +2,7 @@
 
 namespace Ecommerce.Inventory.Modules.Application.Features.DeductStock;
 
-internal sealed class DeductStockCommandHandler(IInventoryRepository repository) : ICommandHandler<DeductStockCommand>
+internal sealed class DeductStockCommandHandler(IInventoryRepository repository, IUnitOfWork unitOfWork) : ICommandHandler<DeductStockCommand>
 {
     public async Task<Result> Handle(DeductStockCommand request, CancellationToken cancellationToken)
     {
@@ -16,6 +16,7 @@ internal sealed class DeductStockCommandHandler(IInventoryRepository repository)
         {
             return result;
         }
+       await unitOfWork.SaveChangesAsync(cancellationToken);
         return Result.Success();
     }
 }

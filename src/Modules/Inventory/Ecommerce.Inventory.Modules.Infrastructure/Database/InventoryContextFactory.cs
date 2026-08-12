@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Design;
 
 namespace Ecommerce.Inventory.Modules.Infrastructure.Database;
 
-internal sealed class InventoryContextFactory
+public sealed class InventoryContextFactory
     : IDesignTimeDbContextFactory<InventoryContext>
 {
     public InventoryContext CreateDbContext(string[] args)

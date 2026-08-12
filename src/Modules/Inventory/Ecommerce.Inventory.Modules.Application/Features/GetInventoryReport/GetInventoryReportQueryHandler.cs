@@ -3,7 +3,7 @@ using Ecommerce.Inventory.Modules.Application.Responses;
 
 namespace Ecommerce.Inventory.Modules.Application.Features.GetInventoryReport;
 
-internal sealed class GetInventoryReportQueryHandler(
+public sealed class GetInventoryReportQueryHandler(
     IInventoryQueries queries)
     : IQueryHandler<
         GetInventoryReportQuery,

@@ -1,0 +1,17 @@
+﻿@if (Available <= 0)
+{
+    <MudChip T="int" Size="Size.Small" Color="Color.Error" Variant="Variant.Outlined">@Available</MudChip>
+}
+else if (Available <= Minimum)
+{
+    <MudChip T="int" Size="Size.Small" Color="Color.Warning" Variant="Variant.Outlined">@Available</MudChip>
+}
+else
+{
+    <MudChip T="int" Size="Size.Small" Color="Color.Success" Variant="Variant.Outlined">@Available</MudChip>
+}
+
+@code {
+    [Parameter] public int Available { get; set; }
+    [Parameter] public int Minimum { get; set; }
+}
