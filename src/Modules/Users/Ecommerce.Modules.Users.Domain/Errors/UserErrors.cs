@@ -33,4 +33,6 @@ public static class UserErrors
              "User.PasswordRequired",
              "Password is required",
              ErrorType.Validation);
+    public static Error RoleIsRequired
+        => new Error("Role.IsRequired", "Role is required field", ErrorType.Validation);
 }

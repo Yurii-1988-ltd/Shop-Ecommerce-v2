@@ -8,6 +8,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\..\BuildingBlocks\Ecommerce.Application\Ecommerce.Application.csproj" />
+    <ProjectReference Include="..\..\Catalog\Ecommerce.Catalog.Modules.Domain\Ecommerce.Catalog.Modules.Domain.csproj" />
     <ProjectReference Include="..\Ecommerce.Modules.Users.Contracts\Ecommerce.Modules.Users.Contracts.csproj" />
     <ProjectReference Include="..\Ecommerce.Modules.Users.Domain\Ecommerce.Modules.Users.Domain.csproj" />
   </ItemGroup>

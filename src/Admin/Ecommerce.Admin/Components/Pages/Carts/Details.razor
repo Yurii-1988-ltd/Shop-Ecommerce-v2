@@ -1,102 +1,210 @@
 ﻿@page "/carts/{CustomerId:guid}"
 
 @using Ecommerce.Admin.ApiClients.Carts
-
+@using Ecommerce.Admin.ApiClients.Carts.Contracts
+@using Ecommerce.Admin.Components.Pages.Carts.Dialogs
 @inject ICartApiClient CartApi
 @inject NavigationManager Navigation
 
-@if (_cart is null)
+<PageHeader Title="Shopping Cart"
+            Subtitle="Manage customer cart">
+
+    <Actions>
+        <MudButton Href="/carts"
+                   Variant="Variant.Outlined"
+                   StartIcon="@Icons.Material.Filled.ArrowBack">
+            Back
+        </MudButton>
+
+        @if (_cart is not null && _cart.Items.Any())
+        {
+            <MudButton Color="Color.Warning"
+                       Variant="Variant.Outlined"
+                       StartIcon="@Icons.Material.Filled.DeleteSweep"
+                       OnClick="ClearCart">
+                Clear Cart
+            </MudButton>
+        }
+    </Actions>
+
+</PageHeader>
+
+@if (_loading)
 {
-    <MudProgressCircular Indeterminate="true" />
+    <MudProgressLinear Indeterminate="true" />
+}
+else if (_cart is null)
+{
+    <MudAlert Severity="Severity.Error">
+        Cart not found.
+    </MudAlert>
 }
 else
 {
-    <MudTable Items="_cart.Items">
+    <MudPaper Class="entity-card">
 
-        <HeaderContent>
-            <MudTh>Product</MudTh>
-            <MudTh>Price</MudTh>
-            <MudTh>Quantity</MudTh>
-            <MudTh>Total Price</MudTh>
-            <MudTh></MudTh>
-        </HeaderContent>
+        <MudStack Row="true"
+                  Justify="Justify.SpaceBetween"
+                  AlignItems="AlignItems.Center"
+                  Class="mb-4">
 
-        <RowTemplate>
+            <MudText Typo="Typo.h6">
+                Cart Items
+            </MudText>
 
-            <MudTd>@context.Name</MudTd>
+            <MudText Typo="Typo.body1">
+                <b>@_cart.Items.Count</b> items
+            </MudText>
 
-            <MudTd>
-                @($"{context.Price:N2} {context.Currency}")
-            </MudTd>
+        </MudStack>
 
-            <MudTd>
-                @context.Quantity
-            </MudTd>
+        <MudTable T="CartItemResponse"
+                  Items="_cart.Items"
+                  Hover="true"
+                  Dense="true"
+                  Striped="true">
 
-            <MudTd>
-                @($"{context.TotalPrice:N2} {context.Currency}")
-            </MudTd>
+            <HeaderContent>
+                <MudTh>Product</MudTh>
+                <MudTh>Price</MudTh>
+                <MudTh Align="Align.Center">Quantity</MudTh>
+                <MudTh Align="Align.Right">Total</MudTh>
+                <MudTh Align="Align.Right">Actions</MudTh>
+            </HeaderContent>
 
-            <MudTd>
+            <RowTemplate>
 
-                <MudIconButton
-                    Icon="@Icons.Material.Filled.Edit"
-                    Color="Color.Primary"
-                    Href="@($"/carts/{_cart.CustomerId}/items/{context.ProductId}/quantity")" />
-                    <MudButton Color="Color.Warning"
-           Variant="Variant.Outlined"
-           StartIcon="@Icons.Material.Filled.DeleteSweep"
-                   OnClick="ClearCart">
-            Clear Cart
-        </MudButton>
+                <MudTd DataLabel="Product">
+                    @context.Name
+                </MudTd>
 
-                <MudIconButton
-                    Icon="@Icons.Material.Filled.Delete"
-                    Color="Color.Error"
-                    OnClick="@(() => RemoveItem(context.ProductId))" />
+                <MudTd DataLabel="Price">
+                    @($"{context.Price:N2} {context.Currency}")
+                </MudTd>
 
-            </MudTd>
+                <MudTd DataLabel="Quantity"
+                       Align="Align.Center">
+                    @context.Quantity
+                </MudTd>
 
-        </RowTemplate>
+                <MudTd DataLabel="Total"
+                       Align="Align.Right">
 
-    </MudTable>
+                    @($"{context.TotalPrice:N2} {context.Currency}")
+
+                </MudTd>
+
+                <MudTd DataLabel="Actions"
+                       Align="Align.Right">
+
+                    <MudIconButton Icon="@Icons.Material.Filled.Edit"
+                                   Color="Color.Primary"
+                                   OnClick="@(() => ChangeQuantity(context))" />
+
+                    <MudIconButton Icon="@Icons.Material.Filled.Delete"
+                                   Color="Color.Error"
+                                   OnClick="@(() => RemoveItem(context.ProductId))" />
+
+                </MudTd>
+
+            </RowTemplate>
+
+            <NoRecordsContent>
+                <MudText>No items in this cart.</MudText>
+            </NoRecordsContent>
+
+        </MudTable>
+
+        @if (_cart.Items.Any())
+        {
+            <MudDivider Class="my-4" />
+
+            <MudStack AlignItems="AlignItems.End">
+
+                <MudText Typo="Typo.h6">
+                    Total:
+                    <b>
+                        @_cart.TotalAmount.ToString("N2")
+                        @_cart.Currency
+                    </b>
+                </MudText>
+
+            </MudStack>
+        }
+
+    </MudPaper>
 }
-
 @code
 {
-    private bool _loading;
     [Parameter]
     public Guid CustomerId { get; set; }
 
     private CartResponse? _cart;
+    private bool _loading;
 
     protected override async Task OnInitializedAsync()
     {
-        _cart = await CartApi.GetAsync(CustomerId);
+        await LoadAsync();
     }
+
     private async Task LoadAsync()
     {
         _loading = true;
 
-        _cart = await CartApi.GetAsync(CustomerId);
-
-        _loading = false;
+        try
+        {
+            _cart = await CartApi.GetAsync(CustomerId);
+        }
+        finally
+        {
+            _loading = false;
+        }
     }
+
     private async Task RemoveItem(Guid productId)
     {
-        if (_cart is null)
-            return;
-
         await CartApi.RemoveItemAsync(
-            _cart.CustomerId,
+            CustomerId,
             productId);
 
         await LoadAsync();
     }
-    private async Task ClearCart()
-{
-    await CartApi.ClearAsync(CustomerId);
 
-    await LoadAsync();
-}
+    private async Task ClearCart()
+    {
+        await CartApi.ClearAsync(CustomerId);
+
+        await LoadAsync();
+    }
+    private async Task ChangeQuantity(CartItemResponse item)
+    {
+        var parameters = new DialogParameters
+    {
+        {
+            nameof(ChangeQuantityDialog.CurrentQuantity),
+            item.Quantity
+        }
+    };
+
+        var dialog = await DialogService.ShowAsync<ChangeQuantityDialog>(
+            "Change Quantity",
+            parameters);
+
+        var result = await dialog.Result;
+
+        if (result is null || result.Canceled)
+            return;
+
+        var quantity = (int)result.Data!;
+
+        await CartApi.ChangeQuantityAsync(
+            CustomerId,
+            item.ProductId,
+            new ChangeCartItemQuantityRequest(
+                CustomerId,
+                item.ProductId,
+                quantity));
+
+        await LoadAsync();
+    }
 }

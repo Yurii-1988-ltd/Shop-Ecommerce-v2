@@ -77,6 +77,8 @@ public class Result<TValue> : Result
     public static Result<TValue> Success(TValue value) => new(value);
     public new static Result<TValue> Failure(Error error) => new(error);
 
+
+
     // Implicit conversions for cleaner syntax
     public static implicit operator Result<TValue>(TValue value) => Success(value);
     public static implicit operator Result<TValue>(Error error) => Failure(error);

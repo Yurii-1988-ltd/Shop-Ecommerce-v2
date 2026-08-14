@@ -8,5 +8,6 @@ internal static class Tags
     public const string Create = "create-user";
     public const string Remove = "remove-user";
     public const string Update = "update-user";
+    public const string Roles = "Roles";
 
 }

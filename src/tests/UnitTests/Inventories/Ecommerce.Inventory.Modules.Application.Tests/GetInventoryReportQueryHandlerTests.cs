@@ -15,15 +15,16 @@ public class GetInventoryReportQueryHandlerTests
         var queries = new Mock<IInventoryQueries>();
 
         var items = new List<InventoryReportItem>
-    {
-        new(
-            Guid.NewGuid(),
-            "SKU-001",
-            100,
-            20,
-            80,
-            5)
-    };
+{
+    new(
+        Guid.NewGuid(),
+        Guid.NewGuid(),
+        "SKU-001",
+        100,
+        20,
+        80,
+        5)
+};
 
         queries
             .Setup(x => x.GetReportAsync(It.IsAny<CancellationToken>()))
