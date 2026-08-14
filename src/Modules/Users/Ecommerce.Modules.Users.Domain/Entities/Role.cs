@@ -24,4 +24,15 @@ public sealed class Role : Entity
         };
 
     }
+    public Result Update(string name)
+    {
+        if (string.IsNullOrWhiteSpace(name))
+        {
+            return RolesErrors.NameRequired;
+        }
+
+        Name = name.Trim();
+
+        return Result.Success();
+    }
 }

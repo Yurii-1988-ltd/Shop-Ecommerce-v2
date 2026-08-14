@@ -1,11 +1,4 @@
-﻿using Ecommerce.Modules.Users.Application.Abstractions;
-using Ecommerce.Modules.Users.Contracts.Abstractions; // Обязательно импортируйте namespace контрактов
-  // Укажите корректный namespace для ваших реализаций
-using Ecommerce.Modules.Users.Infrastructure.Services;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-
+﻿// Укажите корректный namespace для ваших реализаций
 namespace Ecommerce.Modules.Users.Infrastructure
 {
     public static class DependencyInjection
@@ -21,6 +14,7 @@ namespace Ecommerce.Modules.Users.Infrastructure
 
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IRoleRepository, RoleRepository>();
+            services.AddScoped<IUserRoleRepository,UserRoleRepository>();
             services.AddScoped<IRoleService, RoleService>();
             services.AddScoped<IUserUnitOfWork, UserUnitOfWork>();
 

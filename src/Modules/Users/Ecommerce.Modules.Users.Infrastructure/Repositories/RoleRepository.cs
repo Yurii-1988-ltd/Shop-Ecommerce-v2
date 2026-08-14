@@ -36,15 +36,13 @@ internal sealed class RoleRepository(UserDbContext context) : IRoleRepository
         return Result.Success();
     }
 
-    public async Task<Result> UpdateAsync(Guid Id, string name, CancellationToken cancellationToken = default)
+    public void Update(Role role)
     {
-        var roles = await context
-            .Roles.FindAsync([Id], cancellationToken);
-        if(roles is null)
-            return RolesErrors.NotFound(Id);
-        context.Roles.Update(roles);
-        return Result.Success();
+        context.Roles.Update(role);
+    }
 
-      
+    public void Remove(Role role)
+    {
+        context.Roles.Remove(role);
     }
 }

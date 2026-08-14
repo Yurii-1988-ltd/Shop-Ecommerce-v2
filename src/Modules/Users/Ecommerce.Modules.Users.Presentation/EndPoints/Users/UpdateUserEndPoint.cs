@@ -2,7 +2,7 @@
 
 namespace Ecommerce.Modules.Users.Presentation.EndPoints.Users;
 
-internal sealed class UpdateUserEndPoint
+internal sealed class UpdateUserEndpoint
 {
     public void MapEndpoints(IEndpointRouteBuilder app)
     {

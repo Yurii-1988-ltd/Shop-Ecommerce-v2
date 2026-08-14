@@ -1,13 +1,8 @@
 ﻿using Ecommerce.Modules.Users.Application.Fiatures.GetUsers;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Ecommerce.Modules.Users.Presentation.EndPoints.Users
 {
-    internal sealed class GetUsersEndPoint
+    internal sealed class GetUsersEndpoint
     {
         public void MapEndpoints(IEndpointRouteBuilder app)
         {

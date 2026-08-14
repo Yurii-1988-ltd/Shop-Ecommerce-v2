@@ -9,6 +9,8 @@ public interface IRoleRepository
     Task<Role?> GetByIdAsync(Guid id, CancellationToken cancellationToken);
     Task<IReadOnlyList<Role>> GetAllAsync(CancellationToken cancellationToken = default);
     public  Task<Result> RemoveAsync(Guid id, CancellationToken cancellationToken = default);
-    Task<Result> UpdateAsync(Guid Id, string name, CancellationToken cancellationToken = default);
+    public void Update(Role role);
+    void Remove(Role role);
+  
 }
 
