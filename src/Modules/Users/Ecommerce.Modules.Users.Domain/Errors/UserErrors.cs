@@ -35,4 +35,8 @@ public static class UserErrors
              ErrorType.Validation);
     public static Error RoleIsRequired
         => new Error("Role.IsRequired", "Role is required field", ErrorType.Validation);
+    public static Error RoleAssignmentNotFound
+        => new Error("Role.Assignment.Not.Found", "Assigment role not found", ErrorType.Validation);
+    public static Error RoleAlreadyAssigned
+        => new Error("Role.Already.Assigned", "The role is already assigment", ErrorType.Validation);
 }

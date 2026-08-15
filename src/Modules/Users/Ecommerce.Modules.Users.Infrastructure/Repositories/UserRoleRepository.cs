@@ -2,25 +2,37 @@
 
 namespace Ecommerce.Modules.Users.Infrastructure.Repositories;
 
-internal sealed class UserRoleRepository : IUserRoleRepository
+internal sealed class UserRoleRepository(UserDbContext context) : IUserRoleRepository
 {
     public void Add(UserRole userRole)
     {
-        throw new NotImplementedException();
+      context.UserRoles.Add(userRole);
     }
 
-    public Task<bool> ExistAsync(Guid userId, Guid roleId, CancellationToken cancellationToken)
+    public async Task<bool> ExistsAsync(Guid userId, Guid roleId, CancellationToken cancellationToken)
     {
-        throw new NotImplementedException();
+        return await context.UserRoles
+            .AnyAsync(x=>x.UserId==userId && x.RoleId==roleId,cancellationToken);
+        
     }
 
-    public Task<IReadOnlyList<Role>> GetRolesAsync(Guid userId, CancellationToken cancellationToken)
+    public async Task<IReadOnlyList<Role>> GetRolesAsync(Guid userId, CancellationToken cancellationToken)
     {
-        throw new NotImplementedException();
+      return 
+            await context.UserRoles.Where(x=>x.Id==userId)
+            .Select(x=>x.Role)
+            .AsNoTracking()
+            .ToListAsync(cancellationToken);
+       
     }
 
-    public Task<Result> RemoveAsync(Guid userId, Guid roleId, CancellationToken cancellationToken)
+    public async  Task<Result> RemoveAsync(Guid userId, Guid roleId, CancellationToken cancellationToken)
     {
-        throw new NotImplementedException();
+       var userRoles = await context.UserRoles
+            .FirstOrDefaultAsync(x=>x.UserId== userId && x.RoleId==roleId, cancellationToken);
+        if (userRoles == null)
+            return UserErrors.RoleAssignmentNotFound;
+        context.UserRoles.Remove(userRoles);
+        return Result.Success();
     }
 }

@@ -1,8 +1,3 @@
-using Ecommerce.Modules.Users.Infrastructure;// Добавьте namespace для CreateRoleEndpoint, если он там
-using Ecommerce.Modules.Users.Presentation.EndPoints.Users;
-using Ecommerce.Presentation;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
 
 public sealed class UsersModule : IModule
 {
@@ -18,6 +13,9 @@ public sealed class UsersModule : IModule
         new GetRoleEndpoint().MapEndpoint(app);
         new UpdateRoleEndpoint().MapEndpoints(app);
         new RemoveRoleEndpoint().MapEndpoints(app);
+        new AssignRoleEndpoint().MapEndpoint(app);
+        new GetUserRolesendpoint().MapEndpoint(app);
+        new RemoveUserRoleEndpoint().MapEndpoint(app);
     }
 
     public void RegisterServices(IServiceCollection services, IConfiguration config)

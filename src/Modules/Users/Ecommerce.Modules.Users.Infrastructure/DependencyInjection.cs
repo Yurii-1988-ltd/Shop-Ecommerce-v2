@@ -15,12 +15,14 @@ namespace Ecommerce.Modules.Users.Infrastructure
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IRoleRepository, RoleRepository>();
             services.AddScoped<IUserRoleRepository,UserRoleRepository>();
-            services.AddScoped<IRoleService, RoleService>();
+           
             services.AddScoped<IUserUnitOfWork, UserUnitOfWork>();
 
             // --- НЕДОСТАЮЩИЕ СЕРВИСЫ ДЛЯ ИСПРАВЛЕНИЯ ОШИБКИ ---
             services.AddScoped<IUserService, UserService>();   // Исправляет ошибки в ResetPassword, Register, Login, ForgotPassword
             services.AddScoped<IUserQueries, UserQueries>();   // Исправляет ошибки в GetOrder, GetOrders
+            services.AddScoped<IRoleService, RoleService>();
+            services.AddScoped<IUserRoleService, UserRoleService>();
             // --------------------------------------------------
 
             services.AddScoped<IDbConnectionFactory, DbConnectionFactory>();
