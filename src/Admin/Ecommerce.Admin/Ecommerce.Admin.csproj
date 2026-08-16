@@ -20,6 +20,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\BuildingBlocks\Ecommerce.Application\Ecommerce.Application.csproj" />
+    <ProjectReference Include="..\..\Modules\Users\Ecommerce.Modules.Users.Contracts\Ecommerce.Modules.Users.Contracts.csproj" />
   </ItemGroup>
 
 </Project>

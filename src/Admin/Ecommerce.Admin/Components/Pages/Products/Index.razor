@@ -1,12 +1,7 @@
 ﻿@page "/products"
 
-@using Ecommerce.Admin.ApiClients.Catalog
-@using Ecommerce.Admin.ApiClients.Catalog.Models
-@using Ecommerce.Admin.Components.Shared
 
-@inject ICatalogApiClient Api
-@inject IDialogService DialogService
-@inject NavigationManager Navigation
+
 
 <PageHeader Title="Products"
             Subtitle="Manage your product catalog">
@@ -143,7 +138,7 @@
 
     private async Task LoadProducts()
     {
-        var result = await Api.GetProductsAsync(1, 20);
+        var result = await CatalogApi.GetProductsAsync(1, 20);
 
         _products.Clear();
 
@@ -177,7 +172,7 @@
         if (result.Canceled)
             return;
 
-        await Api.DeleteAsync(product.Id);
+        await CatalogApi.DeleteAsync(product.Id);
 
         await LoadProducts();
     }

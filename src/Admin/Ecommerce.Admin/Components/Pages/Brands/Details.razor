@@ -1,0 +1,139 @@
+﻿@page "/brands/{Id:guid}"
+
+
+
+<PageTitle> Brand Details</PageTitle>
+
+@if (_brand is null)
+{
+    <MudProgressCircular Indeterminate="true" />
+}
+else
+{
+    <PageHeader Title="@_brand.Name"
+                Subtitle="View brand information">
+
+        <Actions>
+
+            <MudButton Variant="Variant.Text"
+                       StartIcon="@Icons.Material.Filled.ArrowBack"
+                       Href="/brands">
+                Back
+            </MudButton>
+
+            <MudButton Variant="Variant.Filled"
+                       Color="Color.Primary"
+                       StartIcon="@Icons.Material.Filled.Edit"
+                       Href="@($"/brands/edit/{Id}")">
+                Edit
+            </MudButton>
+
+        </Actions>
+
+    </PageHeader>
+
+    <DetailCard Title="Brand">
+
+        <MudText Typo="Typo.h5">
+            @_brand.Name
+        </MudText>
+
+        
+        <MudDivider Class="my-4" />
+
+        <MudText Typo="Typo.subtitle2">
+            Description
+        </MudText>
+
+        <MudText>
+            @(string.IsNullOrWhiteSpace(_brand.Description)
+                ? "No description"
+                : _brand.Description)
+        </MudText>
+
+    </DetailCard>
+
+    <MudGrid Class="mt-4">  
+
+    </MudGrid>
+
+    <MudGrid Class="mt-4">
+
+        <MudItem xs="12" md="6">
+
+            <DetailCard Title="Status">
+
+                <MudChip T="bool"
+                         Variant="Variant.Outlined"
+                         Color="@(_brand.IsActive
+                            ? Color.Success
+                            : Color.Default)">
+
+                    @(_brand.IsActive
+                        ? "Active"
+                        : "Archived")
+
+                </MudChip>
+
+            </DetailCard>
+
+        </MudItem>
+
+        <MudItem xs="12" md="6">
+
+            <DetailCard Title="History">
+
+                <MudStack Spacing="2">
+
+                    <div>
+
+                        <MudText Class="details-label">
+                            Created
+                        </MudText>
+
+                        <MudText>
+                            @_brand.CreatedAtUtc:g
+                        </MudText>
+
+                    </div>
+
+                    <div>
+
+                        <MudText Class="details-label">
+                            Updated
+                        </MudText>
+
+                        <MudText>
+                            @(_brand.UpdatedAtUtc?.ToString("g") ?? "-")
+                        </MudText>
+
+                    </div>
+
+                </MudStack>
+
+            </DetailCard>
+
+        </MudItem>
+
+    </MudGrid>
+}
+
+@code
+{
+    [Parameter]
+    public Guid Id { get; set; }
+
+    private BrandResponse? _brand;
+
+    protected override async Task OnInitializedAsync()
+    {
+        _brand = await BrandApi.GetAsync(Id);
+
+        if (_brand is null)
+        {
+            Navigation.NavigateTo("/brands");
+        }
+    }
+
+    
+}

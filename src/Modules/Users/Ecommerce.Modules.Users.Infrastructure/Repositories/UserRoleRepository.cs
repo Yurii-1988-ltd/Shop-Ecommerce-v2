@@ -16,14 +16,15 @@ internal sealed class UserRoleRepository(UserDbContext context) : IUserRoleRepos
         
     }
 
-    public async Task<IReadOnlyList<Role>> GetRolesAsync(Guid userId, CancellationToken cancellationToken)
+    public async Task<IReadOnlyList<Role>> GetRolesAsync(
+     Guid userId,
+     CancellationToken cancellationToken)
     {
-      return 
-            await context.UserRoles.Where(x=>x.Id==userId)
-            .Select(x=>x.Role)
+        return await context.UserRoles
+            .Where(x => x.UserId == userId)
+            .Select(x => x.Role)
             .AsNoTracking()
             .ToListAsync(cancellationToken);
-       
     }
 
     public async  Task<Result> RemoveAsync(Guid userId, Guid roleId, CancellationToken cancellationToken)

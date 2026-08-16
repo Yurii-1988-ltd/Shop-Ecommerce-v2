@@ -1,57 +1,38 @@
 ﻿using Dapper;
 using Ecommerce.Application.Pagination;
+using Ecommerce.Modules.Users.Application.Fiatures.GetUser;
 using Ecommerce.Modules.Users.Application.Fiatures.GetUsers;
+using Ecommerce.Modules.Users.Domain.Errors;
 
 public sealed class GetUsersQueryHandler(
     IDbConnectionFactory dbConnection)
-    : IQueryHandler<GetUsersQuery, PagedResult<UserResponse>>
+    : IQueryHandler<GetUserQuery, UserResponse>
 {
-    public async Task<Result<PagedResult<UserResponse>>> Handle(
-       GetUsersQuery request,
-       CancellationToken cancellationToken)
+    public async Task<Result<UserResponse>> Handle(GetUserQuery request, CancellationToken cancellationToken)
     {
         using IDbConnection connection =
-            await dbConnection.OpenConnectionAsync();
+              await dbConnection.OpenConnectionAsync();
 
         const string sql = $"""
             SELECT
-                e.Id AS {nameof(UserResponse.Id)},
-                e.Email AS {nameof(UserResponse.Email)},
-                e.FirstName AS {nameof(UserResponse.FirstName)},
-                e.LastName AS {nameof(UserResponse.LastName)},
-                e.CreatedAtUtc AS {nameof(UserResponse.CreatedAtUtc)}
-            FROM users e
-            ORDER BY e.CreatedAtUtc DESC
-            OFFSET @Offset ROWS
-            FETCH NEXT @PageSize ROWS ONLY;
-
-            SELECT COUNT(*)
-            FROM users;
+                Id AS {nameof(UserResponse.Id)},
+                Email AS {nameof(UserResponse.Email)},
+                FirstName AS {nameof(UserResponse.FirstName)},
+                LastName AS {nameof(UserResponse.LastName)},
+                CreatedAtUtc AS {nameof(UserResponse.CreatedAtUtc)}
+            FROM users
+            WHERE Id = @Id
             """;
 
-        var offset = (request.Page - 1) * request.PageSize;
-
-        using var multi = await connection.QueryMultipleAsync(
+        var user = await connection.QuerySingleOrDefaultAsync<UserResponse>(
             sql,
-            new
-            {
-                Offset = offset,
-                request.PageSize
-            });
+            new { request.Id });
 
-        var users = (await multi.ReadAsync<UserResponse>())
-            .ToList();
-
-        var totalCount = await multi.ReadSingleAsync<int>();
-
-        var result = new PagedResult<UserResponse>
+        if (user is null)
         {
-            Items = users,
-            Page = request.Page,
-            PageSize = request.PageSize,
-            TotalCount = totalCount
-        };
+            return UserErrors.NotFound(request.Id);
+        }
 
-        return result;
+        return user;
     }
 }

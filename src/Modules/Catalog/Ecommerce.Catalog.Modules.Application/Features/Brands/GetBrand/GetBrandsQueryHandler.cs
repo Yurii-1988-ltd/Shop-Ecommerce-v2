@@ -1,15 +1,21 @@
-﻿
-
-using DnsClient;
-using Ecommerce.Application.CQRS;
-using Ecommerce.Domain.Domain;
+﻿using Ecommerce.Catalog.Modules.Application.Abstractions.Data;
+using Ecommerce.Catalog.Modules.Application.Mapping;
+using MongoDB.Driver;
 
 namespace Ecommerce.Catalog.Modules.Application.Features.Brands.GetBrand;
 
-internal sealed class GetBrandsQueryHandler : IQueryHandler<GetBrandQuery, BrandResponse>
+internal sealed class GetBrandsQueryHandler(ICatalogDatabase context) : IQueryHandler<GetBrandQuery, BrandResponse>
 {
     public async Task<Result<BrandResponse>> Handle(GetBrandQuery request, CancellationToken cancellationToken)
     {
-        throw new NotImplementedException();
+        var brand = await context.Brands
+         .Find(x => x.Id == request.Id)
+         .FirstOrDefaultAsync(cancellationToken);
+
+        if (brand is null)
+            return CategoryErrors.NotFound(request.Id);
+
+
+        return brand.ToResponse();
     }
 }

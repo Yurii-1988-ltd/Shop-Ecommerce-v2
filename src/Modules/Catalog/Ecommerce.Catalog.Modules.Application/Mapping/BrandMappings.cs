@@ -1,5 +1,6 @@
 ﻿
 
+using Ecommerce.Catalog.Modules.Application.Features.Brands.GetBrand;
 using Ecommerce.Catalog.Modules.Application.Features.Brands.GetBrands;
 using Ecommerce.Catalog.Modules.Application.Features.Categories.GetCategory;
 using Ecommerce.Catalog.Modules.Domain.Entities;
@@ -16,9 +17,9 @@ internal static class BrandMappings
             brand.Description,
             brand.IsActive);
     }
-    public static CategoryResponse ToResponse(this Brand brand)
+    public static BrandResponse ToResponse(this Brand brand)
     {
-        return new CategoryResponse(
+        return new BrandResponse(
             brand.Id,
             brand.Name,
             brand.Description,

@@ -1,0 +1,131 @@
+﻿@page "/users/{Id:guid}"
+
+
+
+<PageTitle>User Details</PageTitle>
+
+@if (_user is null)
+{
+    <MudProgressCircular Indeterminate="true" />
+}
+else
+{
+    <PageHeader Title="@($"{_user.FirstName} {_user.LastName}")"
+                Subtitle="@_user.Email">
+        <Actions>
+            <MudButton Variant="Variant.Text"
+                       StartIcon="@Icons.Material.Filled.ArrowBack"
+                       OnClick="GoBack">
+                Back
+            </MudButton>
+        </Actions>
+    </PageHeader>
+
+    <MudGrid>
+
+        <MudItem xs="12" md="8">
+            <DetailCard Title="User Information">
+
+                <MudGrid>
+
+                    <MudItem xs="12" sm="6">
+                        <MudText Typo="Typo.caption">
+                            First Name
+                        </MudText>
+
+                        <MudText Typo="Typo.body1">
+                            @_user.FirstName
+                        </MudText>
+                    </MudItem>
+
+                    <MudItem xs="12" sm="6">
+                        <MudText Typo="Typo.caption">
+                            Last Name
+                        </MudText>
+
+                        <MudText Typo="Typo.body1">
+                            @_user.LastName
+                        </MudText>
+                    </MudItem>
+
+                    <MudItem xs="12">
+                        <MudText Typo="Typo.caption">
+                            Email
+                        </MudText>
+
+                        <MudText Typo="Typo.body1">
+                            @_user.Email
+                        </MudText>
+                    </MudItem>
+
+                    <MudItem xs="12">
+                        <MudText Typo="Typo.caption">
+                            Created
+                        </MudText>
+
+                        <MudText Typo="Typo.body1">
+                            @_user.CreatedAtUtc.ToLocalTime()
+                        </MudText>
+                    </MudItem>
+
+                </MudGrid>
+
+            </DetailCard>
+        </MudItem>
+
+        <MudItem xs="12" md="4">
+            <DetailCard Title="Roles">
+
+                @if (_roles.Count == 0)
+                {
+                    <MudText Typo="Typo.body2"
+                             Color="Color.Secondary">
+                        No roles assigned.
+                    </MudText>
+                }
+                else
+                {
+                    <MudStack Row="true" Spacing="1">
+                        @foreach (var role in _roles)
+                        {
+                            <MudChip T="string"
+                                     Color="Color.Primary"
+                                     Variant="Variant.Outlined">
+                                @role.Name
+                            </MudChip>
+                        }
+                    </MudStack>
+                }
+
+            </DetailCard>
+        </MudItem>
+
+    </MudGrid>
+}
+
+@code
+{
+    [Parameter]
+    public Guid Id { get; set; }
+
+    private UserResponse? _user;
+    private IReadOnlyList<RoleResponse> _roles = [];
+
+    protected override async Task OnInitializedAsync()
+    {
+        _user = await UserApi.GetAsync(Id);
+
+        if (_user is null)
+        {
+            Navigation.NavigateTo("/users");
+            return;
+        }
+
+        _roles = await UserApi.GetRolesAsync(Id);
+    }
+
+    private void GoBack()
+    {
+        Navigation.NavigateTo("/users");
+    }
+}

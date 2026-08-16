@@ -12,7 +12,9 @@
 @using Ecommerce.Admin.ApiClients.Images.Models
 @using Ecommerce.Admin.ApiClients.Inventories.Api
 @using Ecommerce.Admin.ApiClients.Orders.Enums
+@using Ecommerce.Admin.ApiClients.Roles.Api
 @using Ecommerce.Admin.ApiClients.Users.Api
+@using Ecommerce.Admin.ApiClients.Users.Responses
 @using Ecommerce.Admin.Components
 @using Ecommerce.Admin.Components.Pages.Orders.Components;
 @using Ecommerce.Admin.Components.Shared
@@ -29,12 +31,13 @@
 
 @inject IDialogService DialogService
 @inject NavigationManager Navigation
-
+@inject IRoleApiClient RoleApi;
 @inject ICatalogApiClient CatalogApi
 @inject  ICartApiClient CartApi
 @inject IOrderApiClient OrderApi
 @inject IInventoryApiClient InventoryApi
 @inject IUserApiClient UserApi
+@inject IBrandApiClient BrandApi
 
 
  @inject IImageApiClient ImageApi 

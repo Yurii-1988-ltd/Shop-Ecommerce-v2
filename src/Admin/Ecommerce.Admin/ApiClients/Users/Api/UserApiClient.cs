@@ -7,7 +7,7 @@ namespace Ecommerce.Admin.ApiClients.Users.Api;
 internal sealed class UserApiClient(HttpClient httpClient) : IUserApiClient
 {
     private const string UserUrl = "/users";
-    private const string RoleUrl = "/roles";
+
 
     public async Task AssignRoleAsync(
         Guid userId,
@@ -50,12 +50,15 @@ internal sealed class UserApiClient(HttpClient httpClient) : IUserApiClient
         return await response.Content.ReadFromJsonAsync<UserResponse>(cancellationToken);
     }
 
-    public async Task RemoveRoleAsync(Guid roleId, CancellationToken cancellationToken = default)
+    public async Task<IReadOnlyList<RoleResponse>> GetRolesAsync(
+     Guid userId,
+     CancellationToken cancellationToken = default)
     {
-        var response = await httpClient.DeleteAsync(
-           $"{RoleUrl}/{roleId}", cancellationToken);
-        response.EnsureSuccessStatusCode();
+        return await httpClient.GetFromJsonAsync<IReadOnlyList<RoleResponse>>(
+            $"{UserUrl}/{userId}/roles",
+            cancellationToken) ?? [];
     }
+   
 
     public async Task UpdateAsync(
      Guid id,
@@ -69,4 +72,5 @@ internal sealed class UserApiClient(HttpClient httpClient) : IUserApiClient
 
         response.EnsureSuccessStatusCode();
     }
+  
 }
