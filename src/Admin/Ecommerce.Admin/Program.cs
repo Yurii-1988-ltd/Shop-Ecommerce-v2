@@ -1,6 +1,7 @@
 
 
 using Ecommerce.Admin.ApiClients.Inventories.Api;
+using Ecommerce.Admin.ApiClients.Users.Api;
 using System.Text.Json.Serialization;
 
 internal class Program
@@ -39,6 +40,10 @@ internal class Program
             client.BaseAddress = new Uri("https://localhost:7125");
         });
         builder.Services.AddHttpClient<IInventoryApiClient, InventoryApiClient>(client =>
+        {
+            client.BaseAddress = new Uri("https://localhost:7125");
+        });
+        builder.Services.AddHttpClient<IUserApiClient, UserApiClient>(client =>
         {
             client.BaseAddress = new Uri("https://localhost:7125");
         });

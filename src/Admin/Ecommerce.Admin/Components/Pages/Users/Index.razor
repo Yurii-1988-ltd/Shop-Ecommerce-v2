@@ -1,0 +1,70 @@
+﻿@page "/users"
+
+@using Ecommerce.Admin.ApiClients.Users
+@using Ecommerce.Admin.ApiClients.Users.Responses
+@using Ecommerce.Application.Pagination
+
+
+
+<PageTitle>Users</PageTitle>
+
+<PageHeader Title="Users" />
+
+<MudPaper Class="pa-4">
+
+    <MudTable Items="_users.Items"
+              Hover="true"
+              Dense="true"
+              Striped="true">
+
+        <HeaderContent>
+            <MudTh>Name</MudTh>
+            <MudTh>Email</MudTh>
+            <MudTh>Created</MudTh>
+            <MudTh></MudTh>
+        </HeaderContent>
+
+        <RowTemplate>
+            <MudTd>
+                @context.FirstName @context.LastName
+            </MudTd>
+
+            <MudTd>
+                @context.Email
+            </MudTd>
+
+            <MudTd>
+                @context.CreatedAtUtc.ToLocalTime()
+            </MudTd>
+
+            <MudTd Align="Align.Right">
+                <MudButton Variant="Variant.Text"
+                           Color="Color.Primary"
+                           Href="@($"/users/{context.Id}")">
+                    Details
+                </MudButton>
+            </MudTd>
+        </RowTemplate>
+
+        <PagerContent>
+            <MudTablePager />
+        </PagerContent>
+
+    </MudTable>
+
+</MudPaper>
+
+@code
+{
+    private PagedResult<UserResponse> _users = new();
+
+    private int _page = 1;
+    private int _pageSize = 10;
+
+    protected override async Task OnInitializedAsync()
+    {
+        _users = await UserApi.GetAllAsync(
+            _page,
+            _pageSize);
+    }
+}

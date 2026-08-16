@@ -1,4 +1,6 @@
-﻿namespace Ecommerce.Modules.Users.Application.Fiatures.GetUsers;
+﻿using Ecommerce.Application.Pagination;
 
-public record GetUsersQuery() : IQuery<IReadOnlyList<UserResponse>>;
+namespace Ecommerce.Modules.Users.Application.Fiatures.GetUsers;
+
+public record GetUsersQuery(int Page,int PageSize) : IQuery<PagedResult<UserResponse>>;
 

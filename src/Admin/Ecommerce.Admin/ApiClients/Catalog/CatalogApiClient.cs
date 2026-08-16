@@ -1,8 +1,6 @@
 ﻿using Ecommerce.Admin.ApiClients.Catalog.Contracts;
 using Ecommerce.Admin.ApiClients.Catalog.Models;
-using Ecommerce.Admin.ApiClients.Categories;
 using Ecommerce.Admin.Contracts;
-using Ecommerce.Application.Pagination;
 
 namespace Ecommerce.Admin.ApiClients.Catalog;
 

@@ -8,7 +8,7 @@ namespace Ecommerce.Modules.Users.Presentation.EndPoints.Users
         {
             app.MapGet("/users", async (ISender sender) =>
             {
-                var result = await sender.Send(new GetUsersQuery());
+                var result = await sender.Send(new GetUsersQuery(1,10));
                 return result.IsSuccess
                     ? Results.Ok(result.Value)
                     : Results.NotFound(result.Error);
