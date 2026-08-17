@@ -5,7 +5,7 @@ namespace Ecommerce.Admin.ApiClients.Roles.Api;
 internal sealed class RoleApiClient(HttpClient httpClient) : IRoleApiClient
 {
     private const string RoleUrl = "/roles";
-    public async Task RemoveRoleAsync(Guid roleId, CancellationToken cancellationToken = default)
+    public async Task RemoveRoleAsync(Guid userId,Guid roleId, CancellationToken cancellationToken = default)
     {
         var response = await httpClient.DeleteAsync(
            $"{RoleUrl}/{roleId}", cancellationToken);

@@ -1,0 +1,118 @@
+﻿@inject IUserApiClient UserApi
+@inject IRoleApiClient RoleApi
+
+<DetailCard Title="Roles">
+    @if (_loading)
+    {
+        <MudProgressCircular Indeterminate="true" Size="Size.Small" />
+    }
+    else
+    {
+        @if (_roles.Count == 0)
+        {
+            <MudText Typo="Typo.body2" Color="Color.Secondary">
+                No roles assigned.
+            </MudText>
+        }
+        else
+        {
+            <MudStack Row="true" Spacing="1">
+                @foreach (var role in _roles)
+                {
+                    <MudChip T="string"
+                             Color="Color.Primary"
+                             Variant="Variant.Outlined"
+                             OnClose="@(() => RemoveRoleAsync(role.Id))">
+                        @role.Name
+                    </MudChip>
+                }
+            </MudStack>
+        }
+
+        @if (_availableRoles.Count > 0)
+        {
+            <MudStack Row="true" AlignItems="AlignItems.Center" Class="mt-4">
+                <MudSelect T="string"
+                           Label="Assign role"
+                           Placeholder="Select role"
+                           Variant="Variant.Outlined"
+                           Clearable="true"
+                           @bind-Value="_selectedRoleId">
+                    @foreach (var role in _availableRoles)
+                    {
+                        <MudSelectItem T="string" Value="@role.Id.ToString()">
+                            @role.Name
+                        </MudSelectItem>
+                    }
+                </MudSelect>
+
+                <MudButton Variant="Variant.Filled"
+                           Color="Color.Primary"
+                           Disabled="@string.IsNullOrEmpty(_selectedRoleId)"
+                           OnClick="AssignRoleAsync">
+                    Assign
+                </MudButton>
+            </MudStack>
+        }
+        else if (_roles.Count > 0)
+        {
+            <MudText Typo="Typo.body2" Color="Color.Secondary" Class="mt-4">
+                All roles are already assigned.
+            </MudText>
+        }
+    }
+</DetailCard>
+
+@code {
+    [Parameter, EditorRequired]
+    public Guid UserId { get; set; }
+
+    private IReadOnlyList<RoleResponse> _roles = [];
+    private IReadOnlyList<RoleResponse> _availableRoles = [];
+    private string? _selectedRoleId;
+    private bool _loading = true;
+
+    protected override async Task OnParametersSetAsync()
+    {
+        if (UserId != Guid.Empty)
+        {
+            await LoadRolesAsync();
+        }
+    }
+
+    private async Task LoadRolesAsync()
+    {
+        _loading = true;
+
+        try
+        {
+            _roles = await UserApi.GetRolesAsync(UserId) ?? [];
+            var allRoles = await RoleApi.GetAllRolesAsync() ?? [];
+
+            _availableRoles = allRoles
+                .Where(role => !_roles.Any(userRole => userRole.Id == role.Id))
+                .ToList();
+        }
+        finally
+        {
+            _loading = false;
+            StateHasChanged(); // Принудительное обновление интерфейса после получения данных
+        }
+    }
+
+    private async Task AssignRoleAsync()
+    {
+        if (!Guid.TryParse(_selectedRoleId, out var roleId))
+            return;
+
+        await UserApi.AssignRoleAsync(UserId, roleId);
+        _selectedRoleId = null;
+        await LoadRolesAsync();
+    }
+
+    private async Task RemoveRoleAsync(Guid roleId)
+    {
+        await UserApi.RemoveUserRoleAsync(UserId, roleId);
+        await LoadRolesAsync();
+    }
+}

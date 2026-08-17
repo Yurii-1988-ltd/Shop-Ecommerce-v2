@@ -6,9 +6,6 @@ namespace Ecommerce.Domain.ValueObjects;
 
 public sealed class Money : ValueObject
 {
- 
-
-
     public decimal Amount { get; private set; }
     public string Currency { get; private set; } = string.Empty;
 
@@ -22,10 +19,6 @@ public sealed class Money : ValueObject
         Amount = amount;
         Currency = currency;
     }
-
-
-
-
 
     public static Result<Money> Create(decimal amount, string currency)
     {
@@ -42,7 +35,33 @@ public sealed class Money : ValueObject
         return new Money(amount, currency.Trim().ToUpperInvariant());
     }
 
-    public  Result<Money> Add(Money other)
+    public static Money Zero(string currency = "USD") => new(0m, currency);
+
+    // --- Перегрузка операторов для упрощения Domain-расчетов ---
+
+    // Позволяет писать: UnitPrice * Quantity.Value
+    public static Money operator *(Money money, int quantity)
+    {
+        if (quantity < 0)
+            throw new ArgumentOutOfRangeException(nameof(quantity), "Quantity cannot be negative.");
+
+        return new Money(money.Amount * quantity, money.Currency);
+    }
+
+    public static Money operator *(int quantity, Money money) => money * quantity;
+
+    // Позволяет писать: subtotal + itemTotal (и использовать в LINQ Aggregate)
+    public static Money operator +(Money left, Money right)
+    {
+        if (left.Currency != right.Currency)
+            throw new InvalidOperationException($"Cannot add money with different currencies: '{left.Currency}' and '{right.Currency}'.");
+
+        return new Money(left.Amount + right.Amount, left.Currency);
+    }
+
+    // --- Существующие методы ---
+
+    public Result<Money> Add(Money other)
     {
         if (Currency != other.Currency)
         {
@@ -71,6 +90,17 @@ public sealed class Money : ValueObject
 
         return new Money(Amount * multiplier, Currency);
     }
+
+    public Result<Money> Multiply(int quantity)
+    {
+        if (quantity <= 0)
+        {
+            return MoneyErrors.QuantityMustBePositive;
+        }
+
+        return new Money(Amount * quantity, Currency);
+    }
+
     public bool IsGreaterThan(Money other)
     {
         EnsureSameCurrency(other);
@@ -90,23 +120,12 @@ public sealed class Money : ValueObject
             return MoneyErrors.EnsureSameCurrency;
         }
         return Result.Success();
-
     }
 
     protected override IEnumerable<object> GetEqualityComponents()
     {
         yield return Amount;
         yield return Currency;
-    }
-
-    public Result<Money> Multiply(int quantity)
-    {
-        if (quantity <= 0)
-        {
-            return MoneyErrors.QuantityMustBePositive;
-        }
-
-        return new Money(Amount * quantity, Currency);
     }
 
     public override string ToString()

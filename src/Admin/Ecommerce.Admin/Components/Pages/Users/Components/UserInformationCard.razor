@@ -1,0 +1,28 @@
+﻿<DetailCard Title="User Information">
+    <MudGrid>
+        <MudItem xs="12" sm="6">
+            <MudText Typo="Typo.caption">First Name</MudText>
+            <MudText Typo="Typo.body1">@User.FirstName</MudText>
+        </MudItem>
+
+        <MudItem xs="12" sm="6">
+            <MudText Typo="Typo.caption">Last Name</MudText>
+            <MudText Typo="Typo.body1">@User.LastName</MudText>
+        </MudItem>
+
+        <MudItem xs="12">
+            <MudText Typo="Typo.caption">Email</MudText>
+            <MudText Typo="Typo.body1">@User.Email</MudText>
+        </MudItem>
+
+        <MudItem xs="12">
+            <MudText Typo="Typo.caption">Created</MudText>
+            <MudText Typo="Typo.body1">@User.CreatedAtUtc.ToLocalTime()</MudText>
+        </MudItem>
+    </MudGrid>
+</DetailCard>
+
+@code {
+    [Parameter, EditorRequired]
+    public UserResponse User { get; set; } = default!;
+}

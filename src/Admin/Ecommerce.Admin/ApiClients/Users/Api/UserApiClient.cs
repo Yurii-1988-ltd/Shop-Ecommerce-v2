@@ -15,7 +15,7 @@ internal sealed class UserApiClient(HttpClient httpClient) : IUserApiClient
         CancellationToken cancellationToken = default)
     {
         var response = await httpClient.PostAsync(
-            $"{UserUrl}/{userId}/roles/{roleId}",
+            $"{UserUrl}/{userId}/roles/{roleId}/assign",
             null,
             cancellationToken);
 
@@ -58,7 +58,15 @@ internal sealed class UserApiClient(HttpClient httpClient) : IUserApiClient
             $"{UserUrl}/{userId}/roles",
             cancellationToken) ?? [];
     }
-   
+
+    public async Task RemoveUserRoleAsync(Guid userId, Guid roleId, CancellationToken cancellationToken = default)
+    {
+        var response = await httpClient.DeleteAsync(
+         $"{UserUrl}/{userId}/roles/{roleId}",
+         cancellationToken);
+
+        response.EnsureSuccessStatusCode();
+    }
 
     public async Task UpdateAsync(
      Guid id,

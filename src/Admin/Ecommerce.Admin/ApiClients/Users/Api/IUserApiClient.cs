@@ -22,6 +22,7 @@ namespace Ecommerce.Admin.ApiClients.Users.Api
         Task<IReadOnlyList<RoleResponse>> GetRolesAsync(
             Guid userId,
             CancellationToken cancellationToken = default);
+       Task RemoveUserRoleAsync(Guid userId,Guid roleId, CancellationToken cancellationToken = default);
       
     }
 }
