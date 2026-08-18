@@ -6,4 +6,9 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\BuildingBlocks\Mongo\Ecommerce.Mongo\Ecommerce.Mongo.csproj" />
+    <ProjectReference Include="..\Ecommerce.Basket.Modules.Application\Ecommerce.Basket.Modules.Application.csproj" />
+  </ItemGroup>
+
 </Project>

@@ -31,4 +31,8 @@ public static class BasketErrors
         => new Error("Coupon.Minimum.Spend.NotMet", "The minimum spend required to use this coupon has not been met.", ErrorType.Validation);
     public static Error InvalidQuantity =>
         new Error("Invalid.Quantity", "Quantity invalid", ErrorType.Validation);
+    public static Error NotFoundByCustomer(Guid id)
+        => new Error("Customer.NotFound", $"Customer with id {id} not found", ErrorType.NotFound);
+    public static Error NotFound(Guid id)
+      => new Error("Basket.NotFound", $"Basket with id {id} not found", ErrorType.NotFound);
 }

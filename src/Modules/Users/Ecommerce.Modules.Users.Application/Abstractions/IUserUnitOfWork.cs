@@ -1,5 +1,4 @@
 ﻿
-
 namespace Ecommerce.Modules.Users.Application.Abstractions;
 
 public interface IUserUnitOfWork

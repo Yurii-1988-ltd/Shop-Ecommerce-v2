@@ -1,13 +1,10 @@
 ﻿
 using Ecommerce.Domain.Domain;
-using Ecommerce.Mongo;
 using Ecommerce.Order.Modules.Domain.Enums;
 using Ecommerce.Order.Modules.Domain.Errors;
-using Ecommerce.Order.Modules.Domain.Repositories;
 using MongoDB.Bson;
 using MongoDB.Driver;
 using System.Text.RegularExpressions;
-using System.Xml.Linq;
 
 namespace Ecommerce.Order.Modules.Infrastructure.Repositories;
 

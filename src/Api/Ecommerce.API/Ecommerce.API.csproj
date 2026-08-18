@@ -18,6 +18,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\BuildingBlocks\Export\Export.Infrastructure\Export.Infrastructure.csproj" />
+    <ProjectReference Include="..\..\Modules\Basket\Ecommerce.Basket.Modules.Presentation\Ecommerce.Basket.Modules.Presentation.csproj" />
     <ProjectReference Include="..\..\Modules\Cart\Ecommerce.Cart.Modules.Presentation\Ecommerce.Cart.Modules.Presentation.csproj" />
     <ProjectReference Include="..\..\Modules\Catalog\Ecommerce.Catalog.Modules.Presentation\Ecommerce.Catalog.Modules.Presentation.csproj" />
     <ProjectReference Include="..\..\Modules\Identity\Ecommerce.Identity.Modules.Presentation\Ecommerce.Identity.Modules.Presentation.csproj" />
