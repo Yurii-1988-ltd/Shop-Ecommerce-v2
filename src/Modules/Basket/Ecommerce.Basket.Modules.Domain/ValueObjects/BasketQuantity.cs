@@ -1,11 +1,14 @@
 ﻿using Ecommerce.Basket.Modules.Domain.Errors;
+using Ecommerce.Domain.Domain;
+using MongoDB.Bson.Serialization.Attributes;
 
-namespace Ecommerce.Domain.Domain;
+namespace Ecommerce.Basket.Modules.Domain.ValueObjects;
 
 public record BasketQuantity
 {
     public int Value { get; }
     public const int MaxPerItem = 99;
+
 
     private BasketQuantity(int value)
     {

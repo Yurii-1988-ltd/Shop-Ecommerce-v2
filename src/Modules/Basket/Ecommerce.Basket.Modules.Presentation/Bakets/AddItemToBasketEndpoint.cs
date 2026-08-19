@@ -14,18 +14,9 @@ internal sealed class AddItemToBasketEndpoint
         app.MapPost("/baskets/items", async (
             AddItemToBasketRequest request,
             ISender sender,
-            HttpContext httpContext,
             CancellationToken cancellationToken) =>
         {
-            // 1. Извлекаем CustomerId из JWT Claims (или заменяем на временный ID из куки/заголовка для гостей)
-            var customerIdClaim = httpContext.User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
-
-            if (!Guid.TryParse(customerIdClaim, out var customerId))
-            {
-                return Results.Unauthorized();
-            }
-
-     
+            // Валидация и создание Money из примитивов
             var moneyResult = Money.Create(request.Price, request.Currency);
             if (moneyResult.IsFailure)
             {
@@ -33,7 +24,7 @@ internal sealed class AddItemToBasketEndpoint
             }
 
             var command = new AddItemToBasketCommand(
-                customerId,
+                request.CustomerId,
                 request.ProductId,
                 request.ProductName,
                 moneyResult.Value,
@@ -42,15 +33,15 @@ internal sealed class AddItemToBasketEndpoint
             var result = await sender.Send(command, cancellationToken);
 
             return result.IsSuccess
-                ? Results.Created($"/baskets/{result.Value}", result.Value)
-                : Results.BadRequest(result.Error);
+                 ? Results.Ok(result.Value)
+                 : Results.NotFound(result.Error); ;
         })
         .WithTags(Tags.Baskets)
-        .WithName("AddItemToBasket")
-        .RequireAuthorization(); // Гарантирует доступ только авторизованным пользователям
+        .WithName("AddItemToBasket");
     }
 }
 internal sealed record AddItemToBasketRequest(
+    Guid CustomerId,
     Guid ProductId,
     string ProductName,
     decimal Price,

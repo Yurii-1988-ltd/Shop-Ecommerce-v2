@@ -11,4 +11,8 @@
     <ProjectReference Include="..\Ecommerce.Basket.Modules.Application\Ecommerce.Basket.Modules.Application.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Serializers\" />
+  </ItemGroup>
+
 </Project>

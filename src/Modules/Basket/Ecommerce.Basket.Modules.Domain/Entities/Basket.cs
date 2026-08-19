@@ -2,26 +2,29 @@
 using Ecommerce.Basket.Modules.Domain.Errors;
 using Ecommerce.Domain.Domain;
 using Ecommerce.Domain.ValueObjects;
+using Microsoft.IdentityModel.Tokens;
 
 namespace Ecommerce.Basket.Modules.Domain.Entities;
 
 public sealed class Basket : Entity
 {
-    #region properties and constructors
+    #region Properties and Constructors
     public const int MaxDistinctItems = 50;
-
-    private readonly List<BasketItem> _items = new();
-    public Guid  CustomerId { get;private set; }
+    private List<BasketItem> _items = [];
+    public Guid CustomerId { get; private set; }
     public BasketStatus Status { get; private set; }
-    public Coupon? AppliedCoupon { get;private set; }
-    public DateTime CreatedAtUtc { get;private set; }
-    public DateTime? LastModifiedUtc { get;private set; }
+    public Coupon? AppliedCoupon { get; private set; }
+    public DateTime CreatedAtUtc { get; private set; }
+    public DateTime? LastModifiedUtc { get; private set; }
     public IReadOnlyCollection<BasketItem> Items => _items.AsReadOnly();
+
+
+    public string Currency => _items.FirstOrDefault()?.UnitPrice.Currency ?? "UAH";
 
     private Basket()
     {
-        
     }
+
     public Basket(Guid customerId)
     {
         Id = Guid.NewGuid();
@@ -30,26 +33,31 @@ public sealed class Basket : Entity
         CreatedAtUtc = DateTime.UtcNow;
     }
     #endregion
-    #region static factory methods
+
+    #region Static Factory Methods
     public static Result<Basket> Create(Guid customerId)
     {
         if (customerId == Guid.Empty)
             return Result.Failure<Basket>(BasketErrors.EmptyCustomerId);
+
         return Result.Success(new Basket(customerId));
     }
+    #endregion
+
+    #region Domain Actions
     public Result AddOrUpdateItem(Guid productId, string productName, Money unitPrice, int quantity)
     {
         var activeCheck = EnsureActive();
         if (activeCheck.IsFailure) return activeCheck;
+
+        if (quantity <= 0)
+            return Result.Failure(BasketErrors.InvalidQuantity);
 
         var existingItem = _items.FirstOrDefault(i => i.ProductId == productId);
 
         if (existingItem != null)
         {
             var updateResult = existingItem.UpdateQuantity(existingItem.Quantity.Value + quantity);
-            if (quantity <= 0)
-                return Result.Failure(BasketErrors.InvalidQuantity);
-
             if (updateResult.IsFailure) return updateResult;
         }
         else
@@ -66,24 +74,27 @@ public sealed class Basket : Entity
         Touch();
         return Result.Success();
     }
-    public Result ChangeItemQuantity( Guid productId,int newQuantity)
+
+    public Result ChangeItemQuantity(Guid productId, int newQuantity)
     {
         var activeCheck = EnsureActive();
-        if(activeCheck.IsFailure) return activeCheck;
+        if (activeCheck.IsFailure) return activeCheck;
+
         if (newQuantity == 0)
             return RemoveItem(productId);
 
         if (newQuantity < 0)
             return Result.Failure(BasketErrors.InvalidQuantity);
+
         var item = _items.FirstOrDefault(x => x.ProductId == productId);
         if (item is null)
             return Result.Failure(BasketErrors.ItemNotFound);
+
         var updateResult = item.UpdateQuantity(newQuantity);
-        if (updateResult.IsFailure)
-            return updateResult;
+        if (updateResult.IsFailure) return updateResult;
+
         Touch();
         return Result.Success();
-
     }
 
     private Result RemoveItem(Guid productId)
@@ -104,8 +115,8 @@ public sealed class Basket : Entity
 
         Touch();
         return Result.Success();
-
     }
+
     public Result ApplyCoupon(Coupon coupon, DateTime currentDateUtc)
     {
         var activeCheck = EnsureActive();
@@ -145,34 +156,36 @@ public sealed class Basket : Entity
         return Result.Success();
     }
 
-    //helpers methods
-    private Result EnsureActive()
-    {
-        return Status == BasketStatus.Active
-            ? Result.Success()
-            : Result.Failure(BasketErrors.BasketNotActive);
-    }
-    public void Touch()
-        =>LastModifiedUtc = DateTime.UtcNow;
-
-    // --- Calculated Domain Properties ---
-
-    public Money RawSubtotal => _items.Count == 0
-        ? Money.Zero()
-        : _items.Select(i => i.LineTotal).Aggregate((a, b) => a + b);
-
-    public Money DiscountTotal => AppliedCoupon?.CalculateDiscount(RawSubtotal)
-        ?? Money.Zero(RawSubtotal.Currency);
-
-    public Money GrandTotal => new(
-        Math.Max(0, RawSubtotal.Amount - DiscountTotal.Amount),
-        RawSubtotal.Currency);
-
     public void ClearCoupon()
     {
         AppliedCoupon = null;
     }
     #endregion
 
+    #region Helper Methods
+    private Result EnsureActive()
+    {
+        return Status == BasketStatus.Active
+            ? Result.Success()
+            : Result.Failure(BasketErrors.BasketNotActive);
+    }
 
+    public void Touch()
+        => LastModifiedUtc = DateTime.UtcNow;
+
+    // --- Calculated Domain Properties ---
+
+    public Money RawSubtotal => _items.Count == 0
+        ? Money.Zero(Currency)
+        : new Money(_items.Sum(i => i.LineTotal.Amount), Currency);
+
+    public Money DiscountTotal => AppliedCoupon?.CalculateDiscount(RawSubtotal)
+        ?? Money.Zero(Currency);
+
+    public Money GrandTotal => new(
+        Math.Max(0, RawSubtotal.Amount - DiscountTotal.Amount),
+        Currency);
+
+    public Money CalculateTotalPrice() => GrandTotal;
+    #endregion
 }

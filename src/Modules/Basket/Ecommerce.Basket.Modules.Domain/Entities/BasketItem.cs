@@ -1,6 +1,8 @@
 ﻿using Ecommerce.Basket.Modules.Domain.Errors;
+using Ecommerce.Basket.Modules.Domain.ValueObjects;
 using Ecommerce.Domain.Domain;
 using Ecommerce.Domain.ValueObjects;
+using MongoDB.Bson.Serialization.Attributes;
 
 namespace Ecommerce.Basket.Modules.Domain.Entities;
 
@@ -9,13 +11,14 @@ public sealed class BasketItem : Entity
     public Guid ProductId { get; private set; }
     public string ProductName { get; private set; }
     public Money UnitPrice { get; private set; }
+
     public BasketQuantity Quantity { get; private set; }
 
     private BasketItem()
     {
     }
 
-    internal BasketItem(
+    public BasketItem(
         Guid productId,
         string productName,
         Money unitPrice,

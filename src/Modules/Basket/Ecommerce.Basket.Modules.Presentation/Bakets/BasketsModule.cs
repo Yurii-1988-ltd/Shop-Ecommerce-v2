@@ -12,6 +12,7 @@ public class BasketsModule : IModule
     public void MapEndpoints(IEndpointRouteBuilder app)
     {
       new AddItemToBasketEndpoint().MapEndpoint(app);
+      new GetBasketEndpoint().MapEndpoint(app);
     }
 
     public void RegisterServices(IServiceCollection services, IConfiguration config)
