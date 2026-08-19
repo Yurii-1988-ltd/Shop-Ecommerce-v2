@@ -1,4 +1,4 @@
-using Ecommerce.Basket.Modules.Presentation.Bakets;
+
 using Ecommerce.Inventory.Modules.Infrastructure;
 using Export.Infrastructure;
 using QuestPDF.Infrastructure;
@@ -30,8 +30,8 @@ internal class Program
             .AddModule<ProductsModule>(builder.Configuration)
             .AddModule<CartsModule>(builder.Configuration)
             .AddModule<OrdersModule>(builder.Configuration)
-            .AddModule<InventoriesModule>(builder.Configuration)
-            .AddModule<BasketsModule>(builder.Configuration);
+            .AddModule<InventoriesModule>(builder.Configuration);
+          
 
 
         builder.Services.AddSingleton<IMongoContext, MongoContext>();

@@ -1,7 +1,9 @@
-﻿using Ecommerce.Basket.Modules.Domain.Errors;
+﻿
+using Ecommerce.Cart.Modules.Domain.Errors;
 using Ecommerce.Domain.Domain;
 using Ecommerce.Domain.ValueObjects;
 
+namespace Ecommerce.Cart.Modules.Domain.Entities;
 public abstract class  Coupon :Entity
 {
 

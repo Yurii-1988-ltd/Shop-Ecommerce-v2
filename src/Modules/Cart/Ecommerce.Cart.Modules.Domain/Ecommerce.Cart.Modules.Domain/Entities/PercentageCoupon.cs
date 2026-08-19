@@ -1,8 +1,10 @@
-﻿using Ecommerce.Basket.Modules.Domain.Errors;
+﻿
+using Ecommerce.Cart.Modules.Domain.Entities;
+using Ecommerce.Cart.Modules.Domain.Errors;
 using Ecommerce.Domain.Domain;
 using Ecommerce.Domain.ValueObjects;
 
-namespace Ecommerce.Basket.Modules.Domain.Entities;
+namespace Ecommerce.Cart.Modules.Domain.Entities;
 
 public sealed class PercentageCoupon : Coupon
 {

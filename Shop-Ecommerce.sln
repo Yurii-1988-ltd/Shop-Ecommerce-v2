@@ -31,8 +31,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Users", "Users", "{1FDE2909
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Catalog", "Catalog", "{9A9CE63E-C6C9-45D4-A01B-F0353849FB9C}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Basket", "Basket", "{2899FC81-A096-4A62-9E9C-2FA6156657C5}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Orders", "Orders", "{1315A113-4723-41FB-A31E-52F55F71EC21}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Payments", "Payments", "{69ECF5D4-C15A-49FB-B0E8-E08933F7C6A7}"
@@ -160,14 +158,6 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ecommerce.Inventory.Modules.Domain.Tests", "src\tests\UnitTests\Inventories\Ecommerce.Inventory.Modules.Domain.Tests\Ecommerce.Inventory.Modules.Domain.Tests.csproj", "{F7CDFD4A-2C51-458E-BAED-BDB3F243337A}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ecommerce.Inventory.Modules.Infrastructure.Tests", "src\tests\UnitTests\Inventories\Ecommerce.Inventory.Modules.Infrastructure.Tests\Ecommerce.Inventory.Modules.Infrastructure.Tests.csproj", "{029332FF-93C1-46A9-AA29-EF8FDF37DE80}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ecommerce.Basket.Modules.Domain", "src\Modules\Basket\Ecommerce.Basket.Modules.Domain\Ecommerce.Basket.Modules.Domain.csproj", "{E6231C40-9BD4-42FF-B2ED-1EF20FBDD344}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ecommerce.Basket.Modules.Application", "src\Modules\Basket\Ecommerce.Basket.Modules.Application\Ecommerce.Basket.Modules.Application.csproj", "{7315630B-08CB-4D15-A333-FF051513A87E}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ecommerce.Basket.Modules.Infrastructure", "src\Modules\Basket\Ecommerce.Basket.Modules.Infrastructure\Ecommerce.Basket.Modules.Infrastructure.csproj", "{2890841A-300A-4FF6-A1A7-A6D8C5A638A5}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ecommerce.Basket.Modules.Presentation", "src\Modules\Basket\Ecommerce.Basket.Modules.Presentation\Ecommerce.Basket.Modules.Presentation.csproj", "{2DF52256-E6EC-40EE-AAD3-D3F7B137964A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -359,22 +349,6 @@ Global
 		{029332FF-93C1-46A9-AA29-EF8FDF37DE80}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{029332FF-93C1-46A9-AA29-EF8FDF37DE80}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{029332FF-93C1-46A9-AA29-EF8FDF37DE80}.Release|Any CPU.Build.0 = Release|Any CPU
-		{E6231C40-9BD4-42FF-B2ED-1EF20FBDD344}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{E6231C40-9BD4-42FF-B2ED-1EF20FBDD344}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{E6231C40-9BD4-42FF-B2ED-1EF20FBDD344}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{E6231C40-9BD4-42FF-B2ED-1EF20FBDD344}.Release|Any CPU.Build.0 = Release|Any CPU
-		{7315630B-08CB-4D15-A333-FF051513A87E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{7315630B-08CB-4D15-A333-FF051513A87E}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{7315630B-08CB-4D15-A333-FF051513A87E}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{7315630B-08CB-4D15-A333-FF051513A87E}.Release|Any CPU.Build.0 = Release|Any CPU
-		{2890841A-300A-4FF6-A1A7-A6D8C5A638A5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{2890841A-300A-4FF6-A1A7-A6D8C5A638A5}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{2890841A-300A-4FF6-A1A7-A6D8C5A638A5}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{2890841A-300A-4FF6-A1A7-A6D8C5A638A5}.Release|Any CPU.Build.0 = Release|Any CPU
-		{2DF52256-E6EC-40EE-AAD3-D3F7B137964A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{2DF52256-E6EC-40EE-AAD3-D3F7B137964A}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{2DF52256-E6EC-40EE-AAD3-D3F7B137964A}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{2DF52256-E6EC-40EE-AAD3-D3F7B137964A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -392,7 +366,6 @@ Global
 		{7EBE6ACC-BC86-4D8F-A70F-ECC7DC3B1F75} = {1D5B5FC5-9225-4F69-9564-4B2ED5BD4A26}
 		{1FDE2909-B8A6-4435-823C-04D10D7B0DC9} = {34383845-E19C-4924-AE84-8F80BD26B2AA}
 		{9A9CE63E-C6C9-45D4-A01B-F0353849FB9C} = {34383845-E19C-4924-AE84-8F80BD26B2AA}
-		{2899FC81-A096-4A62-9E9C-2FA6156657C5} = {34383845-E19C-4924-AE84-8F80BD26B2AA}
 		{1315A113-4723-41FB-A31E-52F55F71EC21} = {34383845-E19C-4924-AE84-8F80BD26B2AA}
 		{69ECF5D4-C15A-49FB-B0E8-E08933F7C6A7} = {34383845-E19C-4924-AE84-8F80BD26B2AA}
 		{3B85B5C4-5604-43A0-9B19-D18DD64BDE48} = {34383845-E19C-4924-AE84-8F80BD26B2AA}
@@ -457,10 +430,6 @@ Global
 		{E5EB373D-8841-4977-9B82-EEC90C384D41} = {D7AD151F-3B35-4D45-82F5-3C1C82CA199B}
 		{F7CDFD4A-2C51-458E-BAED-BDB3F243337A} = {D7AD151F-3B35-4D45-82F5-3C1C82CA199B}
 		{029332FF-93C1-46A9-AA29-EF8FDF37DE80} = {D7AD151F-3B35-4D45-82F5-3C1C82CA199B}
-		{E6231C40-9BD4-42FF-B2ED-1EF20FBDD344} = {2899FC81-A096-4A62-9E9C-2FA6156657C5}
-		{7315630B-08CB-4D15-A333-FF051513A87E} = {2899FC81-A096-4A62-9E9C-2FA6156657C5}
-		{2890841A-300A-4FF6-A1A7-A6D8C5A638A5} = {2899FC81-A096-4A62-9E9C-2FA6156657C5}
-		{2DF52256-E6EC-40EE-AAD3-D3F7B137964A} = {2899FC81-A096-4A62-9E9C-2FA6156657C5}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {78F4FA7E-BCD1-44F6-A576-5FAF7ADDA7CD}

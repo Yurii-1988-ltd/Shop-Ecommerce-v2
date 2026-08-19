@@ -1,4 +1,6 @@
-﻿using Ecommerce.Basket.Modules.Domain.Errors;
+﻿
+using Ecommerce.Cart.Modules.Domain.Entities;
+using Ecommerce.Cart.Modules.Domain.Errors;
 using Ecommerce.Domain.Domain;
 using Ecommerce.Domain.ValueObjects;
 

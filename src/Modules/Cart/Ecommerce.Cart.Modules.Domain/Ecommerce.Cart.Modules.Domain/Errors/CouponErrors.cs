@@ -2,7 +2,7 @@
 
 using Ecommerce.Domain.Domain;
 
-namespace Ecommerce.Basket.Modules.Domain.Errors;
+namespace Ecommerce.Cart.Modules.Domain.Errors;
 
 public static class CouponErrors
 {

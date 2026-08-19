@@ -13,8 +13,8 @@ public static class CartMapping
         {
             cm.AutoMap();
 
-            //cm.MapField("_items")
-            //  .SetElementName("Items");
+            cm.MapField("_items")
+              .SetElementName("Items");
         });
     }
 }

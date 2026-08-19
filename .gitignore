@@ -361,3 +361,4 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
+/src/Modules/Basket/Ecommerce.Basket.Modules.Application/Features/DeleteBasket/DeleteBasketCommandHandler.cs
