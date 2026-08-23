@@ -19,8 +19,9 @@ internal sealed class CartRepository : ICartRepository
 
     public async Task<Domain.Entities.Cart?> GetByCustomerIdAsync(Guid customerId, CancellationToken cancellationToken = default)
     {
-        return await _collection.Find(x => x.CustomerId == customerId)
+        var cart =  await _collection.Find(x => x.CustomerId == customerId)
             .FirstOrDefaultAsync(cancellationToken);
+        return cart;
     }
 
     public Task InsertAsync(Domain.Entities.Cart cart, CancellationToken cancellationToken = default)

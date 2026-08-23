@@ -1,7 +1,4 @@
-﻿
-
-using Ecommerce.Domain.Domain;
-using Microsoft.AspNetCore.Http;
+﻿using Ecommerce.Domain.Domain;
 
 namespace Ecommerce.Presentation;
 

@@ -1,10 +1,4 @@
-﻿using Ecommerce.Cart.Modules.Infrastructure;
-using Ecommerce.Presentation;
-using Microsoft.AspNetCore.Routing;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using System.Runtime.Intrinsics.Arm;
-
+﻿
 namespace Ecommerce.Cart.Modules.Presentation.Carts;
 
 public sealed class CartsModule : IModule
@@ -17,13 +11,16 @@ public sealed class CartsModule : IModule
 
     public void MapEndpoints(IEndpointRouteBuilder app)
     {
-        new CreateCartEndpoint().MapEndpoints(app);
-        new GetCartsEndpoint().MapEndpoints(app);
-        new ClearCartEndpoint().MapEndpoints(app);
-        new AddCartItemEndpoint().MapEndpoints(app);
-        new GetCartEndpoint().MapEndpoints(app);
-        new RemoveCartItemEndpoint().MapEndpoints(app);
-        new ChangeCartItemQuantityEndpoint().MapEndpoints(app);
-        new RemoveCartEndpoint().MapEndpoints(app);
+        new CreateCartEndpoint().MapEndpoint(app);
+        new GetCartsEndpoint().MapEndpoint(app);
+        new ClearCartEndpoint().MapEndpoint(app);
+        new AddCartItemEndpoint().MapEndpoint(app);
+        new GetCartEndpoint().MapEndpoint(app);
+        new RemoveCartItemEndpoint().MapEndpoint(app);
+        new ChangeCartItemQuantityEndpoint().MapEndpoint(app);
+        new RemoveCartEndpoint().MapEndpoint(app);
+        new ApplyCouponEndpoint().MapEndpoint(app);
+        new RemoveCouponEndpoint().MapEndpoint(app);
+      //  new CreateCouponEndpoint().MapEndpoint(app);
     }
 }

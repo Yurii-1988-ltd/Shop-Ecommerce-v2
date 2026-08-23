@@ -1,15 +1,11 @@
 ﻿
 using Ecommerce.Cart.Modules.Application.Features.CreateCart;
-using MediatR;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Routing;
 
 namespace Ecommerce.Cart.Modules.Presentation.Carts;
 
 internal sealed class CreateCartEndpoint
 {
-    public void MapEndpoints(IEndpointRouteBuilder app)
+    public void MapEndpoint(IEndpointRouteBuilder app)
     {
         app.MapPost("/carts", async (CreateCartCommand command,
                         ISender sender, CancellationToken canceletionToken) =>

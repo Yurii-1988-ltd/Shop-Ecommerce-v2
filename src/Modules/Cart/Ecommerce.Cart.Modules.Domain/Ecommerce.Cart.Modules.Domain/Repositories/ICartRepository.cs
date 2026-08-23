@@ -27,7 +27,7 @@ public interface ICartRepository
     Task UpdateAsync(
         Entities.Cart cart,
         CancellationToken cancellationToken = default);
-        Task<(List<Domain.Entities.Cart> Items, int TotalCount)> GetPagedAsync(
+        Task<(List<Entities.Cart> Items, int TotalCount)> GetPagedAsync(
             int page,
             int pageSize,
             CancellationToken cancellationToken = default);

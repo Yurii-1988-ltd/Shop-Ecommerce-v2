@@ -19,6 +19,15 @@ public static class CouponErrors
     public static  Error InvalidMaxDiscountAmount =
         new("Coupon.MaxDiscountAmount.Invalid", "Maximum discount amount must be greater than zero.",ErrorType.Validation);
 
-    public static  Error CurrencyMismatch =
+    public static  Error CurrencyMismatch =>
         new("Coupon.Currency.Mismatch", "Coupon monetary values must use the same currency.",ErrorType.Validation);
+    public static Error CouponExpired=>
+        new Error("Coupon.IsExpired","Cannot apply coupon.It is expired",ErrorType.Validation);
+    public static   Error CouponMinimumSpendNotMet => 
+        new Error("Coupon.Minimum.Spend.Not.Met","The minimum order amount required to use this coupon has not been reached.",ErrorType.Validation);
+    public static Error NotFound(string code)
+        => new Error("Coupon.NotFound", $"Coupon with code{code} not found", ErrorType.NotFound);
+    public static Error AlreadyExists(string code)
+        => new Error("Already.Exists", $"This code {code} already exist", ErrorType.Validation);
+
 }

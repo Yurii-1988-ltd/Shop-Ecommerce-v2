@@ -1,11 +1,16 @@
-﻿using Ecommerce.Cart.Modules.Application.Features.Responses;
+﻿using Ecommerce.Cart.Modules.Application.Contracts;
+using Ecommerce.Cart.Modules.Application.Features.CreateCoupon;
+using Ecommerce.Cart.Modules.Application.Features.Responses;
 using Ecommerce.Cart.Modules.Domain.Entities;
 
 internal static class CartMappings
 {
     public static CartResponse ToResponse(this Cart cart)
     {
+        var subTotal = cart.GetSubtotal().Value;
+        var discount = cart.GetDiscountTotal().Value;
         var total = cart.GetTotalCost().Value;
+   
 
         return new CartResponse(
             cart.Id,
@@ -19,6 +24,8 @@ internal static class CartMappings
                     x.TotalPrice.Amount))
                 .ToList(),
             cart.Items.Sum(x => x.Quantity),
+            subTotal.Amount,
+            discount.Amount,
             total.Amount,
             total.Currency);
     }
@@ -34,4 +41,13 @@ internal static class CartMappings
             total.Amount,
             total.Currency);
     }
+    public static CreateCouponCommand ToCommand(this CreateCouponRequest request) =>
+    new(
+        request.Code,
+        request.Type,
+        request.AmountOrPercentage,
+        request.MinimumSpend,
+        request.Currency,
+        request.ExpirationDateUtc,
+        request.MaxDiscountAmount);
 }

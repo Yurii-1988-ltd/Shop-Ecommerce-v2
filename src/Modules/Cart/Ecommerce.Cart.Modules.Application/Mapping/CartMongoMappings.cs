@@ -14,7 +14,7 @@ public static class CartMapping
             cm.AutoMap();
 
             cm.MapField("_items")
-              .SetElementName("Items");
+                .SetElementName("Items");
         });
     }
 }

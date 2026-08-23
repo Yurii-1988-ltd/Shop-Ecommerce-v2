@@ -1,5 +1,8 @@
 ﻿
 
+using Ecommerce.Cart.Modules.Application.Features.CreateCoupon;
+
+
 namespace Ecommerce.Cart.Modules.Infrastructure;
 
 public static class CartModuleExtensions
@@ -18,10 +21,12 @@ public static class CartModuleExtensions
         this IServiceCollection services,
         IConfiguration configuration)
     {
-        CartMapping.Register();
         MongoMappings.Register();
+        CartMapping.Register();
+        CouponMapping.Register();
+
         services.AddMongo();
-     
+
 
         return services;
     }
@@ -29,13 +34,14 @@ public static class CartModuleExtensions
     private static IServiceCollection AddApplication(this IServiceCollection services)
     {
         services.AddMediatR(cfg =>
-            cfg.RegisterServicesFromAssembly(typeof(CreateCartCommand).Assembly));
+        cfg.RegisterServicesFromAssembly(typeof(CreateCouponCommandHandler).Assembly));
 
         return services;
     }
     public static IServiceCollection AddInfrastructure(this IServiceCollection services)
     {
         services.AddScoped<ICartRepository, CartRepository>();
+        services.AddScoped<ICouponRepository, CouponRepository>();
         return services;
     }
     public static WebApplication UseWebApplicationExtensions(this WebApplication app)

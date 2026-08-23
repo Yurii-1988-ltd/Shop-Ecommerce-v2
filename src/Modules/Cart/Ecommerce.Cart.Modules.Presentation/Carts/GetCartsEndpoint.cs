@@ -1,16 +1,12 @@
 ﻿
 using Ecommerce.Cart.Modules.Application.Features.GetCarts;
-using MediatR;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Routing;
 
 namespace Ecommerce.Cart.Modules.Presentation.Carts;
 
 internal sealed class GetCartsEndpoint
 {
-    public void MapEndpoints(IEndpointRouteBuilder app)
+    public void MapEndpoint(IEndpointRouteBuilder app)
     {
         app.MapGet("/carts", async (
     [FromQuery] int page = 1,

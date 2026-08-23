@@ -5,5 +5,7 @@ public sealed record CartResponse(
     Guid CustomerId,
     IReadOnlyList<CartItemResponse> Items,
     int TotalItems,
+    decimal Subtotal,
+    decimal Discount,
     decimal TotalAmount,
     string Currency);

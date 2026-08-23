@@ -24,6 +24,7 @@ var mongo = builder.AddMongoDB("mongo")
 var catalog = mongo.AddDatabase("Catalog");
 var cart = mongo.AddDatabase("Cart");
 var order = mongo.AddDatabase("Order");
+var coupon = mongo.AddDatabase("Coupon");
 
 
 // 2. Сервисы
@@ -32,7 +33,8 @@ var api = builder.AddProject<Projects.Ecommerce_API>("ecommerce-api")
     .WithReference(catalog)
     .WithReference(cart)
     .WithReference(order)
-    .WithReference(inventory) ;
+    .WithReference(inventory)
+    .WithReference(coupon);
 
 builder.AddProject<Projects.Ecommerce_Admin>("ecommerce-admin")
     .WithReference(api);

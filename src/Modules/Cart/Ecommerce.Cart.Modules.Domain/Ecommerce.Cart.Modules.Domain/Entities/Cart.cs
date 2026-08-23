@@ -8,13 +8,10 @@ namespace Ecommerce.Cart.Modules.Domain.Entities;
 
 public sealed class Cart : Entity
 {
-    #region private fields and constructors
-
-    private List<CartItem> _items = new();
+    private  List<CartItem> _items = new();
 
     public Guid CustomerId { get; private set; }
-    public Coupon? AppliedCoupon { get; set; }
-
+    public Coupon? AppliedCoupon { get; private set; }
     public IReadOnlyCollection<CartItem> Items => _items.AsReadOnly();
 
     private Cart() { }
@@ -24,8 +21,6 @@ public sealed class Cart : Entity
         Id = id;
         CustomerId = customerId;
     }
-    #endregion
-    #region static factory Methods
 
     public static Result<Cart> Create(Guid customerId)
     {
@@ -37,7 +32,6 @@ public sealed class Cart : Entity
 
     public Result AddItem(Guid productId, string name, Money price, int quantity)
     {
-        // 2. Используем _items вместо Items
         var firstItem = _items.FirstOrDefault();
         if (firstItem != null && firstItem.Currency != price.Currency)
         {
@@ -54,7 +48,6 @@ public sealed class Cart : Entity
         if (itemResult.IsFailure)
             return Result.Failure(itemResult.Error);
 
-        // 3. Добавляем в приватное поле _items
         _items.Add(itemResult.Value);
         return Result.Success();
     }
@@ -68,36 +61,104 @@ public sealed class Cart : Entity
         }
 
         _items.Remove(item);
+
+        // Если сумма упала ниже порога скидки — сбрасываем купон
+        var subtotalResult = GetSubtotal();
+        if (subtotalResult.IsSuccess && AppliedCoupon != null && !AppliedCoupon.IsSatisfiedBy(subtotalResult.Value))
+        {
+            RemoveCoupon();
+        }
+
         return Result.Success();
     }
 
     public Result ChangeQuantity(Guid productId, int quantity)
     {
+        if (quantity == 0)
+            return RemoveItem(productId);
+
         var item = _items.SingleOrDefault(x => x.ProductId == productId);
         if (item is null)
             return CartItemErrors.NotFound(productId);
 
-        return item.UpdateQuantity(quantity);
+        var updateResult = item.UpdateQuantity(quantity);
+        if (updateResult.IsFailure)
+            return updateResult;
+
+        // Проверяем актуальность купона при уменьшении количества
+        var subtotalResult = GetSubtotal();
+        if (subtotalResult.IsSuccess && AppliedCoupon != null && !AppliedCoupon.IsSatisfiedBy(subtotalResult.Value))
+        {
+            RemoveCoupon();
+        }
+
+        return Result.Success();
     }
 
     public void Clear()
     {
         _items.Clear();
-        AppliedCoupon=null;
+        AppliedCoupon = null;
+    }
+
+    // --- Domain Actions for Coupons ---
+    public Result ApplyCoupon(Coupon coupon, DateTime currentDateUtc)
+    {
+
+        if (!coupon.IsValid(currentDateUtc))
+            return CouponErrors.CouponExpired;
+
+        var subtotalResult = GetSubtotal();
+        if (subtotalResult.IsFailure)
+            return subtotalResult.Error;
+
+        if (!coupon.IsSatisfiedBy(subtotalResult.Value))
+            return CouponErrors.CouponMinimumSpendNotMet;
+
+        AppliedCoupon = coupon;
+        return Result.Success();
+    }
+
+    public Result RemoveCoupon()
+    {
+        AppliedCoupon = null;
+        return Result.Success();
+    }
+
+    public Result<Money> GetSubtotal()
+    {
+       
+
+        if (!_items.Any())
+            return Money.Create(0, CurrencyConstant.UAH);
+
+        var currency = _items[0].Currency;
+        var totalAmount = _items.Sum(x => x.TotalPrice.Amount);
+
+
+        return Money.Create(totalAmount, currency);
+    }
+
+    public Result<Money> GetDiscountTotal()
+    {
+        var subtotalResult = GetSubtotal();
+        if (subtotalResult.IsFailure) return subtotalResult.Error;
+
+        if (AppliedCoupon is null)
+            return Money.Create(0, subtotalResult.Value.Currency);
+
+        return AppliedCoupon.CalculateDiscount(subtotalResult.Value);
     }
 
     public Result<Money> GetTotalCost()
     {
-        if (!_items.Any())
-        {
-            return Money.Create(0, CurrencyConstant.UAH);
-        }
+        var subtotalResult = GetSubtotal();
+        if (subtotalResult.IsFailure) return subtotalResult.Error;
 
-        // 4. Более чистый и безопасный подсчет через LINQ Sum
-        var currency = _items[0].Currency;
-        var totalAmount = _items.Sum(x => x.TotalPrice.Amount);
+        var discountResult = GetDiscountTotal();
+        if (discountResult.IsFailure) return discountResult.Error;
 
-        return Money.Create(totalAmount, currency);
+        var finalAmount = Math.Max(0, subtotalResult.Value.Amount - discountResult.Value.Amount);
+        return Money.Create(finalAmount, subtotalResult.Value.Currency);
     }
-    #endregion
 }

@@ -1,21 +1,23 @@
 ﻿
 using Ecommerce.Cart.Modules.Domain.Errors;
+using Ecommerce.Cart.Modules.Domain.ValueObjects;
 using Ecommerce.Domain.Domain;
 using Ecommerce.Domain.ValueObjects;
+using MongoDB.Bson.Serialization.Attributes;
 
 namespace Ecommerce.Cart.Modules.Domain.Entities;
 public abstract class  Coupon :Entity
 {
 
-    public string Code { get; }
-    public DateTime ExpirationDateUtc { get; }
-    public Money MinimumSpend { get; }
+    public CouponCode Code { get; init; }
+    public DateTime ExpirationDateUtc { get; init; }
+    public Money MinimumSpend { get; init; }
     protected Coupon()
     {
         
     }
-
-    protected Coupon(Guid id, string code, DateTime expirationDateUtc, Money minimumSpend)
+  
+    protected Coupon(Guid id, CouponCode code, DateTime expirationDateUtc, Money minimumSpend)
     {
         Id = id==Guid.Empty?Guid.NewGuid():id;
         Code = code;
@@ -35,7 +37,14 @@ public abstract class  Coupon :Entity
         return Result.Success();
     }
 
-    public bool IsValid(DateTime currentDateUtc) => currentDateUtc <= ExpirationDateUtc;
-    public bool IsSatisfiedBy(Money subtotal) => subtotal.Amount >= MinimumSpend.Amount;
+    public bool IsValid(DateTime currentDateUtc) => ExpirationDateUtc >= currentDateUtc;
+    public bool IsSatisfiedBy(Money subtotal)
+    {
+        // Защита от NRE
+        if (MinimumSpend is null || subtotal is null)
+            return false;
+
+        return subtotal.Amount >= MinimumSpend.Amount;
+    }
     public abstract  Money CalculateDiscount(Money subtotal);
 }

@@ -10,7 +10,7 @@ namespace Ecommerce.Cart.Modules.Presentation.Carts;
 
 internal sealed class AddCartItemEndpoint
 {
-    public void MapEndpoints(IEndpointRouteBuilder app)
+    public void MapEndpoint(IEndpointRouteBuilder app)
     {
         app.MapPost("/carts/{customerId:guid}/items", async (
             Guid customerId,

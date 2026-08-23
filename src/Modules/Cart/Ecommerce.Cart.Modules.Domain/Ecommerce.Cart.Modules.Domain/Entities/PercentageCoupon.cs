@@ -1,6 +1,6 @@
-﻿
-using Ecommerce.Cart.Modules.Domain.Entities;
+﻿using Ecommerce.Cart.Modules.Domain.Entities;
 using Ecommerce.Cart.Modules.Domain.Errors;
+using Ecommerce.Cart.Modules.Domain.ValueObjects;
 using Ecommerce.Domain.Domain;
 using Ecommerce.Domain.ValueObjects;
 
@@ -11,29 +11,23 @@ public sealed class PercentageCoupon : Coupon
     public decimal Percentage { get; private set; }
     public Money? MaxDiscountAmount { get; private set; }
 
-    private PercentageCoupon()
-    {
-    }
+    protected PercentageCoupon() { } // EF Core / Mongo
 
     private PercentageCoupon(
         Guid id,
-        string code,
+        CouponCode code,
         DateTime expirationDateUtc,
         Money minimumSpend,
         decimal percentage,
         Money? maxDiscountAmount)
-        : base(
-            id,
-            code,
-            expirationDateUtc,
-            minimumSpend)
+        : base(id, code, expirationDateUtc, minimumSpend)
     {
         Percentage = percentage;
         MaxDiscountAmount = maxDiscountAmount;
     }
 
     public static Result<PercentageCoupon> Create(
-        string code,
+        CouponCode code,
         DateTime expirationDateUtc,
         Money minimumSpend,
         decimal percentage,
@@ -41,7 +35,6 @@ public sealed class PercentageCoupon : Coupon
         Guid? id = null)
     {
         var baseResult = ValidateBase(code, minimumSpend);
-
         if (baseResult.IsFailure)
             return baseResult.Error;
 
@@ -59,14 +52,10 @@ public sealed class PercentageCoupon : Coupon
 
         var couponId = id ?? Guid.NewGuid();
 
-        var formattedCode = code
-            .Trim()
-            .ToUpperInvariant();
-
         return Result.Success(
             new PercentageCoupon(
                 couponId,
-                formattedCode,
+                code,
                 expirationDateUtc,
                 minimumSpend,
                 percentage,
@@ -75,17 +64,16 @@ public sealed class PercentageCoupon : Coupon
 
     public override Money CalculateDiscount(Money subtotal)
     {
+        if (!IsSatisfiedBy(subtotal))
+            return Money.Create(0, subtotal.Currency).Value;
+
         var discount = subtotal.Amount * Percentage;
 
         if (MaxDiscountAmount is not null)
         {
-            discount = Math.Min(
-                discount,
-                MaxDiscountAmount.Amount);
+            discount = Math.Min(discount, MaxDiscountAmount.Amount);
         }
 
-        return new Money(
-            discount,
-            subtotal.Currency);
+        return Money.Create(discount, subtotal.Currency).Value;
     }
 }
