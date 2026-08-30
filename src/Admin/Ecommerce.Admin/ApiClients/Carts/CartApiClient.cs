@@ -80,4 +80,19 @@ internal sealed class CartApiClient(HttpClient httpClient) : ICartApiClient
 
         response.EnsureSuccessStatusCode();
     }
+
+    public async Task ApplyCouponAsync(Guid customerId, ApplyCouponRequest request, CancellationToken cancellationToken = default)
+    {
+       var response = await httpClient.PostAsJsonAsync($"{CartUrl}/{customerId}/coupon",
+                                        request, cancellationToken);
+        response.EnsureSuccessStatusCode();
+    }
+
+    public async Task RemoveCouponAsync(Guid customerId, CancellationToken cancellationToken = default)
+    {
+        var response = await httpClient.DeleteAsync(
+                                $"{CartUrl}/{customerId}/coupon",cancellationToken); 
+        response.EnsureSuccessStatusCode();
+       
+    }
 }

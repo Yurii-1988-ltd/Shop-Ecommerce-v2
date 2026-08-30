@@ -50,4 +50,9 @@ public interface ICartApiClient
         Guid customerId,
         CancellationToken cancellationToken = default
     );
+    Task ApplyCouponAsync(Guid customerId,
+                          ApplyCouponRequest request,
+                          CancellationToken cancellationToken = default
+                            );
+    Task RemoveCouponAsync(Guid customerId, CancellationToken cancellationToken = default);
 }

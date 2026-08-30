@@ -14,6 +14,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="Blazor.Storage" Version="5.0.0" />
     <PackageReference Include="BlazorSortable" Version="8.1.0" />
     <PackageReference Include="MudBlazor" Version="9.6.0" />
   </ItemGroup>
@@ -21,6 +22,10 @@
   <ItemGroup>
     <ProjectReference Include="..\..\BuildingBlocks\Ecommerce.Application\Ecommerce.Application.csproj" />
     <ProjectReference Include="..\..\Modules\Users\Ecommerce.Modules.Users.Contracts\Ecommerce.Modules.Users.Contracts.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="ApiClients\Identity\Models\" />
   </ItemGroup>
 
 </Project>

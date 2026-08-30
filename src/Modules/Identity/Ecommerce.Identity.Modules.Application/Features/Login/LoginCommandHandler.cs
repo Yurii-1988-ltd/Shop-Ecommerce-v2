@@ -6,6 +6,7 @@ using Microsoft.Extensions.Options;
 namespace Ecommerce.Identity.Modules.Application.Features.Login;
 
 internal sealed class LoginCommandHandler(IUserService userService,
+                                           IUserRoleService roleService,
                                             IPasswordHasher passwordHasher,
                                             IJwtProvider jwtProvider,
                                             ITokenProvider tokenProvider,
@@ -26,8 +27,18 @@ internal sealed class LoginCommandHandler(IUserService userService,
         {
             return Result<AuthenticationResponse>.Failure(IdentityErrors.InvalidCredentials);
         }
-        string accessToken = jwtProvider.Generate(user.Id, user.Email,
-            Array.Empty<string>());
+        var roleResult = await roleService.GetRolesAsync(user.Id, cancellationToken);
+        if (roleResult.IsFailure)
+            return roleResult.Error;
+        var roles = roleResult.Value
+            .Select(x=>x.Name)
+            .ToArray();
+       string accessToken = jwtProvider.Generate(
+           user.Id,
+           user.Email,
+           roles);
+
+      
         string refreshToken = tokenProvider.GenerateRefreshToken();
 
         var refreshTokenResult = RefreshToken.Create(user.Id,refreshToken, DateTime.UtcNow.AddDays(jwtOptions.Value.RefreshTokenExpirationInDays));

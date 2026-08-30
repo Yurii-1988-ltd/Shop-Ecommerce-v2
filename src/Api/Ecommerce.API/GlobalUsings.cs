@@ -11,3 +11,4 @@ global using Ecommerce.ServiceDefaults;
 global using MediatR;
 global using System.Text.Json;
 global using System.Text.Json.Serialization;
+

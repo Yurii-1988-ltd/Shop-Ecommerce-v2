@@ -60,7 +60,13 @@ public static class IdentityModuleExtensions
     .ValidateOnStart();
 
 
-        services.AddAuthorization();
+        services.AddAuthorization(options =>
+        {
+            options.AddPolicy("Admin", policy =>
+            {
+                policy.RequireRole("Admin");
+            });
+        });
     }
     private static IServiceCollection AddApplication(this IServiceCollection services)
     {

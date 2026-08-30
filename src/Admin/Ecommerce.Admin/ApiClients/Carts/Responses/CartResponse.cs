@@ -3,5 +3,9 @@
     Guid CustomerId,
     IReadOnlyList<CartItemResponse> Items,
     int TotalItems,
+    decimal SubTotal,
+    decimal Discount,
     decimal TotalAmount,
-    string Currency);
+    string Currency,
+    string? CouponCode
+    );

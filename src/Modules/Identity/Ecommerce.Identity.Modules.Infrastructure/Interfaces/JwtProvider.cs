@@ -1,8 +1,5 @@
-﻿using Ecommerce.Identity.Modules.Application.Abstractions;
-using Ecommerce.Identity.Modules.Application.Options;
-using Microsoft.Extensions.Options;
+﻿using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.JsonWebTokens;
-using Microsoft.IdentityModel.Tokens;
 
 using System.Security.Claims;
 using System.Text;
@@ -24,6 +21,7 @@ namespace Ecommerce.Identity.Modules.Infrastructure.Interfaces
             {
                 new(JwtRegisteredClaimNames.Sub, userId.ToString()),
                 new(ClaimTypes.NameIdentifier, userId.ToString()),
+                new(ClaimTypes.Role,"Admin"),
                 new(JwtRegisteredClaimNames.Email, email),
                 new(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
             };

@@ -1,10 +1,4 @@
 
-
-using Ecommerce.Admin.ApiClients.Inventories.Api;
-using Ecommerce.Admin.ApiClients.Roles.Api;
-using Ecommerce.Admin.ApiClients.Users.Api;
-using System.Text.Json.Serialization;
-
 internal class Program
 {
     private static void Main(string[] args)
@@ -52,6 +46,14 @@ internal class Program
         {
             client.BaseAddress = new Uri("https://localhost:7125");
         });
+        builder.Services.AddHttpClient<ICouponApiClient, CouponApiClient>(client =>
+        {
+            client.BaseAddress = new Uri("https://localhost:7125");
+        });
+        builder.Services.AddHttpClient<IIdentityApiClient, IdentityApiClient>(client =>
+        {
+            client.BaseAddress = new Uri("https://localhost:7125");
+        });
         builder.Services.ConfigureHttpJsonOptions(options =>
         {
             options.SerializerOptions.Converters.Add(
@@ -60,6 +62,10 @@ internal class Program
             // Дозволяє співставляти "canceled", "Canceled", "CANCELED"
             options.SerializerOptions.PropertyNameCaseInsensitive = true;
         });
+
+        //Services
+        builder.Services.AddScoped<ITokenStorage, TokenStorage>();
+        builder.Services.AddScoped<AuthenticationService>();
         //builder.AddServiceDefaults();
         var app = builder.Build();
         app.UseStaticFiles();

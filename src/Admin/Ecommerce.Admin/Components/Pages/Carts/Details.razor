@@ -1,11 +1,4 @@
 ﻿@page "/carts/{CustomerId:guid}"
-
-@using Ecommerce.Admin.ApiClients.Carts
-@using Ecommerce.Admin.ApiClients.Carts.Contracts
-@using Ecommerce.Admin.Components.Pages.Carts.Dialogs
-@inject ICartApiClient CartApi
-@inject NavigationManager Navigation
-
 <PageHeader Title="Shopping Cart"
             Subtitle="Manage customer cart">
 
@@ -117,94 +110,101 @@ else
 
         @if (_cart.Items.Any())
         {
+
             <MudDivider Class="my-4" />
 
-            <MudStack AlignItems="AlignItems.End">
+            <MudStack Spacing="2">
+
+                <MudText Typo="Typo.h6">
+                    Coupon
+                </MudText>
+
+                @if (string.IsNullOrWhiteSpace(_cart.CouponCode))
+                {
+                    <MudStack Row="true"
+                              AlignItems="AlignItems.Center">
+
+                        <MudTextField @bind-Value="_couponCode"
+                                      Label="Coupon code"
+                                      Variant="Variant.Outlined"
+                                      Margin="Margin.Dense"
+                                      Immediate="true" />
+
+                        <MudButton Color="Color.Primary"
+                                   Variant="Variant.Filled"
+                                   OnClick="ApplyCoupon"
+                                   Disabled="@_couponLoading">
+                            Apply
+                        </MudButton>
+
+                    </MudStack>
+                }
+                else
+                {
+                    <MudStack Row="true"
+                              AlignItems="AlignItems.Center">
+
+                        <MudChip T="string"
+                                 Color="Color.Success"
+                                 Variant="Variant.Outlined">
+                            @_cart.CouponCode
+                        </MudChip>
+
+                        <MudButton Color="Color.Error"
+                                   Variant="Variant.Outlined"
+                                   OnClick="RemoveCoupon"
+                                   Disabled="@_couponLoading">
+                            Remove
+                        </MudButton>
+
+                    </MudStack>
+                }
+
+            </MudStack>
+            <MudDivider Class="my-4" />
+
+            
+
+            <MudStack AlignItems="AlignItems.End" Spacing="1">
+
+                <MudText>
+                    Subtotal:
+                    <b>
+                        @_cart.SubTotal.ToString("N2") @_cart.Currency
+                    </b>
+                </MudText>
+
+                @if (_cart.Discount > 0)
+                {
+                    <MudText Color="Color.Success">
+                        Discount:
+                        <b>
+                            -@_cart.Discount.ToString("N2") @_cart.Currency
+                        </b>
+                    </MudText>
+                }
 
                 <MudText Typo="Typo.h6">
                     Total:
                     <b>
-                        @_cart.TotalAmount.ToString("N2")
-                        @_cart.Currency
+                        @_cart.TotalAmount.ToString("N2") @_cart.Currency
                     </b>
                 </MudText>
 
             </MudStack>
+            @if(!string.IsNullOrWhiteSpace(_couponError))
+            {
+                <MudAlert Severity="Severity.Error"
+                Dense="true"
+                Class="mt-2">
+                    @_couponError
+                </MudAlert>
+            }
         }
 
     </MudPaper>
 }
 @code
 {
-    [Parameter]
-    public Guid CustomerId { get; set; }
-
-    private CartResponse? _cart;
-    private bool _loading;
-
-    protected override async Task OnInitializedAsync()
-    {
-        await LoadAsync();
-    }
-
-    private async Task LoadAsync()
-    {
-        _loading = true;
-
-        try
-        {
-            _cart = await CartApi.GetAsync(CustomerId);
-        }
-        finally
-        {
-            _loading = false;
-        }
-    }
-
-    private async Task RemoveItem(Guid productId)
-    {
-        await CartApi.RemoveItemAsync(
-            CustomerId,
-            productId);
-
-        await LoadAsync();
-    }
-
-    private async Task ClearCart()
-    {
-        await CartApi.ClearAsync(CustomerId);
-
-        await LoadAsync();
-    }
-    private async Task ChangeQuantity(CartItemResponse item)
-    {
-        var parameters = new DialogParameters
-    {
-        {
-            nameof(ChangeQuantityDialog.CurrentQuantity),
-            item.Quantity
-        }
-    };
-
-        var dialog = await DialogService.ShowAsync<ChangeQuantityDialog>(
-            "Change Quantity",
-            parameters);
-
-        var result = await dialog.Result;
-
-        if (result is null || result.Canceled)
-            return;
-
-        var quantity = (int)result.Data!;
-
-        await CartApi.ChangeQuantityAsync(
-            CustomerId,
-            item.ProductId,
-            new ChangeCartItemQuantityRequest(
-                CustomerId,
-                item.ProductId,
-                quantity));
-
-        await LoadAsync();
-    }
+  
 }

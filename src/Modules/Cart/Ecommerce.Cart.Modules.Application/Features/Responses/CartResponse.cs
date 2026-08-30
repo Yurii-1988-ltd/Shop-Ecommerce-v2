@@ -8,4 +8,5 @@ public sealed record CartResponse(
     decimal Subtotal,
     decimal Discount,
     decimal TotalAmount,
-    string Currency);
+    string Currency,
+    string Code);

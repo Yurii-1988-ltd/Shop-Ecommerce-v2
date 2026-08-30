@@ -27,7 +27,8 @@ internal static class CartMappings
             subTotal.Amount,
             discount.Amount,
             total.Amount,
-            total.Currency);
+            total.Currency,
+            cart.AppliedCoupon?.Code.Value);
     }
 
     public static CartListResponse ToListResponse(this Cart cart)
