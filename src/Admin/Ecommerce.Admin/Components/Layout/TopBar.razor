@@ -1,20 +1,20 @@
 ﻿<MudAppBar Elevation="1">
 
-    <MudIconButton Icon="@Icons.Material.Filled.Menu"
-                   Color="Color.Inherit"
-                   OnClick="ToggleDrawer" />
-
     <MudText Typo="Typo.h6">
-        Ecommerce Admin
+        Admin Panel
     </MudText>
 
     <MudSpacer />
 
-    <MudIconButton Icon="@Icons.Material.Filled.Notifications" />
+    <form method="post" action="/account/logout" data-enhance="false">
+        <AntiforgeryToken />
 
-    <MudAvatar Size="Size.Medium">
-        Y
-    </MudAvatar>
+        <MudButton ButtonType="ButtonType.Submit"
+                   Variant="Variant.Text"
+                   StartIcon="@Icons.Material.Filled.Logout">
+            Logout
+        </MudButton>
+    </form>
 
 </MudAppBar>
 @code

@@ -2,9 +2,10 @@
 @using Ecommerce.Admin.ApiClients.Categories
 @using Ecommerce.Admin.ApiClients.Categories.Models
 
+@using Microsoft.AspNetCore.Authorization
+@attribute [Authorize(Roles = "Admin")]
 @inject ICategoryApiClient Api
-@inject IDialogService DialogService
-@inject NavigationManager Navigation
+
 
 <PageHeader Title="Categories"
             Subtitle="Manage your category catalog">

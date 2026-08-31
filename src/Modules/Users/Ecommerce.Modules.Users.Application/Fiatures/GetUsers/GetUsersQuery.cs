@@ -2,5 +2,7 @@
 
 namespace Ecommerce.Modules.Users.Application.Fiatures.GetUsers;
 
-public record GetUsersQuery(int Page,int PageSize) : IQuery<PagedResult<UserResponse>>;
+public record GetUsersQuery(int Page,
+    int PageSize,
+    string? Search = null) : IQuery<PagedResult<UserResponse>>;
 

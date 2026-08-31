@@ -33,7 +33,9 @@
 @using MudBlazor
 @using static Microsoft.AspNetCore.Components.Web.RenderMode
 @using ApiClients.Identity.Contracts
-
+@using System.ComponentModel.DataAnnotations
+@using Ecommerce.Admin.Authentication
+@using Microsoft.AspNetCore.Components.Authorization
 
 
 
@@ -52,4 +54,7 @@
 @inject IImageApiClient ImageApi 
 @inject ISnackbar Snackbar
 @inject IJSRuntime jS
+
+@inject AuthenticationService AuthenticationService
+@inject AuthenticationStateProvider AuthenticationStateProvider
 

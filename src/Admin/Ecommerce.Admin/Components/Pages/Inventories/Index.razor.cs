@@ -128,7 +128,7 @@ public partial class Index
             // При необходимости можно передать CancellationToken (например, из CancellationTokenSource)
             var file = await exportFunc(CancellationToken.None);
 
-            await JS.InvokeVoidAsync(
+            await jS.InvokeVoidAsync(
                 "downloadFile",
                 fileName,
                 contentType,

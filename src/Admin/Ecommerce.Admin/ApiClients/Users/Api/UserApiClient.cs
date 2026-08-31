@@ -33,12 +33,20 @@ internal sealed class UserApiClient(HttpClient httpClient) : IUserApiClient
     }
 
     public async Task<PagedResult<UserResponse>> GetAllAsync(
-     int page,
-     int pageSize,
-     CancellationToken cancellationToken = default)
+    int page,
+    int pageSize,
+    string? search = null,
+    CancellationToken cancellationToken = default)
     {
+        var url = $"{UserUrl}?page={page}&pageSize={pageSize}";
+
+        if (!string.IsNullOrWhiteSpace(search))
+        {
+            url += $"&search={Uri.EscapeDataString(search)}";
+        }
+
         return await httpClient.GetFromJsonAsync<PagedResult<UserResponse>>(
-            $"{UserUrl}?page={page}&pageSize={pageSize}",
+            url,
             cancellationToken) ?? new();
     }
 

@@ -1,9 +1,5 @@
 ﻿@page "/login"
 
-@using System.ComponentModel.DataAnnotations
-@using Ecommerce.Admin.ApiClients.Identity
-
-
 <PageTitle>Admin Login</PageTitle>
 
 <MudContainer MaxWidth="MaxWidth.Small"
@@ -11,102 +7,43 @@
 
     <MudPaper Class="pa-6">
 
-        <MudText Typo="Typo.h5" Align="Align.Center"
+        <MudText Typo="Typo.h5"
+                 Align="Align.Center"
                  Class="mb-6">
             Admin Login
         </MudText>
 
-        <EditForm Model="_model"
-                  OnValidSubmit="LoginAsync">
+        <form method="post"
+              action="/account/login"
+              data-enhance="false">
 
-            <DataAnnotationsValidator />
+            <AntiforgeryToken />
 
             <MudTextField T="string"
                           Label="Email"
-                          @bind-Value="_model.Email"
-                          For="@(() => _model.Email)"
+                          InputType="InputType.Email"
                           Variant="Variant.Outlined"
-                          Class="mb-4" />
+                          Class="mb-4"
+                          Name="email"
+                          Required="true" />
 
             <MudTextField T="string"
                           Label="Password"
                           InputType="InputType.Password"
-                          @bind-Value="_model.Password"
-                          For="@(() => _model.Password)"
                           Variant="Variant.Outlined"
-                          Class="mb-4" />
-
-            @if (!string.IsNullOrWhiteSpace(_error))
-            {
-                <MudAlert Severity="Severity.Error"
-                          Class="mb-4">
-                    @_error
-                </MudAlert>
-            }
+                          Class="mb-4"
+                          Name="password"
+                          Required="true" />
 
             <MudButton ButtonType="ButtonType.Submit"
                        Variant="Variant.Filled"
                        Color="Color.Primary"
-                       FullWidth="true"
-                       Disabled="_loading">
-
-                @if (_loading)
-                {
-                    <MudProgressCircular Size="Size.Small"
-                                         Indeterminate="true" />
-                }
-                else
-                {
-                    <span>Login</span>
-                }
-
+                       FullWidth="true">
+                Login
             </MudButton>
 
-        </EditForm>
+        </form>
 
     </MudPaper>
 
 </MudContainer>
-
-@code
-{
-    private readonly LoginModel _model = new();
-
-    private bool _loading;
-    private string? _error;
-
-    private async Task LoginAsync()
-    {
-        _error = null;
-        _loading = true;
-
-        try
-        {
-            var result = await IdentityApi.LoginAsync(
-                new LoginRequest(
-                    _model.Email,
-                    _model.Password));
-
-
-            Navigation.NavigateTo("/");
-        }
-        catch (HttpRequestException)
-        {
-            _error = "Invalid email or password.";
-        }
-        finally
-        {
-            _loading = false;
-        }
-    }
-
-    private sealed class LoginModel
-    {
-        [Required]
-        [EmailAddress]
-        public string Email { get; set; } = string.Empty;
-
-        [Required]
-        public string Password { get; set; } = string.Empty;
-    }
-}

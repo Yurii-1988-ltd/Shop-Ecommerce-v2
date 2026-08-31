@@ -11,7 +11,7 @@ namespace Ecommerce.Admin.Authentication
 
 
         public async Task<string?> GetRefreshTokenAsync()
-        => await jS.InvokeAsync<string?>("localStorage.getItem", AccessTokenKey);
+        => await jS.InvokeAsync<string?>("localStorage.getItem", RefreshTokenKey);
 
         public ValueTask RemoveAccessTokenAsync()
             => jS.InvokeVoidAsync("localStorage.removeItem", AccessTokenKey);
@@ -20,14 +20,13 @@ namespace Ecommerce.Admin.Authentication
         public ValueTask RemoveRefreshTokenAsync()
             => jS.InvokeVoidAsync("localStorage.removeItem",
                 RefreshTokenKey);
-        
+
 
         public ValueTask SetAccessTokenAsync(string token)
-        => jS.InvokeVoidAsync("localStorage.getItem",AccessTokenKey,token);
+        => jS.InvokeVoidAsync("localStorage.setItem", AccessTokenKey, token);
 
-        public Task SetRefreshTokenAsync(string token)
-        {
-            throw new NotImplementedException();
-        }
+        public ValueTask SetRefreshTokenAsync(string token)
+        => jS.InvokeVoidAsync("localStorage.setItem", RefreshTokenKey, token);
+
     }
 }

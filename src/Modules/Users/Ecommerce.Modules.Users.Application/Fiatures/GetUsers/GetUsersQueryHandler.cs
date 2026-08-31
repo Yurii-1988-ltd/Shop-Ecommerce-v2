@@ -23,12 +23,24 @@ public sealed class GetUsersQueryHandler(
                 LastName AS {nameof(UserResponse.LastName)},
                 CreatedAtUtc AS {nameof(UserResponse.CreatedAtUtc)}
             FROM users
+            WHERE
+                @Search IS NULL
+                OR @Search = ''
+                OR Email LIKE '%' + @Search + '%'
+                OR FirstName LIKE '%' + @Search + '%'
+                OR LastName LIKE '%' + @Search + '%'
             ORDER BY CreatedAtUtc DESC
             OFFSET @Offset ROWS
             FETCH NEXT @PageSize ROWS ONLY;
 
             SELECT COUNT(*)
-            FROM users;
+            FROM users
+            WHERE
+                @Search IS NULL
+                OR @Search = ''
+                OR Email LIKE '%' + @Search + '%'
+                OR FirstName LIKE '%' + @Search + '%'
+                OR LastName LIKE '%' + @Search + '%';
             """;
 
         var offset = (query.Page - 1) * query.PageSize;
@@ -38,7 +50,8 @@ public sealed class GetUsersQueryHandler(
             new
             {
                 Offset = offset,
-                query.PageSize
+                query.PageSize,
+                Search = query.Search?.Trim()
             });
 
         var users = (await multi.ReadAsync<UserResponse>())
@@ -46,14 +59,12 @@ public sealed class GetUsersQueryHandler(
 
         var totalCount = await multi.ReadSingleAsync<int>();
 
-        var result = new PagedResult<UserResponse>
+        return new PagedResult<UserResponse>
         {
             Items = users,
             Page = query.Page,
             PageSize = query.PageSize,
             TotalCount = totalCount
         };
-
-        return result;
     }
 }

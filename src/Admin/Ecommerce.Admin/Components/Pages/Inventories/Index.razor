@@ -1,7 +1,9 @@
 ﻿@using Ecommerce.Admin.ApiClients.Inventories.Responses
 @using Ecommerce.Admin.Components.Pages.Inventories.Dialogs
-@inject IJSRuntime JS
+
 @rendermode InteractiveServer
+@attribute [Authorize(Roles = "Admin")]
+@using Microsoft.AspNetCore.Authorization
 @page "/inventories"
 
 <PageHeader Title="Inventories" Subtitle="Manage your inventories">

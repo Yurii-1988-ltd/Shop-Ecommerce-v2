@@ -1,4 +1,8 @@
 
+using Ecommerce.Admin;
+using Ecommerce.Admin.Authentication.Endpoints;
+using Microsoft.AspNetCore.Components.Authorization;
+
 internal class Program
 {
     private static void Main(string[] args)
@@ -62,17 +66,27 @@ internal class Program
             // Дозволяє співставляти "canceled", "Canceled", "CANCELED"
             options.SerializerOptions.PropertyNameCaseInsensitive = true;
         });
-
-        //Services
-        builder.Services.AddScoped<ITokenStorage, TokenStorage>();
+       ;
         builder.Services.AddScoped<AuthenticationService>();
-        //builder.AddServiceDefaults();
+      
+        
+        builder.Services.AddModule<AdminModule>(builder.Configuration);
+
+        builder.Services.AddAuthorization();
+        builder.Services.AddCascadingAuthenticationState();
         var app = builder.Build();
+        app.UseAuthentication();
+        app.UseAuthorization();
+ 
+
         app.UseStaticFiles();
         app.UseAntiforgery();
 
+        app.MapModules();
+
         app.MapRazorComponents<App>()
             .AddInteractiveServerRenderMode();
+      
 
 
         app.Run();
