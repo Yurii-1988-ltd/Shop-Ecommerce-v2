@@ -1,8 +1,6 @@
 ﻿@page "/users"
 
-@using Ecommerce.Admin.ApiClients.Users
 @using Ecommerce.Admin.ApiClients.Users.Responses
-@using Ecommerce.Application.Pagination
 
 @inject IUserApiClient UserApi
 
@@ -70,6 +68,7 @@
 
 @code
 {
+    private TableState? _tableState;
     private string? _search;
     private MudTable<UserResponse> _table = default!;
     private async Task<TableData<UserResponse>> LoadUsersAsync(
@@ -83,7 +82,7 @@
             page,
             pageSize,
             _search,
-            
+
             cancellationToken);
 
         return new TableData<UserResponse>
@@ -94,6 +93,10 @@
     }
     private async Task SearchAsync(string value)
     {
+        if(_tableState is not null)
+        {
+            _tableState.Page = 0;
+        }
         await _table.ReloadServerData();
     }
 }

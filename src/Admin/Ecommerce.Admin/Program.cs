@@ -22,6 +22,11 @@ internal class Program
         {
             client.BaseAddress = new Uri("https://localhost:7125");
         });
+        builder.Services.AddHttpClient("Catalog", client =>
+        {
+            client.BaseAddress = new Uri("https://localhost:7125");
+        });
+
         builder.Services.AddHttpClient<IBrandApiClient, BrandsApiClient>(client =>
         {
             client.BaseAddress = new Uri("https://localhost:7125");

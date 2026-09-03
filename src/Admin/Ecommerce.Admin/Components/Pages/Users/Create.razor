@@ -1,0 +1,94 @@
+﻿@page "/users/create"
+
+<PageTitle>Create User</PageTitle>
+<PageHeader Title="Create User">
+    <Actions>
+        <MudButton Variant="Variant.Text"
+                    StartIcon="@Icons.Material.Filled.ArrowBack"
+                       OnClick="GoBack">
+                       Back
+        </MudButton>
+    </Actions>
+</PageHeader>
+<MudPaper Class="pa-6">
+    <EditForm Model="_model"
+        OnInvalidSubmit="CreateUserAsync">
+        <DataAnnotationsValidator />
+        <MudGrid>
+            <MudItem xs="12" sm="6">
+                <MudTextField @bind-Value="_model.FirstName"
+                              Label="First Name"
+                              Variant="Variant.Outlined"
+                              Required="true"
+                              For="@(() => _model.FirstName)" />
+            </MudItem>
+            <MudItem xs="12" sm="6">
+                <MudTextField @bind-Value="_model.LastName"
+                              Label="Last Name"
+                              Variant="Variant.Outlined"
+                              Required="true"
+                              For="@(() => _model.LastName)" />
+            </MudItem>
+            <MudItem xs="12" sm="6">
+                <MudTextField @bind-Value="_model.Email"
+                              Label="Email"
+                              Variant="Variant.Outlined"
+                              Required="true"
+                              For="@(() => _model.Email)" />
+            </MudItem>
+            <MudItem xs="12" sm="6">
+                <MudTextField @bind-Value="_model.Password"
+                              Label="Password"
+                              Variant="Variant.Outlined"
+                              Required="true"
+                              For="@(() => _model.Password)"
+                              InputType="@InputType.Password" />
+            </MudItem>
+            <MudItem xs="12" sm="6">
+                <MudTextField T="string"
+                              Label="Confirm Password"
+                              Variant="Variant.Outlined"
+                              Required="true"
+                              For="@(() => _model.ConfirmPassword)"
+                              InputType="@InputType.Password" />
+
+            </MudItem>
+        </MudGrid>
+    </EditForm>
+
+</MudPaper>
+
+@code {
+    private bool _isLoading;
+    private string? _error;
+    private readonly CreateUserModel _model = new();
+
+    private void GoBack()
+    {
+        Navigation.NavigateTo("/users");
+    }
+    private async Task CreateUserAsync()
+    {
+        _error = null;
+        _isLoading = true;
+        try
+        {
+            var request = new UserRequest(_model.Email,
+                                            _model.FirstName,
+                                            _model.LastName, 
+                                            _model.Password);
+            var userId = await UserApi.CreateAsync(request);
+            Navigation.NavigateTo($"/users/{userId}");
+        }
+        catch(HttpRequestException)
+        {
+            _error = " Fieled to create user.";
+        }
+        finally
+        {
+            _isLoading = false;
+        }
+
+
+    }
+}

@@ -1,13 +1,12 @@
-﻿@inject HttpClient HttpClient
+﻿@inject IHttpClientFactory httpClientFactory
 
 <MudCard Class="d-flex flex-column justify-space-between"
          Style="height:320px;width:100%;">
-          <MudCardHeader>
 
+    <MudCardHeader>
         <MudIconButton Icon="@Icons.Material.Filled.DragIndicator"
                        Class="drag-handle"
                        Color="Color.Default" />
-
     </MudCardHeader>
 
     <div class="d-flex align-center justify-center p-2"
@@ -15,16 +14,10 @@
 
         @if (Image is not null && !string.IsNullOrWhiteSpace(Image.Url))
         {
-       
             var relativeUri = Image.Url.TrimStart('/');
-
-            var baseUri = HttpClient.BaseAddress?.ToString().TrimEnd('/') ?? "";
-
+            var httpClient = httpClientFactory.CreateClient("Catalog");
+            var baseUri = httpClient.BaseAddress?.ToString().TrimEnd('/') ?? "";
             var fullSrc = $"{baseUri}/{relativeUri}";
-
-            <MudText Typo="Typo.caption">
-                @fullSrc
-            </MudText>
 
             <img src="@fullSrc"
                  alt="@Image.AltText"
@@ -47,19 +40,16 @@
     </MudCardContent>
 
     <MudCardActions>
-
         <MudButton Color="Color.Primary"
                    Disabled="@(Image == null || Image.IsPrimary)"
                    OnClick="@(() => OnSetPrimary.InvokeAsync(Image!.Id))">
             Set Main
         </MudButton>
-       
 
         <MudButton Color="Color.Error"
                    OnClick="@(() => OnDelete.InvokeAsync(Image!.Id))">
             Delete
         </MudButton>
-
     </MudCardActions>
 
 </MudCard>

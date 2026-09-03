@@ -12,7 +12,7 @@ internal sealed class CreateUserEndpoint
                   request.Email,
                     request.FirstName,
                     request.LastName,
-                    request.PasswordHash
+                    request.Password
                 ));
 
             return result.IsSuccess
@@ -20,7 +20,7 @@ internal sealed class CreateUserEndpoint
                 : Results.BadRequest(result.Error);
         })
   .WithTags(Tags.Users)
-  .Produces<UserResponse>(StatusCodes.Status201Created)
+  .Produces<Guid>(StatusCodes.Status201Created)
    .Produces(StatusCodes.Status404NotFound); ;
     }
 }
@@ -29,7 +29,7 @@ internal sealed class UserRequest
     public string Email { get;  set; }
     public string FirstName { get;  set; }
     public string LastName { get;  set; }
-    public string PasswordHash { get;  set; }
+    public string Password { get;  set; }
 
 
 }

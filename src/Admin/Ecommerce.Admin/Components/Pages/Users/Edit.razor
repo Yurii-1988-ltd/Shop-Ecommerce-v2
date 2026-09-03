@@ -1,0 +1,169 @@
+﻿@page "/users/{Id:guid}/edit"
+
+<PageTitle>Edit User</PageTitle>
+
+@if (_user is null)
+{
+    <MudProgressCircular Indeterminate="true" />
+}
+else
+{
+    <PageHeader Title="Edit User">
+        <Actions>
+            <MudButton Variant="Variant.Text"
+                       StartIcon="@Icons.Material.Filled.ArrowBack"
+                       OnClick="GoBack">
+                Back
+            </MudButton>
+        </Actions>
+    </PageHeader>
+
+    <MudPaper Class="pa-6">
+
+        <EditForm Model="_model"
+                  OnValidSubmit="UpdateUserAsync">
+
+            <DataAnnotationsValidator />
+
+            <MudGrid>
+
+                <MudItem xs="12">
+                    <MudTextField T="string"
+                                  Label="Email"
+                                  Value="_user.Email"
+                                  Variant="Variant.Outlined"
+                                  Disabled="true" />
+                </MudItem>
+
+                <MudItem xs="12" sm="6">
+                    <MudTextField T="string"
+                                  Label="First Name"
+                                  @bind-Value="_model.FirstName"
+                                  For="@(() => _model.FirstName)"
+                                  Variant="Variant.Outlined"
+                                  Required="true" />
+                </MudItem>
+
+                <MudItem xs="12" sm="6">
+                    <MudTextField T="string"
+                                  Label="Last Name"
+                                  @bind-Value="_model.LastName"
+                                  For="@(() => _model.LastName)"
+                                  Variant="Variant.Outlined"
+                                  Required="true" />
+                </MudItem>
+
+                @if (!string.IsNullOrWhiteSpace(_error))
+                {
+                    <MudItem xs="12">
+                        <MudAlert Severity="Severity.Error">
+                            @_error
+                        </MudAlert>
+                    </MudItem>
+                }
+
+                <MudItem xs="12">
+                    <MudStack Row="true"
+                              Justify="Justify.FlexEnd"
+                              Spacing="2">
+
+                        <MudButton Variant="Variant.Text"
+                                   OnClick="GoBack"
+                                   Disabled="_loading">
+                            Cancel
+                        </MudButton>
+
+                        <MudButton ButtonType="ButtonType.Submit"
+                                   Variant="Variant.Filled"
+                                   Color="Color.Primary"
+                                   Disabled="_loading">
+
+                            @if (_loading)
+                            {
+                                <MudProgressCircular Size="Size.Small"
+                                                     Indeterminate="true" />
+                            }
+                            else
+                            {
+                                <span>Save</span>
+                            }
+
+                        </MudButton>
+
+                    </MudStack>
+                </MudItem>
+
+            </MudGrid>
+
+        </EditForm>
+
+    </MudPaper>
+}
+
+@code
+{
+    [Parameter]
+    public Guid Id { get; set; }
+
+    private UserResponse? _user;
+
+    private readonly EditUserModel _model = new();
+
+    private bool _loading;
+    private string? _error;
+
+    protected override async Task OnInitializedAsync()
+    {
+        _user = await UserApi.GetAsync(Id);
+
+        if (_user is null)
+        {
+            Navigation.NavigateTo("/users");
+            return;
+        }
+
+        _model.FirstName = _user.FirstName;
+        _model.LastName = _user.LastName;
+    }
+
+    private async Task UpdateUserAsync()
+    {
+        _error = null;
+        _loading = true;
+
+        try
+        {
+            var request = new UpdateUserRequest(
+                _model.FirstName,
+                _model.LastName);
+
+            await UserApi.UpdateAsync(
+                Id,
+                request);
+
+            Navigation.NavigateTo($"/users/{Id}");
+        }
+        catch (HttpRequestException)
+        {
+            _error = "Failed to update user.";
+        }
+        finally
+        {
+            _loading = false;
+        }
+    }
+
+    private void GoBack()
+    {
+        Navigation.NavigateTo($"/users/{Id}");
+    }
+
+    private sealed class EditUserModel
+    {
+        [Required]
+        public string FirstName { get; set; } = string.Empty;
+
+        [Required]
+        public string LastName { get; set; } = string.Empty;
+    }
+}

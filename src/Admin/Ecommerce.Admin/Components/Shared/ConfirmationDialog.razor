@@ -21,9 +21,7 @@
         <MudButton Color="Color.Error"
                    Variant="Variant.Filled"
                    OnClick="Confirm">
-
             Delete
-
         </MudButton>
 
     </DialogActions>
@@ -36,15 +34,14 @@
     private IMudDialogInstance MudDialog { get; set; } = default!;
 
     [Parameter]
-    public string Title { get; set; } = "";
+    public string Title { get; set; } = string.Empty;
 
     [Parameter]
-    public string Message { get; set; } = "";
+    public string Message { get; set; } = string.Empty;
 
     private void Confirm()
         => MudDialog.Close(DialogResult.Ok(true));
 
     private void Cancel()
         => MudDialog.Cancel();
-
 }

@@ -76,7 +76,7 @@ public sealed class User : Entity
     }
     public  Result ChangePassword(string passwordHash)
     {
-        if (!string.IsNullOrWhiteSpace(passwordHash))
+        if (string.IsNullOrWhiteSpace(passwordHash))
         {
             return UserErrors.PasswordRequired;
         }

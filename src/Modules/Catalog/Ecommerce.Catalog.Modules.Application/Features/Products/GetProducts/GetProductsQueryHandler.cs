@@ -17,6 +17,19 @@ internal sealed class GetProductsQueryHandler(
         CancellationToken cancellationToken)
     {
         var filter = Builders<Product>.Filter.Empty;
+        if(!string.IsNullOrWhiteSpace(request.Search))
+        {
+            var search =request.Search.Trim();
+            filter = Builders<Product>.Filter.Or(Builders<Product>.Filter.Regex(
+                x=>x.Name,
+                new MongoDB.Bson.BsonRegularExpression(search, "i")),
+                Builders<Product>.Filter.Regex(
+                    x => x.Sku,
+                    new MongoDB.Bson.BsonRegularExpression(search, "i")),
+                Builders<Product>.Filter.Regex(
+                    x => x.ProductNumber,
+                    new MongoDB.Bson.BsonRegularExpression(search, "i")));
+        }
 
         var totalCount = (int)await context.Products
             .CountDocumentsAsync(filter, cancellationToken: cancellationToken);

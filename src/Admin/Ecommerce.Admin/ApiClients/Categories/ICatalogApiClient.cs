@@ -1,7 +1,7 @@
-﻿using Ecommerce.Admin.ApiClients.Catalog.Contracts;
+﻿
+using Ecommerce.Admin.ApiClients.Catalog.Contracts;
 using Ecommerce.Admin.ApiClients.Catalog.Models;
 using Ecommerce.Admin.Contracts;
-using Ecommerce.Application.Pagination;
 
 namespace Ecommerce.Admin.ApiClients.Catalog;
 
@@ -14,6 +14,7 @@ public interface ICatalogApiClient
     Task<PagedResult<ProductListItemResponse>?> GetProductsAsync(
         int page,
         int pageSize,
+        string? search = null,
         CancellationToken cancellationToken = default);
 
     Task<ProductResponse?> GetAsync(
@@ -28,4 +29,5 @@ public interface ICatalogApiClient
     Task DeleteAsync(
         Guid id,
         CancellationToken cancellationToken = default);
+ 
 }

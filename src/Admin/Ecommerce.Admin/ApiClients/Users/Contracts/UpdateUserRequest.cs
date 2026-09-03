@@ -1,5 +1,4 @@
-﻿namespace Ecommerce.Admin.ApiClients.Users.Contracts
-{
-    public record UpdateUserRequest(string FirstName, string LastName);
-   
-}
+﻿namespace Ecommerce.Admin.ApiClients.Users.Contracts;
+
+public record UpdateUserRequest(string FirstName, string LastName);
+

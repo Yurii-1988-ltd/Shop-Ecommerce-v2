@@ -13,7 +13,7 @@ public sealed class CreateUserCommandHandler(IUserService userService,IUserUnitO
          var result = await userService.CreateAsync(
             new CreateUserRequest(
                 request.Email,
-                request.PasswordHash,
+                request.Password,
                 request.FirstName,
                 request.LastName),
             cancellationToken);

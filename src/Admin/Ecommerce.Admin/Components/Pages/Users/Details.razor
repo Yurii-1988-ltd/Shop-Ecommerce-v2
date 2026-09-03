@@ -10,6 +10,11 @@ else
     <PageHeader Title="@($"{_user.FirstName} {_user.LastName}")" Subtitle="@_user.Email">
         <Actions>
             <MudButton Variant="Variant.Text"
+                       StartIcon="@Icons.Material.Filled.Edit"
+                       Href="@($"users/{_user.Id}/edit")">
+                Edit
+            </MudButton>
+            <MudButton Variant="Variant.Text"
                        StartIcon="@Icons.Material.Filled.ArrowBack"
                        OnClick="GoBack">
                 Back

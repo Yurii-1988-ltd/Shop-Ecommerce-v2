@@ -7,7 +7,7 @@ internal sealed class UserService(IUserRepository userRepository, IUserUnitOfWor
 {
     public async Task<Result<Guid>> CreateAsync(CreateUserRequest request, CancellationToken cancellationToken)
     {
-       var result = User.Create(request.Email, request.PasswordHash, request.FirstName, request.LastName);
+       var result = User.Create(request.Email, request.Password, request.FirstName, request.LastName);
         if (result.IsFailure)
         {
             return Result<Guid>.Failure(result.Error);

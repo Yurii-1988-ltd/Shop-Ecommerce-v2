@@ -8,6 +8,7 @@
         <MudItem xs="12">
 
             <MudTextField @bind-Value="Model.Name"
+            For="@(() => Model.Name)"
             Label="Name"
             Required="true" />
 
@@ -16,6 +17,7 @@
         <MudItem xs="12">
 
             <MudTextField @bind-Value="Model.Description"
+            For="@(() => Model.Description)"
             Label="Description"
             Lines="4" />
 
@@ -24,20 +26,29 @@
         <MudItem xs="6">
 
             <MudTextField @bind-Value="Model.Sku"
-            Label="SKU" />
+            For="@(() => Model.Sku)"
+            Label="SKU"
+            Required="true" />
 
         </MudItem>
 
         <MudItem xs="3">
 
             <MudNumericField @bind-Value="Model.Price"
-            Label="Price" />
+            For="@(() => Model.Price)"
+            Label="Price"
+            Required="true"
+            Min="0"
+            Format="0.00"
+            Immediate="true"/>
+
 
         </MudItem>
 
         <MudItem xs="3">
 
             <MudTextField @bind-Value="Model.Currency"
+            For="@(() => Model.Currency)"
             Label="Currency" />
 
         </MudItem>

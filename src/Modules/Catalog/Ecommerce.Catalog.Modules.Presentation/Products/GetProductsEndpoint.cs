@@ -1,8 +1,4 @@
 ﻿using Ecommerce.Catalog.Modules.Application.Features.Products.GetProducts;
-using MediatR;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Routing;
 
 namespace Ecommerce.Catalog.Modules.Presentation.Products;
 
@@ -13,9 +9,10 @@ internal sealed class GetProductsEndpoint
         app.MapGet("/products", async (
         ISender sender,
         int page = 1,
-        int pageSize = 20) =>
+        int pageSize = 20,
+        string? search = null) =>
         {
-            var result = await sender.Send(new GetProductsQuery(page, pageSize));
+            var result = await sender.Send(new GetProductsQuery(page, pageSize, search));
 
             if (result.IsFailure)
                 return Results.BadRequest(result.Error);

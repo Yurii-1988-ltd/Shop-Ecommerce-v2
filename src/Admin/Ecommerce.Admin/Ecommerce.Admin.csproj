@@ -24,6 +24,7 @@
     <ProjectReference Include="..\..\BuildingBlocks\Ecommerce.Application\Ecommerce.Application.csproj" />
     <ProjectReference Include="..\..\BuildingBlocks\Ecommerce.Presentation\Ecommerce.Presentation.csproj" />
     <ProjectReference Include="..\..\Modules\Users\Ecommerce.Modules.Users.Contracts\Ecommerce.Modules.Users.Contracts.csproj" />
+    <ProjectReference Include="..\Ecommerce.Admin.Contracts\Ecommerce.Admin.Contracts.csproj" />
   </ItemGroup>
 
   <ItemGroup>

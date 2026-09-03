@@ -3,6 +3,6 @@
 namespace Ecommerce.Modules.Users.Application.Fiatures.CreateUser;
 
 public sealed record CreateUserCommand(string Email, 
-                                        string FirstName, string LastName,string PasswordHash
+                                        string FirstName, string LastName,string Password
                                        ) : ICommand<Guid>;
 

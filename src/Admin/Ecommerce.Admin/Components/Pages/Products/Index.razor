@@ -1,9 +1,7 @@
 ﻿@page "/products"
 @attribute [Authorize(Roles = "Admin")]
-@using Microsoft.AspNetCore.Authorization
 
-
-
+@inject IHttpClientFactory HttpClientFactory
 
 <PageHeader Title="Products"
             Subtitle="Manage your product catalog">
@@ -24,12 +22,16 @@
 </PageHeader>
 
 <SearchToolbar Placeholder="Search products..."
-               OnRefresh="LoadProducts" />
+               SearchText="@_search"
+               SearchTextChanged="OnSearchChanged"
+               OnRefresh="Refresh" />
 
 <MudPaper Class="entity-card" Elevation="2">
 
-    <MudTable Class="entity-table"
-              Items="_products"
+    <MudTable T="ProductListItemResponse"
+              Class="entity-table"
+              ServerData="LoadProductsAsync"
+              @ref="_table"
               Hover="true"
               Dense="true"
               Striped="true">
@@ -46,20 +48,33 @@
         </HeaderContent>
 
         <RowTemplate>
+
             <MudTd Width="80px">
 
                 @if (!string.IsNullOrEmpty(context.ImageUrl))
                 {
+                    var catalogClient =
+                        HttpClientFactory.CreateClient("Catalog");
+
+                    var baseUri =
+                        catalogClient.BaseAddress?
+                            .ToString()
+                            .TrimEnd('/');
+
+                    var imageUrl =
+                        $"{baseUri}/{context.ImageUrl.TrimStart('/')}";
+
                     <MudAvatar Size="Size.Large">
 
-                        <MudImage Src="@context.ImageUrl" />
+                        <MudImage Src="@imageUrl"
+                                  Alt="@context.Name" />
 
                     </MudAvatar>
                 }
                 else
                 {
                     <MudAvatar Size="Size.Large">
-                        <MudIcon Icon="@Icons.Material.Filled.Image"/>
+                        <MudIcon Icon="@Icons.Material.Filled.Image" />
                     </MudAvatar>
                 }
 
@@ -125,57 +140,10 @@
 
         </NoRecordsContent>
 
+        <PagerContent>
+            <MudTablePager />
+        </PagerContent>
+
     </MudTable>
 
 </MudPaper>
-
-@code
-{
-    private readonly List<ProductListItemResponse> _products = new();
-
-    protected override async Task OnInitializedAsync()
-    {
-        await LoadProducts();
-    }
-
-    private async Task LoadProducts()
-    {
-        var result = await CatalogApi.GetProductsAsync(1, 20);
-
-        _products.Clear();
-
-        if (result is not null)
-            _products.AddRange(result.Items);
-    }
-
-    private void Details(Guid id)
-        => Navigation.NavigateTo($"/products/{id}");
-
-    private void Edit(Guid id)
-        => Navigation.NavigateTo($"/products/edit/{id}");
-
-    private async Task Delete(ProductListItemResponse product)
-    {
-        var parameters = new DialogParameters
-        {
-            { nameof(ConfirmationDialog.Title), "Delete Product" },
-            {
-                nameof(ConfirmationDialog.Message),
-                $"Are you sure you want to delete '{product.Name}'?\n\nThis action cannot be undone."
-            }
-        };
-
-        var dialog = await DialogService.ShowAsync<ConfirmationDialog>(
-            "Delete Product",
-            parameters);
-
-        var result = await dialog.Result;
-
-        if (result.Canceled)
-            return;
-
-        await CatalogApi.DeleteAsync(product.Id);
-
-        await LoadProducts();
-    }
-}

@@ -4,7 +4,7 @@ namespace Ecommerce.Modules.Users.Contracts.Requests;
 
 public sealed record CreateUserRequest(
     string Email,
-    string PasswordHash,
+    string Password,
     string FirstName,
     string LastName);
 
