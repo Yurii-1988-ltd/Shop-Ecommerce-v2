@@ -18,6 +18,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\Admin\Ecommerce.Admin\Ecommerce.Admin.csproj" />
     <ProjectReference Include="..\..\Api\Ecommerce.API\Ecommerce.API.csproj" />
+    <ProjectReference Include="..\..\Storefront\Ecommerce.Storefront\Ecommerce.Storefront.csproj" />
   </ItemGroup>
 
 </Project>

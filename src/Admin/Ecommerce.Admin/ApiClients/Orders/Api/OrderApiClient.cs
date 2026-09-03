@@ -83,11 +83,21 @@ internal sealed class OrderApiClient(HttpClient httpClient) : IOrderApiClient
         response.EnsureSuccessStatusCode();
     }
 
-    public async Task<PagedResult<OrderListResponse>?> GetAllAsync(int page, int pageSize, CancellationToken cancellationToken = default)
+    public async Task<PagedResult<OrderListResponse>?> GetAllAsync(int page, int pageSize,
+        string? search = null,
+        CancellationToken cancellationToken = default)
     {
+        var url = $"{OrderUrl}?page={page}&pageSize={pageSize}";
+
+        if (!string.IsNullOrWhiteSpace(search))
+        {
+            url += $"&search={Uri.EscapeDataString(search)}";
+        }
+
         return await httpClient.GetFromJsonAsync<PagedResult<OrderListResponse>>(
-            $"{OrderUrl}?page={page}&pageSize={pageSize}", cancellationToken);
-  
+            url,
+            cancellationToken);
+
     }
 
     public async Task<OrderResponse?> GetAsync(

@@ -1,0 +1,54 @@
+﻿@page "/products"
+@using Ecommerce.Storefront.Components.Shared
+
+@inject ICatalogApiClient CatalogApiClient
+
+<PageTitle>Products</PageTitle>
+
+<h1>Products</h1>
+
+@if (_loading)
+{
+    <p>Loading...</p>
+}
+else if (_products.Count == 0)
+{
+    <p>No products found.</p>
+}
+else
+{
+    <div class="products-grid">
+        @foreach (var product in _products)
+        {
+            <ProductCard Product="product" />
+        }
+    </div>
+}
+
+@code
+{
+    private readonly List<ProductListItemResponse> _products = [];
+
+    private bool _loading;
+
+    protected override async Task OnInitializedAsync()
+    {
+        _loading = true;
+
+        try
+        {
+            var result = await CatalogApiClient.GetProductsAsync(
+                1,
+                20);
+
+            if (result is not null)
+            {
+                _products.AddRange(result.Items);
+            }
+        }
+        finally
+        {
+            _loading = false;
+        }
+    }
+}

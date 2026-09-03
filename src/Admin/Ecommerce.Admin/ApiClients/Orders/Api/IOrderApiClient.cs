@@ -7,7 +7,9 @@ namespace Ecommerce.Admin.ApiClients.Orders.Api;
 public interface IOrderApiClient
 {
     Task<PagedResult<OrderListResponse>?> GetAllAsync(int page,
-        int pageSize, CancellationToken cancellation = default);
+        int pageSize, 
+        string? search = null,
+        CancellationToken cancellation = default);
     Task AddOrderItemAsync(Guid orderId, AddOrderItemRequest request,
                             CancellationToken cancellationToken = default);
     Task CancelAsync(Guid orderId, CancellationToken cancellationToken = default);

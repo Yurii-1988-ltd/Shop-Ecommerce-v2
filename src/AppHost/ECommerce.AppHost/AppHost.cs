@@ -39,4 +39,6 @@ var api = builder.AddProject<Projects.Ecommerce_API>("ecommerce-api")
 builder.AddProject<Projects.Ecommerce_Admin>("ecommerce-admin")
     .WithReference(api);
 
+builder.AddProject<Projects.Ecommerce_Storefront>("ecommerce-storefront");
+
 builder.Build().Run();

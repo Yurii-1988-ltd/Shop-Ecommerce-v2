@@ -1,0 +1,41 @@
+﻿
+
+<div class="product-card">
+
+    <a class="product-card__image"
+       href="@($"/products/{Product.Id}")">
+
+        @if (!string.IsNullOrWhiteSpace(Product.ImageUrl))
+        {
+            <img src="@Product.ImageUrl"
+                 alt="@Product.Name" />
+        }
+        else
+        {
+            <div class="product-card__no-image">
+                No image
+            </div>
+        }
+
+    </a>
+
+    <div class="product-card__content">
+
+        <a class="product-card__name"
+           href="@($"/products/{Product.Id}")">
+            @Product.Name
+        </a>
+
+        <div class="product-card__price">
+            @Product.Price @Product.Currency
+        </div>
+
+    </div>
+
+</div>
+
+@code
+{
+    [Parameter, EditorRequired]
+    public ProductListItemResponse Product { get; set; } = default!;
+}

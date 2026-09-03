@@ -1,0 +1,79 @@
+﻿@page "/products/{Id:guid}"
+
+@inject ICatalogApiClient CatalogApiClient
+
+<PageTitle>Product</PageTitle>
+
+@if (_loading)
+{
+    <p>Loading...</p>
+}
+else if (_product is null)
+{
+    <p>Product not found.</p>
+}
+else
+{
+    <article class="product-details">
+
+        <h1>@_product.Name</h1>
+
+        <p class="product-details__description">
+            @_product.Description
+        </p>
+
+        <div class="product-details__price">
+            @if (_product.SalePrice.HasValue)
+            {
+                <span>
+                    @_product.SalePrice.Value @_product.Currency
+                </span>
+
+                <del>
+                    @_product.Price @_product.Currency
+                </del>
+            }
+            else
+            {
+                <span>
+                    @_product.Price @_product.Currency
+                </span>
+            }
+        </div>
+
+        <div class="product-details__availability">
+            @if (_product.IsAvailable)
+            {
+                <span>In stock</span>
+            }
+            else
+            {
+                <span>Out of stock</span>
+            }
+        </div>
+
+    </article>
+}
+
+@code
+{
+    [Parameter]
+    public Guid Id { get; set; }
+
+    private ProductDetailsResponse? _product;
+    private bool _loading;
+
+    protected override async Task OnInitializedAsync()
+    {
+        _loading = true;
+
+        try
+        {
+            _product = await CatalogApiClient.GetAsync(Id);
+        }
+        finally
+        {
+            _loading = false;
+        }
+    }
+}
