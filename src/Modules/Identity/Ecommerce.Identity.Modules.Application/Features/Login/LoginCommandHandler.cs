@@ -41,7 +41,7 @@ internal sealed class LoginCommandHandler(IUserService userService,
       
         string refreshToken = tokenProvider.GenerateRefreshToken();
 
-        var refreshTokenResult = RefreshToken.Create(user.Id,refreshToken, DateTime.UtcNow.AddDays(jwtOptions.Value.RefreshTokenExpirationInDays));
+        var refreshTokenResult = Domain.Entities.RefreshToken.Create(user.Id,refreshToken, DateTime.UtcNow.AddDays(jwtOptions.Value.RefreshTokenExpirationInDays));
         refreshTokenRepository.Insert(refreshTokenResult.Value);
         await identityUnitOfWork.SaveChangesAsync(cancellationToken);
         return Result<AuthenticationResponse>.Success(new AuthenticationResponse(accessToken, refreshToken));

@@ -29,7 +29,7 @@ public sealed class RegisterUserCommandHandler(IUserService userService,
         string refreshToken = tokenProvider.GenerateRefreshToken();
         //Generate Refresh Token Entity
 
-        var refreshTokenResult =  RefreshToken.Create(
+        var refreshTokenResult = Domain.Entities. RefreshToken.Create(
             createUserResult.Value,
             refreshToken,
             DateTime.UtcNow.AddDays(_jwtOptions.RefreshTokenExpirationInDays));

@@ -58,3 +58,131 @@
     font-size: 18px;
     font-weight: 600;
 }
+.featured-products {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 40px 24px 80px;
+}
+
+.featured-products__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 24px;
+}
+
+    .featured-products__header h2 {
+        margin: 0;
+        font-size: 28px;
+    }
+
+    .featured-products__header a {
+        color: var(--text);
+        font-size: 15px;
+        text-decoration: none;
+    }
+
+        .featured-products__header a:hover {
+            text-decoration: underline;
+        }
+.product-details {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 64px 24px;
+}
+
+.product-details__content {
+    max-width: 700px;
+}
+
+.product-details__info {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+.product-details__back {
+    margin-bottom: 32px;
+    color: var(--muted);
+    font-size: 14px;
+    text-decoration: none;
+}
+
+    .product-details__back:hover {
+        color: var(--text);
+    }
+
+.product-details__title {
+    margin: 0;
+    font-size: 42px;
+    line-height: 1.1;
+    letter-spacing: -1px;
+}
+
+.product-details__price {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-top: 24px;
+    font-size: 24px;
+    font-weight: 600;
+}
+
+.product-details__sale-price {
+    font-weight: 700;
+}
+
+.product-details__old-price {
+    color: var(--muted);
+    font-size: 17px;
+    font-weight: 400;
+}
+
+.product-details__description {
+    margin: 24px 0 0;
+    color: var(--muted);
+    font-size: 16px;
+    line-height: 1.7;
+}
+
+.product-details__availability {
+    margin-top: 24px;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.product-details__button {
+    margin-top: 32px;
+    padding: 14px 28px;
+    border: 0;
+    border-radius: 8px;
+    background: var(--accent);
+    color: white;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+    .product-details__button:hover:not(:disabled) {
+        opacity: 0.85;
+    }
+
+    .product-details__button:disabled {
+        opacity: 0.4;
+        cursor: not-allowed;
+    }
+
+.product-details__loading,
+.product-details__not-found {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 64px 24px;
+}
+
+    .product-details__not-found h1 {
+        margin-bottom: 16px;
+    }
+
+    .product-details__not-found a {
+        color: var(--text);
+    }

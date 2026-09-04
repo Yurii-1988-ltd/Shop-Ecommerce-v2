@@ -9,11 +9,12 @@ public class RefreshToken : Entity
 {
     public Guid Id { get;private set; }
     public Guid UserId { get;private set; }
-    public string Token { get; set; } = string.Empty;
+    public string Token { get; private set; } = string.Empty;
     public DateTime ExpiresOnUtc { get;private set; }
     public DateTime? RevokeOnUtc { get; private set; }
     public bool IsExpired => ExpiresOnUtc <= DateTime.UtcNow;
     public bool IsRevoked => RevokeOnUtc.HasValue;
+    public bool IsActive => !IsRevoked && !IsExpired;
 
     private RefreshToken() { }
 
@@ -37,4 +38,11 @@ public class RefreshToken : Entity
         return Result<RefreshToken>.Success(refreshToken);
 
     }
+    public void Revoke()
+    {
+        if (IsRevoked)
+            return;
+        RevokeOnUtc = DateTime.UtcNow;
+    }
+
 }

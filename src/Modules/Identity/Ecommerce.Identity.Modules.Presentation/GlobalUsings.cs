@@ -1,0 +1,14 @@
+﻿global using Ecommerce.Identity.Modules.Application.Features.RefreshToken;
+global using MediatR;
+global using Microsoft.AspNetCore.Builder;
+global using Microsoft.AspNetCore.Http;
+global using Microsoft.AspNetCore.Routing;
+global using Ecommerce.Identity.Modules.Application.Features.ResetPassword;
+global using Ecommerce.Identity.Modules.Presentation;
+global using Ecommerce.Domain.Domain;
+global using Ecommerce.Identity.Modules.Application.Features.Register;
+global using Ecommerce.Identity.Modules.Infrastructure;
+global using Ecommerce.Identity.Modules.Presentation.Authentication.Endpoints;
+global using Ecommerce.Presentation;
+global using Microsoft.Extensions.Configuration;
+global using Microsoft.Extensions.DependencyInjection;

@@ -1,6 +1,6 @@
-﻿namespace Ecommerce.Storefront.Models;
+﻿namespace Ecommerce.Storefront.ApiClients.Catalogs.Models;
 
-public sealed record ProductCardResponse(
+public sealed record ProductListItemResponse(
     Guid Id,
     string Name,
     decimal Price,

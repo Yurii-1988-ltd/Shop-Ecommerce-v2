@@ -63,4 +63,16 @@ internal sealed class UserService(IUserRepository userRepository, IUserUnitOfWor
             user.Email,
             user.PasswordHash);
     }
+
+    public async Task<UserAuthenticationResponse?> GetByIdAsync(Guid userId, CancellationToken cancellationToken)
+    {
+        var user = await userRepository.GetByIdAsync(userId, cancellationToken);
+        if(user is null)
+            return null;
+        return new UserAuthenticationResponse(
+            user.Id,
+            user.Email,
+            user.PasswordHash);
+    }
+
 }

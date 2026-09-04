@@ -1,4 +1,4 @@
-﻿namespace Ecommerce.Storefront.Models;
+﻿namespace Ecommerce.Storefront.ApiClients.Catalogs.Models;
 
 public record ProductDetailsResponse(
 

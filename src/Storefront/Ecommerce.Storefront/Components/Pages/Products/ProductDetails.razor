@@ -1,58 +1,90 @@
 ﻿@page "/products/{Id:guid}"
 
+
+
 @inject ICatalogApiClient CatalogApiClient
 
-<PageTitle>Product</PageTitle>
+<PageTitle>@(_product?.Name ?? "Product")</PageTitle>
 
 @if (_loading)
 {
-    <p>Loading...</p>
+    <div class="product-details__loading">
+        Loading...
+    </div>
 }
 else if (_product is null)
 {
-    <p>Product not found.</p>
+    <div class="product-details__not-found">
+        <h1>Product not found</h1>
+
+        <a href="/products">
+            Back to products
+        </a>
+    </div>
 }
 else
 {
-    <article class="product-details">
+    <section class="product-details">
 
-        <h1>@_product.Name</h1>
+        <div class="product-details__content">
 
-        <p class="product-details__description">
-            @_product.Description
-        </p>
+            <div class="product-details__info">
 
-        <div class="product-details__price">
-            @if (_product.SalePrice.HasValue)
-            {
-                <span>
-                    @_product.SalePrice.Value @_product.Currency
-                </span>
+                <a class="product-details__back"
+                   href="/products">
+                    ← Back to products
+                </a>
 
-                <del>
-                    @_product.Price @_product.Currency
-                </del>
-            }
-            else
-            {
-                <span>
-                    @_product.Price @_product.Currency
-                </span>
-            }
+                <h1 class="product-details__title">
+                    @_product.Name
+                </h1>
+
+                <div class="product-details__price">
+
+                    @if (_product.SalePrice.HasValue)
+                    {
+                        <span class="product-details__sale-price">
+                            @_product.SalePrice.Value @_product.Currency
+                        </span>
+
+                        <del class="product-details__old-price">
+                            @_product.Price @_product.Currency
+                        </del>
+                    }
+                    else
+                    {
+                        <span>
+                            @_product.Price @_product.Currency
+                        </span>
+                    }
+
+                </div>
+
+                <p class="product-details__description">
+                    @_product.Description
+                </p>
+
+                <div class="product-details__availability">
+                    @if (_product.IsAvailable)
+                    {
+                        <span>In stock</span>
+                    }
+                    else
+                    {
+                        <span>Out of stock</span>
+                    }
+                </div>
+
+                <button class="product-details__button"
+                        disabled="@(!_product.IsAvailable)">
+                    Add to cart
+                </button>
+
+            </div>
+
         </div>
 
-        <div class="product-details__availability">
-            @if (_product.IsAvailable)
-            {
-                <span>In stock</span>
-            }
-            else
-            {
-                <span>Out of stock</span>
-            }
-        </div>
-
-    </article>
+    </section>
 }
 
 @code

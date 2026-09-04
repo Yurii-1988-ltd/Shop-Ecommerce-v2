@@ -21,5 +21,6 @@ public interface IUserService
     Task<UserAuthenticationResponse?> GetByEmailAsync(
     string email,
     CancellationToken cancellationToken);
+    Task<UserAuthenticationResponse?> GetByIdAsync(Guid userId, CancellationToken cancellationToken);
 
 }

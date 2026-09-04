@@ -1,13 +1,4 @@
-﻿using Ecommerce.Identity.Modules.Infrastructure;
-
-using Ecommerce.Identity.Modules.Presentation.Authentication.Endpoints;
-using Ecommerce.Presentation;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Routing;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-
+﻿
 public sealed class IdentityModule : IModule
 {
     public void MapEndpoints(IEndpointRouteBuilder app)
@@ -20,6 +11,7 @@ public sealed class IdentityModule : IModule
         new LoginEndpoint().MapEndpoints(auth);
         new ResetPasswordEndpoint().MapEndPoints(auth);
         new ForgotPasswordEndpoint().MapEndPoints(auth);
+        new RefreshTokenEndpoint().MapEndpoints(auth);
         //new ResetPasswordEndpoint().MapEndpoints(auth);
     }
 

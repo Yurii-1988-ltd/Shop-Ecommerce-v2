@@ -1,7 +1,74 @@
 ﻿@page "/"
 
+@inject ICatalogApiClient CatalogApiClient
+
 <PageTitle>Home</PageTitle>
 
-<h1>Hello, world!</h1>
+<section class="hero">
+    <div class="hero__content">
+        <h1>Welcome to our store</h1>
 
-Welcome to your new app.
+        <p>
+            Discover products you'll love.
+        </p>
+
+        <a href="/products" class="hero__button">
+            Shop now
+        </a>
+    </div>
+</section>
+
+<section class="featured-products">
+    <div class="featured-products__header">
+        <h2>Featured Products</h2>
+
+        <a href="/products">
+            View all
+        </a>
+    </div>
+
+    @if (_loading)
+    {
+        <p>Loading products...</p>
+    }
+    else if (_products.Count == 0)
+    {
+        <p>No products available.</p>
+    }
+    else
+    {
+        <div class="products-grid">
+            @foreach (var product in _products)
+            {
+                <ProductCard Product="product" />
+            }
+        </div>
+    }
+</section>
+
+@code
+{
+    private readonly List<ProductListItemResponse> _products = [];
+    private bool _loading;
+
+    protected override async Task OnInitializedAsync()
+    {
+        _loading = true;
+
+        try
+        {
+            var result = await CatalogApiClient.GetProductsAsync(
+                page: 1,
+                pageSize: 4);
+
+            if (result is not null)
+            {
+                _products.AddRange(result.Items);
+            }
+        }
+        finally
+        {
+            _loading = false;
+        }
+    }
+}

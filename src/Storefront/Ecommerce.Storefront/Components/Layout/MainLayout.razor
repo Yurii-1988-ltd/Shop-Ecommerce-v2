@@ -1,9 +1,15 @@
 ﻿@inherits LayoutComponentBase
 
-@Body
+<div class="storefront">
 
-<div id="blazor-error-ui" data-nosnippet>
-    An unhandled error has occurred.
-    <a href="." class="reload">Reload</a>
-    <span class="dismiss">🗙</span>
+    <header class="storefront-header">
+        <NavMenu />
+    </header>
+
+    <main class="storefront-main">
+        @Body
+    </main>
+
+    <Footer />
+
 </div>

@@ -1,7 +1,7 @@
 ﻿using Ecommerce.Application.Pagination;
-using Ecommerce.Storefront.Models;
+using Ecommerce.Storefront.ApiClients.Catalogs.Models;
 
-namespace Ecommerce.Storefront.ApiClients
+namespace Ecommerce.Storefront.ApiClients.Catalogs
 {
     internal sealed class CatalogApiClient(HttpClient httpClient) : ICatalogApiClient
     {
