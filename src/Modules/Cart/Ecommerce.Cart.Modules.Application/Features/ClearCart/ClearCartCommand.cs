@@ -1,5 +1,4 @@
-﻿using System.Windows.Input;
-using ICommand = Ecommerce.Application.CQRS.ICommand;
+﻿
 
 namespace Ecommerce.Cart.Modules.Application.Features.ClearCart;
 

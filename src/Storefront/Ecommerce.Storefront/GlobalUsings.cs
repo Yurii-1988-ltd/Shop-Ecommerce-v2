@@ -1,0 +1,12 @@
+﻿global using Ecommerce.Storefront.ApiClients.Cart;
+global using Ecommerce.Storefront.ApiClients.Carts;
+global using Ecommerce.Storefront.ApiClients.Catalogs;
+global using Ecommerce.Storefront.ApiClients.Identity;
+global using Ecommerce.Storefront.ApiClients.Identity.Authentication;
+global using Ecommerce.Storefront.Components;
+global using Ecommerce.Storefront.Extensions;
+global using Ecommerce.Storefront.ApiClients.Identity.Models;
+global using Microsoft.AspNetCore.Authentication;
+global using Microsoft.AspNetCore.Authentication.Cookies;
+global using System.IdentityModel.Tokens.Jwt;
+global using System.Security.Claims;

@@ -1,17 +1,26 @@
-﻿using Ecommerce.Application.CQRS;
-using Ecommerce.Cart.Modules.Domain.Errors;
-using Ecommerce.Cart.Modules.Domain.Repositories;
-using Ecommerce.Domain.Domain;
-
+﻿
 namespace Ecommerce.Cart.Modules.Application.Features.RemoveCartItem;
 
 internal sealed class RemoveCartItemCommandHandler(ICartRepository repository): ICommandHandler<RemoveCartItemCommand>
 {
     public async Task<Result> Handle(RemoveCartItemCommand request, CancellationToken cancellationToken)
     {
-        var cart = await repository.GetByCustomerIdAsync(request.CustomerId, cancellationToken);
+        if (request.CustomerId.HasValue && request.GuestId.HasValue)
+            return CartErrors.OwnerConflict;
+        if (!request.CustomerId.HasValue&& !request.GuestId.HasValue)
+            return CartErrors.OwnerRequired;
+        Domain.Entities.Cart? cart;
+        if (request.CustomerId.HasValue)
+        {
+            cart = await repository.GetByCustomerIdAsync(request.CustomerId.Value, cancellationToken);
+        }
+        else
+        {
+            cart = await repository.GetByGuestIdAsync(request.GuestId!.Value, cancellationToken);
+        }
+        
         if (cart is null)
-            return CartItemErrors.NotFound(request.CustomerId);
+            return CartItemErrors.NotFound(request.CustomerId??request.GuestId??Guid.Empty);
         var result = cart.RemoveItem(request.ProductId);
         if (result.IsFailure)
             return result;

@@ -1,18 +1,20 @@
-﻿
-using Ecommerce.Cart.Modules.Application.Features.GetCart;
+﻿using Ecommerce.Cart.Modules.Application.Features.GetCart;
 using Ecommerce.Cart.Modules.Application.Features.Responses;
-
-namespace Ecommerce.Cart.Modules.Presentation.Carts;
+using Ecommerce.Cart.Modules.Presentation;
 
 internal sealed class GetCartEndpoint
 {
     public void MapEndpoint(IEndpointRouteBuilder app)
     {
-        app.MapGet("/carts/{customerId:guid}", async (
-            Guid customerId,
-            ISender sender) =>
+        app.MapGet("/carts", async (
+            Guid? customerId,
+            Guid? guestId,
+            ISender sender,
+            CancellationToken cancellationToken) =>
         {
-            var result = await sender.Send(new GetCartQuery(customerId));
+            var result = await sender.Send(
+                new GetCartQuery(customerId, guestId),
+                cancellationToken);
 
             return result.IsSuccess
                 ? Results.Ok(result.Value)

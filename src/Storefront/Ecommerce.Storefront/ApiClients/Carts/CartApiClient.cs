@@ -1,21 +1,20 @@
-﻿using Ecommerce.Storefront.ApiClients.Cart.Models;
-using Ecommerce.Storefront.ApiClients.Carts;
-using Ecommerce.Storefront.ApiClients.Carts.Models;
-using System.Net.Http.Json;
+﻿using Ecommerce.Storefront.ApiClients.Carts.Models;
+using Ecommerce.Storefront.ApiClients.Carts.Services;
 
 namespace Ecommerce.Storefront.ApiClients.Cart;
 
-internal sealed class CartApiClient(HttpClient httpClient) : ICartApiClient
+internal sealed class CartApiClient(HttpClient httpClient,
+    ICurrentUser currentUser,IGuestCartService guestCartService) : ICartApiClient
 {
     private const string CartUrl = "/carts";
 
     public async Task AddItemAsync(
-        Guid customerId,
+  
         AddCartItemRequest request,
         CancellationToken cancellationToken = default)
     {
         var response = await httpClient.PostAsJsonAsync(
-            $"{CartUrl}/{customerId}/items",
+            $"{CartUrl}/items?{GetOwnerQuery()}",
             request,
             cancellationToken);
 
@@ -23,13 +22,12 @@ internal sealed class CartApiClient(HttpClient httpClient) : ICartApiClient
     }
 
     public async Task ChangeQuantityAsync(
-        Guid customerId,
         Guid productId,
         ChangeCartItemQuantityRequest request,
         CancellationToken cancellationToken = default)
     {
         var response = await httpClient.PutAsJsonAsync(
-            $"{CartUrl}/{customerId}/items/{productId}",
+                 $"{CartUrl}/items/{productId}?{GetOwnerQuery()}",
             request,
             cancellationToken);
 
@@ -37,23 +35,53 @@ internal sealed class CartApiClient(HttpClient httpClient) : ICartApiClient
     }
 
     public async Task RemoveItemAsync(
-        Guid customerId,
+  
         Guid productId,
         CancellationToken cancellationToken = default)
     {
         var response = await httpClient.DeleteAsync(
-            $"{CartUrl}/{customerId}/items/{productId}",
+             $"{CartUrl}/items/{productId}?{GetOwnerQuery()}",
             cancellationToken);
 
         response.EnsureSuccessStatusCode();
     }
 
     public async Task<CartResponse?> GetAsync(
-        Guid customerId,
+ 
         CancellationToken cancellationToken = default)
     {
         return await httpClient.GetFromJsonAsync<CartResponse>(
-            $"{CartUrl}/{customerId}",
+            $"{CartUrl}?{GetOwnerQuery()}",
             cancellationToken);
+    }
+    private string GetOwnerQuery()
+    {
+        if (currentUser.IsAuthenticated)
+            return $"customerId={currentUser.UserId}";
+
+        var guestId = guestCartService.GetOrCreateGuestId();
+
+        return $"guestId={guestId}";
+    }
+
+    public async Task<Guid> CreateCartAsync(CancellationToken cancellationToken = default)
+    {
+        CreateCartRequest request;
+        if (currentUser.IsAuthenticated)
+        {
+            request = new CreateCartRequest(currentUser.UserId, null);
+
+        }
+        else
+        {
+            var guestId = guestCartService.GetOrCreateGuestId();
+            request = new CreateCartRequest(null, guestId);
+        }
+        var response = await httpClient.PostAsJsonAsync(
+            $"{CartUrl}",
+            request,
+            cancellationToken);
+        response.EnsureSuccessStatusCode();
+        return await response.Content.ReadFromJsonAsync<Guid>(cancellationToken);
     }
 }

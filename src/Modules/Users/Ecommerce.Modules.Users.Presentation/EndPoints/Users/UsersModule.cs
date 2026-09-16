@@ -20,6 +20,6 @@ public sealed class UsersModule : IModule
 
     public void RegisterServices(IServiceCollection services, IConfiguration config)
     {
-        services.AddUsersModule(config); // <-- Добавлена буква 's'
+        services.AddUsersModule(config); // 
     }
 }

@@ -1,0 +1,35 @@
+﻿@page "/auth/account"
+
+@using System.Security.Claims
+@using Microsoft.AspNetCore.Components.Authorization
+
+<PageTitle>Account</PageTitle>
+
+<h1>Account</h1>
+
+<AuthorizeView>
+    <Authorized>
+        <p><strong>Authenticated:</strong> true</p>
+
+        <p>
+            <strong>UserId:</strong>
+            @context.User.FindFirstValue(ClaimTypes.NameIdentifier)
+        </p>
+
+        <p>
+            <strong>Email:</strong>
+            @context.User.FindFirstValue(ClaimTypes.Email)
+        </p>
+
+        <p>
+            <strong>Roles:</strong>
+            @string.Join(", ",
+                context.User.FindAll(ClaimTypes.Role)
+                    .Select(x => x.Value))
+        </p>
+    </Authorized>
+
+    <NotAuthorized>
+        <p><strong>Authenticated:</strong> false</p>
+    </NotAuthorized>
+</AuthorizeView>

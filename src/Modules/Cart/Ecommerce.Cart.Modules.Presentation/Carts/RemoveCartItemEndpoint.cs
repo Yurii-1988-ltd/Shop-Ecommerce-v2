@@ -9,12 +9,14 @@ internal sealed class RemoveCartItemEndpoint
     public void MapEndpoint(IEndpointRouteBuilder app)
     {
         app.MapDelete("/carts/{customerId:guid}/{productId:guid}/items", async (
-            Guid customerId,
+            Guid? customerId,
+            Guid? guestId,
             Guid productId,
 
-            ISender sender) =>
+            ISender sender,
+            CancellationToken cancellationToken) =>
         {
-            var result = await sender.Send(new RemoveCartItemCommand(customerId,productId));
+            var result = await sender.Send(new RemoveCartItemCommand(customerId, guestId, productId), cancellationToken);
 
             return result.IsSuccess
                 ? Results.NoContent()

@@ -14,8 +14,16 @@ public sealed class CartErrors
         => new Error("Product.Already.Exist", "Product already exist", ErrorType.Validation);
     public static Error InvalidCustomerId
         = new Error("Invalid.CustomerId", "Customer Id is invalid", ErrorType.Validation);
+    public static Error InvalidGuestId
+       = new Error("Invalid.GuestId", "Guest Id is invalid", ErrorType.Validation);
     public static Error AlreadyExists(Guid id)
         => new Error($"Already.Exists", "Customer with {id} already exist", ErrorType.Validation);
     public static Error NotFound(Guid id)
     =>new Error($"Cart.NotFound", "Cart with id {id}", ErrorType.Validation);
+    public static Error OwnerRequired
+        => new Error("Owner.Required", "Cart owner is required", ErrorType.Validation);
+    public static Error OwnerConflict =>
+    new(
+        "Cart.OwnerConflict",
+        "CustomerId and GuestId cannot be specified together.",ErrorType.Conflict);
 }

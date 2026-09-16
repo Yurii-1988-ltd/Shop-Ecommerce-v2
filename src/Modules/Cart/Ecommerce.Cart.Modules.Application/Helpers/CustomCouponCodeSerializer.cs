@@ -1,6 +1,5 @@
 ﻿using Ecommerce.Cart.Modules.Domain.ValueObjects;
-using MongoDB.Bson.Serialization;
-using MongoDB.Bson.Serialization.Serializers;
+
 
 public class CustomCouponCodeSerializer : SerializerBase<CouponCode>
 {

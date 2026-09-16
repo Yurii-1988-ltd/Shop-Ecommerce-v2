@@ -16,6 +16,6 @@ internal sealed class AdminLogoutEndpoint
         await httpContext.SignOutAsync(
             CookieAuthenticationDefaults.AuthenticationScheme);
 
-        return Results.Redirect("/login");
+        return Results.StatusCode(418);
     }
 }

@@ -31,5 +31,7 @@ public interface ICartRepository
             int page,
             int pageSize,
             CancellationToken cancellationToken = default);
+    Task<Entities.Cart?> GetByGuestIdAsync(Guid guestId, CancellationToken cancellationToken = default);
+
     
 }

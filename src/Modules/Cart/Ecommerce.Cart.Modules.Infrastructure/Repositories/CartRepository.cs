@@ -65,4 +65,9 @@ internal sealed class CartRepository : ICartRepository
         return (items, totalCount);
     }
 
+    public async Task<Domain.Entities.Cart?> GetByGuestIdAsync(Guid guestId, CancellationToken cancellationToken = default)
+    {
+        return await _collection.Find(x => x.GuestId == guestId)
+            .FirstOrDefaultAsync(cancellationToken);
+    }
 }

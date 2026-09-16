@@ -2,7 +2,8 @@
 
 public sealed record CartResponse(
     Guid Id,
-    Guid CustomerId,
+    Guid? CustomerId,
+    Guid? GuestId,
     IReadOnlyList<CartItemResponse> Items,
     int TotalItems,
     decimal Subtotal,

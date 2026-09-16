@@ -1,8 +1,4 @@
-﻿using Ecommerce.Cart.Modules.Application.Contracts;
-using Ecommerce.Cart.Modules.Application.Features.CreateCoupon;
-using Ecommerce.Cart.Modules.Application.Features.Responses;
-using Ecommerce.Cart.Modules.Domain.Entities;
-
+﻿
 internal static class CartMappings
 {
     public static CartResponse ToResponse(this Cart cart)
@@ -15,6 +11,7 @@ internal static class CartMappings
         return new CartResponse(
             cart.Id,
             cart.CustomerId,
+            cart.GuestId,
             cart.Items.Select(x => new CartItemResponse(
                     x.ProductId,
                     x.Name,
@@ -38,6 +35,7 @@ internal static class CartMappings
         return new CartListResponse(
             cart.Id,
             cart.CustomerId,
+            cart.GuestId,
             cart.Items.Sum(x => x.Quantity),
             total.Amount,
             total.Currency);

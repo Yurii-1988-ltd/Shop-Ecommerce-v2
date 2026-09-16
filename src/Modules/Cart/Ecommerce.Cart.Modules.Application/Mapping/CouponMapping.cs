@@ -1,5 +1,4 @@
-﻿using Ecommerce.Cart.Modules.Domain.Entities;
-using MongoDB.Bson.Serialization;
+﻿using MongoDB.Bson.Serialization;
 
 namespace Ecommerce.Cart.Modules.Application.Mapping;
 

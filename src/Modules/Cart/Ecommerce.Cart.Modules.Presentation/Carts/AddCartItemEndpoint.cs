@@ -12,14 +12,17 @@ internal sealed class AddCartItemEndpoint
 {
     public void MapEndpoint(IEndpointRouteBuilder app)
     {
-        app.MapPost("/carts/{customerId:guid}/items", async (
-            Guid customerId,
+        app.MapPost("/carts/items", async (
+            Guid? customerId,
+            Guid? guestId,
+
             AddCartItemRequest request,
             ISender sender,
             CancellationToken cancellationToken) =>
         {
             var command = new AddCartItemCommand(
               customerId,
+              guestId,
                request.ProductId,
                request.Name,
                request.Price,
@@ -34,12 +37,13 @@ internal sealed class AddCartItemEndpoint
                 : Results.BadRequest(result.Error);
         })
         .WithTags(Tags.Carts)
-        .WithName("AddCartItem");
+        .WithName("AddCartItem")
+        .Produces(StatusCodes.Status204NoContent)
+        .Produces(StatusCodes.Status400BadRequest)
+        .Produces(StatusCodes.Status409Conflict);
     }
 }
 internal sealed record AddCartItemRequest(
-
-  
     Guid ProductId,
     string Name,
     decimal Price,

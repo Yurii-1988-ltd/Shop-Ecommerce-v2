@@ -1,9 +1,5 @@
-using Ecommerce.Storefront.ApiClients.Cart;
-using Ecommerce.Storefront.ApiClients.Carts;
-using Ecommerce.Storefront.ApiClients.Catalogs;
-using Ecommerce.Storefront.ApiClients.Identity;
-using Ecommerce.Storefront.Components;
-using Ecommerce.Storefront.Extensions;
+
+using Ecommerce.Storefront.Endpoints.Identity;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -19,14 +15,19 @@ builder.Services.AddHttpClient<IIdentityApiClient, IdentityApiClient>(client =>
 {
     client.BaseAddress = new Uri("https://localhost:7125");
 });
+
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
 builder.Services.AddStorefrontAuthentication();
+builder.Services.AddHttpContextAccessor();
+builder.Services.AddCascadingAuthenticationState();
+
 
 
 
 
 var app = builder.Build();
+new LoginEndpoint().MapEndpoint(app);
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())

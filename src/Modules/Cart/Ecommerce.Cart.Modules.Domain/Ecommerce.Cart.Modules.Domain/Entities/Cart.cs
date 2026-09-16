@@ -10,24 +10,43 @@ public sealed class Cart : Entity
 {
     private  List<CartItem> _items = new();
 
-    public Guid CustomerId { get; private set; }
+    public Guid? CustomerId { get; private set; }
+    public Guid? GuestId { get; set; }
     public Coupon? AppliedCoupon { get; private set; }
     public IReadOnlyCollection<CartItem> Items => _items.AsReadOnly();
 
     private Cart() { }
 
-    public Cart(Guid id, Guid customerId)
+    private Cart(
+        Guid id,
+        Guid? customerId,
+        Guid? guestId)
     {
         Id = id;
         CustomerId = customerId;
+        GuestId = guestId;
     }
 
-    public static Result<Cart> Create(Guid customerId)
+    public static Result<Cart> CreateForCustomer(Guid customerId)
     {
         if (customerId == Guid.Empty)
             return CartErrors.InvalidCustomerId;
 
-        return new Cart(Guid.NewGuid(), customerId);
+        return new Cart(
+            Guid.NewGuid(),
+            customerId,
+            null);
+    }
+
+    public static Result<Cart> CreateForGuest(Guid guestId)
+    {
+        if (guestId == Guid.Empty)
+            return CartErrors.InvalidGuestId;
+
+        return new Cart(
+            Guid.NewGuid(),
+            null,
+            guestId);
     }
 
     public Result AddItem(Guid productId, string name, Money price, int quantity)
@@ -161,4 +180,6 @@ public sealed class Cart : Entity
         var finalAmount = Math.Max(0, subtotalResult.Value.Amount - discountResult.Value.Amount);
         return Money.Create(finalAmount, subtotalResult.Value.Currency);
     }
+
+   
 }

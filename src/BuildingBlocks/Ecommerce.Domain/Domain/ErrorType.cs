@@ -9,5 +9,5 @@ public enum ErrorType
     NotFound = 2,
     Problem =3,
     Conflict = 4,
-    Unauthorized
+    Unauthorized  = 5
 }

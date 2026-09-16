@@ -1,15 +1,10 @@
-﻿using Ecommerce.Cart.Modules.Application.Features.CreateCoupon;
-using Ecommerce.Cart.Modules.Domain.Entities;
-using Ecommerce.Cart.Modules.Domain.Errors;
-using Ecommerce.Cart.Modules.Domain.Repositories;
-using Ecommerce.Cart.Modules.Domain.ValueObjects;
-using Ecommerce.Domain.Domain;
+﻿
 using Ecommerce.Domain.ValueObjects;
-using MediatR;
+
 
 
 public sealed class CreateCouponCommandHandler(ICouponRepository couponRepository)
-    : IRequestHandler<CreateCouponCommand, Result<Guid>>
+    : ICommandHandler<CreateCouponCommand,Guid>
 {
     public async Task<Result<Guid>> Handle(CreateCouponCommand request, CancellationToken cancellationToken)
     {

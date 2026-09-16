@@ -11,16 +11,19 @@ internal sealed class ChangeCartItemQuantityEndpoint
         app.MapPut(
      "/carts/{customerId:guid}/items/{productId:guid}",
      async (
-         Guid customerId,
+        
          Guid productId,
+          Guid? customerId,
+          Guid? guestId,
          ChangeCartItemQuantityRequest request,
-         ISender sender) =>
+         ISender sender, CancellationToken cancellationToken) =>
      {
          var result = await sender.Send(
             new ChangeCartItemQuantityCommand(
                 customerId,
+                guestId,
                 productId,
-                request.Quantity));
+                request.Quantity), cancellationToken);
 
          return result.IsSuccess
             ? Results.NoContent()

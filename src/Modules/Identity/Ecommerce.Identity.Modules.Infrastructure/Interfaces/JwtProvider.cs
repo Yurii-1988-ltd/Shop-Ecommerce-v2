@@ -22,7 +22,7 @@ namespace Ecommerce.Identity.Modules.Infrastructure.Interfaces
                 new(JwtRegisteredClaimNames.Sub, userId.ToString()),
                 new(ClaimTypes.NameIdentifier, userId.ToString()),
                 //new(ClaimTypes.Role,"Admin"),
-                new(JwtRegisteredClaimNames.Email, email),
+                new(ClaimTypes.Email, email),
                 new(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
             };
              claims.AddRange(roles.Select(role => new Claim(ClaimTypes.Role, role)));

@@ -1,10 +1,4 @@
 ﻿
-
-using Ecommerce.Application.CQRS;
-using Ecommerce.Cart.Modules.Domain.Errors;
-using Ecommerce.Cart.Modules.Domain.Repositories;
-using Ecommerce.Domain.Domain;
-
 namespace Ecommerce.Cart.Modules.Application.RemoveCoupon;
 
 internal sealed class RemoveCouponCommandHandler(ICartRepository repository) : ICommandHandler<RemoveCouponCommand>

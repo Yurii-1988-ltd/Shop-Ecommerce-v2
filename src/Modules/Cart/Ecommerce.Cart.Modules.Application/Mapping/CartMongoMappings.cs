@@ -1,5 +1,3 @@
-using MongoDB.Bson.Serialization;
-
 namespace Ecommerce.Cart.Modules.Application.Mapping;
 
 public static class CartMapping

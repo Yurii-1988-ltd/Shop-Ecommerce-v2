@@ -1,8 +1,4 @@
-﻿using Ecommerce.Application.CQRS;
-using Ecommerce.Cart.Modules.Domain.Errors;
-using Ecommerce.Cart.Modules.Domain.Repositories;
-using Ecommerce.Domain.Domain;
-
+﻿
 namespace Ecommerce.Cart.Modules.Application.Features.ChangeCartItemQuantity;
 
 internal sealed class ChangeCartItemQuantityCommandHandler(ICartRepository repository): ICommandHandler<ChangeCartItemQuantityCommand>
@@ -12,18 +8,24 @@ internal sealed class ChangeCartItemQuantityCommandHandler(ICartRepository repos
             ChangeCartItemQuantityCommand request,
             CancellationToken cancellationToken)
         {
-            var cart = await repository.GetByCustomerIdAsync(
-                request.CustomerId,
-                cancellationToken);
-
-            if (cart is null)
-                return CartErrors.NotFound(request.CustomerId);
-
-            var result = cart.ChangeQuantity(
-                request.ProductId,
-                request.Quantity);
-
-            if (result.IsFailure)
+            if(request.CustomerId.HasValue && request.GuestId.HasValue)
+                return CartErrors.OwnerConflict;
+        if (!request.CustomerId.HasValue && !request.GuestId.HasValue)
+            return CartErrors.OwnerRequired;
+        Domain.Entities.Cart? cart;
+        if (request.CustomerId.HasValue)
+        {
+            cart = await repository.GetByCustomerIdAsync(request.CustomerId.Value, cancellationToken);
+        }
+        else
+        {
+            cart = await repository.GetByGuestIdAsync(request.GuestId!.Value, cancellationToken);
+        }
+        if (cart is null)
+            return CartErrors.NotFound(request.CustomerId??request.GuestId??Guid.Empty);
+        var result = cart.ChangeQuantity(request.ProductId, request.Quantity);
+        
+        if (result.IsFailure)
                 return result;
 
             await repository.UpdateAsync(cart, cancellationToken);

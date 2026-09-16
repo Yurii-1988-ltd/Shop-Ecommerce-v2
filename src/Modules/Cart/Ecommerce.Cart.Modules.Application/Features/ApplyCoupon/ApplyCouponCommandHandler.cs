@@ -1,7 +1,4 @@
-using Ecommerce.Application.CQRS;
-using Ecommerce.Cart.Modules.Domain.Errors;
-using Ecommerce.Cart.Modules.Domain.Repositories;
-using Ecommerce.Domain.Domain;
+
 
 namespace Ecommerce.Cart.Modules.Application.Features.ApplyCoupon;
 

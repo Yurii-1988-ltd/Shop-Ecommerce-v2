@@ -2,7 +2,8 @@
 
 public sealed record CartListResponse(
     Guid Id,
-    Guid CustomerId,
+    Guid? CustomerId,
+    Guid? GuestId,
     int TotalItems,
     decimal TotalAmount,
     string Currency);

@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authentication.Cookies;
+﻿using Ecommerce.Storefront.ApiClients.Carts.Services;
+using Microsoft.AspNetCore.Authentication.Cookies;
 
 namespace Ecommerce.Storefront.Extensions;
 
@@ -13,6 +14,10 @@ public static class AuthenticationExtensions
         options.LoginPath = "/login";
         options.AccessDeniedPath = "/access-denied";
     });
+        services.AddScoped<IStorefrontAuthenticationService,
+     StorefrontAuthenticationService>();
+        services.AddScoped<ICurrentUser, CurrentUser>();
+        services.AddScoped<IGuestCartService, GuestCartService>();
 
         services.AddAuthorization();
         return services;

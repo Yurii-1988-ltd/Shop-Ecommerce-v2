@@ -8,7 +8,7 @@ internal sealed class GetCartsEndpoint
 {
     public void MapEndpoint(IEndpointRouteBuilder app)
     {
-        app.MapGet("/carts", async (
+        app.MapGet("/admin/carts", async (
     [FromQuery] int page = 1,
     [FromQuery] int pageSize = 10,
     ISender sender = default!) =>
