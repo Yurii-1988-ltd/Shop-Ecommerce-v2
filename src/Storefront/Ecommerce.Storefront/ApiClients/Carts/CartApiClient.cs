@@ -1,5 +1,6 @@
 ﻿using Ecommerce.Storefront.ApiClients.Carts.Models;
 using Ecommerce.Storefront.ApiClients.Carts.Services;
+using System.Net;
 
 namespace Ecommerce.Storefront.ApiClients.Cart;
 
@@ -47,11 +48,42 @@ internal sealed class CartApiClient(HttpClient httpClient,
     }
 
     public async Task<CartResponse?> GetAsync(
- 
-        CancellationToken cancellationToken = default)
+     CancellationToken cancellationToken = default)
     {
-        return await httpClient.GetFromJsonAsync<CartResponse>(
-            $"{CartUrl}?{GetOwnerQuery()}",
+        var ownerQuery = GetOwnerQuery();
+
+
+        var response = await httpClient.GetAsync(
+            $"{CartUrl}?{ownerQuery}",
+            cancellationToken);
+
+
+        if (response.StatusCode == HttpStatusCode.NotFound)
+        {
+      
+
+            var cartId = await CreateAsync(cancellationToken);
+
+       
+
+            ownerQuery = GetOwnerQuery();
+
+       
+
+            response = await httpClient.GetAsync(
+                $"{CartUrl}?{ownerQuery}",
+                cancellationToken);
+
+        
+
+            response.EnsureSuccessStatusCode();
+        }
+        else
+        {
+            response.EnsureSuccessStatusCode();
+        }
+
+        return await response.Content.ReadFromJsonAsync<CartResponse>(
             cancellationToken);
     }
     private string GetOwnerQuery()
@@ -59,12 +91,12 @@ internal sealed class CartApiClient(HttpClient httpClient,
         if (currentUser.IsAuthenticated)
             return $"customerId={currentUser.UserId}";
 
-        var guestId = guestCartService.GetOrCreateGuestId();
+        var guestId = guestCartService.GetGuestId();
 
         return $"guestId={guestId}";
     }
 
-    public async Task<Guid> CreateCartAsync(CancellationToken cancellationToken = default)
+    public async Task<Guid> CreateAsync(CancellationToken cancellationToken = default)
     {
         CreateCartRequest request;
         if (currentUser.IsAuthenticated)
@@ -74,7 +106,7 @@ internal sealed class CartApiClient(HttpClient httpClient,
         }
         else
         {
-            var guestId = guestCartService.GetOrCreateGuestId();
+            var guestId = guestCartService.GetGuestId();
             request = new CreateCartRequest(null, guestId);
         }
         var response = await httpClient.PostAsJsonAsync(

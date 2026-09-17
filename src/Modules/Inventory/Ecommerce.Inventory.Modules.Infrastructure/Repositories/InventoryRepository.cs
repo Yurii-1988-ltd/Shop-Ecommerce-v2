@@ -28,4 +28,12 @@ public sealed class InventoryRepository
             inventoryItem,
             cancellationToken);
     }
+
+    public async Task<InventoryItem?> GetByProductByIdAsync(Guid productId, CancellationToken cancellationToken = default)
+    {
+        return await context.Inventories
+            .FirstOrDefaultAsync(
+                x => x.ProductId == productId,
+                cancellationToken);
+    }
 }

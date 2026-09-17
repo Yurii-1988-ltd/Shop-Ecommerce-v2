@@ -1,10 +1,7 @@
 ﻿
 
 using Ecommerce.Cart.Modules.Application.Features.AddCartItem;
-using MediatR;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Routing;
+
 
 namespace Ecommerce.Cart.Modules.Presentation.Carts;
 

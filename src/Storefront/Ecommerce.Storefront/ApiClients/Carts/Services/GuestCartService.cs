@@ -3,7 +3,7 @@
 public class GuestCartService(IHttpContextAccessor httpContextAccessor) : IGuestCartService
 {
     private const string CookieName = "Ecommerce.GuestId";
-    public Guid GetOrCreateGuestId()
+    public Guid GetGuestId()
     {
        var httpContext = httpContextAccessor.HttpContext
             ?? throw new InvalidOperationException("HttpContext is not available.");

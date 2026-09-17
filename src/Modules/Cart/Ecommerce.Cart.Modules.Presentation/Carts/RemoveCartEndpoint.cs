@@ -7,7 +7,7 @@ internal sealed class RemoveCartEndpoint
 {
     public void MapEndpoint(IEndpointRouteBuilder app)
     {
-        app.MapDelete("/carts/{customerId:guid}", async (
+        app.MapDelete("/admin/carts/{customerId:guid}", async (
             Guid customerId,
             ISender sender,
             CancellationToken cancellationToken) =>

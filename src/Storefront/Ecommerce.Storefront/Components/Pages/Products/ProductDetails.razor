@@ -1,9 +1,6 @@
 ﻿@page "/products/{Id:guid}"
 
 
-
-@inject ICatalogApiClient CatalogApiClient
-
 <PageTitle>@(_product?.Name ?? "Product")</PageTitle>
 
 @if (_loading)
@@ -65,7 +62,8 @@ else
                 </p>
 
                 <div class="product-details__availability">
-                    @if (_product.IsAvailable)
+
+                    @if (_product.IsActive && _availableQuantity > 0)
                     {
                         <span>In stock</span>
                     }
@@ -73,10 +71,12 @@ else
                     {
                         <span>Out of stock</span>
                     }
+
                 </div>
 
                 <button class="product-details__button"
-                        disabled="@(!_product.IsAvailable)">
+                        disabled="@(!_product.IsActive || _availableQuantity <= 0)"
+                        @onclick="AddToCart">
                     Add to cart
                 </button>
 
@@ -93,6 +93,7 @@ else
     public Guid Id { get; set; }
 
     private ProductDetailsResponse? _product;
+    private int _availableQuantity;
     private bool _loading;
 
     protected override async Task OnInitializedAsync()
@@ -102,10 +103,41 @@ else
         try
         {
             _product = await CatalogApiClient.GetAsync(Id);
+
+            if (_product is not null)
+            {
+                var inventory =
+                    await InventoryApiClient.GetAvailabilityAsync(
+                        _product.Id);
+
+                _availableQuantity =
+                    inventory?.AvailableQuantity ?? 0;
+            }
         }
         finally
         {
             _loading = false;
         }
+    }
+
+    private async Task AddToCart()
+    {
+        if (_product is null ||
+            !_product.IsActive ||
+            _availableQuantity <= 0)
+        {
+            return;
+        }
+
+        await CartApiClient.GetAsync();
+
+        var request = new AddCartItemRequest(
+            _product.Id,
+            _product.Name,
+            _product.SalePrice ?? _product.Price,
+            _product.Currency,
+            1);
+
+        await CartApiClient.AddItemAsync(request);
     }
 }

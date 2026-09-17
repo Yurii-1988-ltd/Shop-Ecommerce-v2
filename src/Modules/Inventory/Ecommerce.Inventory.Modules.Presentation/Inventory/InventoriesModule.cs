@@ -14,6 +14,7 @@ public sealed class InventoriesModule : IModule
         new GetInventoryReportEndpoint().MapEndpoint(app);
         new CreateInventoryItemEndpoint().MapEndpoint(app);
         new InventoryExportEndpoint().MapEndpoint(app);
+        new GetInventoryAvailabilityEndpoint().MapEndpoint(app);
     }
 
     public void RegisterServices(IServiceCollection services, IConfiguration config)

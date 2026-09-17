@@ -1,19 +1,24 @@
-﻿using Ecommerce.Application.CQRS;
-using Ecommerce.Cart.Modules.Domain.Errors;
-using Ecommerce.Cart.Modules.Domain.Repositories;
-using Ecommerce.Domain.Domain;
+﻿using Ecommerce.Cart.Modules.Application.Features.RemoveCart;
 
-namespace Ecommerce.Cart.Modules.Application.Features.RemoveCart;
-
-internal sealed class RemoveCartCommandHandler(ICartRepository repository): ICommandHandler<RemoveCartCommand>
+internal sealed class RemoveCartCommandHandler(
+    ICartRepository repository)
+    : ICommandHandler<RemoveCartCommand>
 {
-    public async Task<Result> Handle(RemoveCartCommand request, CancellationToken cancellationToken)
+    public async Task<Result> Handle(
+        RemoveCartCommand request,
+        CancellationToken cancellationToken)
     {
-        var cart = await repository.GetByCustomerIdAsync(request.CustomerId);
+        var cart = await repository.GetByCustomerIdAsync(
+            request.CustomerId,
+            cancellationToken);
+
         if (cart is null)
             return CartErrors.NotFound(request.CustomerId);
-        await repository.DeleteAsync(cart.Id, cancellationToken);
-        return Result.Success();
 
+        await repository.DeleteAsync(
+            cart.Id,
+            cancellationToken);
+
+        return Result.Success();
     }
 }

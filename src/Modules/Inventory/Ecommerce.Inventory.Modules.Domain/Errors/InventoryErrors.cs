@@ -19,4 +19,6 @@ public  class InventoryErrors
         => new Error("Invalid.Sku", "Sku is required", ErrorType.Validation);
     public static Error InvalidMinimumQuantity
         => new Error("Invalid.MinimumQuantity", " MinimumQuantity must be greater than zero.", ErrorType.Validation);
+    public static Error ProductInventoryNotFound(Guid productId)
+        => new Error("Product.Inventory.Not.Found", $"Inventory for product with ID '{productId}' was not found.", ErrorType.NotFound);
 }

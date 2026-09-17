@@ -1,0 +1,84 @@
+﻿@page "/cart"
+
+@using Ecommerce.Storefront.ApiClients.Carts
+@using Ecommerce.Storefront.ApiClients.Carts.Models
+
+@inject ICartApiClient CartApiClient
+
+<PageTitle>Cart</PageTitle>
+
+<h1>Shopping Cart</h1>
+
+@if (_loading)
+{
+    <p>Loading...</p>
+}
+else if (_cart is null)
+{
+    <p>Your cart is empty.</p>
+}
+else if (_cart.Items.Count == 0)
+{
+    <p>Your cart is empty.</p>
+}
+else
+{
+    <div class="cart">
+
+        @foreach (var item in _cart.Items)
+        {
+            <div class="cart-item">
+
+                <div>
+                    <strong>@item.Name</strong>
+                </div>
+
+                <div>
+                    Quantity: @item.Quantity
+                </div>
+
+                <div>
+                    @item.TotalPrice @item.Currency
+                </div>
+
+            </div>
+        }
+
+        <hr />
+
+        <div>
+            Subtotal: @_cart.Subtotal @_cart.Currency
+        </div>
+
+        <div>
+            Discount: @_cart.Discount @_cart.Currency
+        </div>
+
+        <div>
+            <strong>
+                Total: @_cart.TotalAmount @_cart.Currency
+            </strong>
+        </div>
+
+    </div>
+}
+
+@code
+{
+    private CartResponse? _cart;
+    private bool _loading;
+
+    protected override async Task OnInitializedAsync()
+    {
+        _loading = true;
+
+        try
+        {
+            _cart = await CartApiClient.GetAsync();
+        }
+        finally
+        {
+            _loading = false;
+        }
+    }
+}

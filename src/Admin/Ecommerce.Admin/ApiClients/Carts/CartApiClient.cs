@@ -5,7 +5,7 @@ namespace Ecommerce.Admin.ApiClients.Carts;
 
 internal sealed class CartApiClient(HttpClient httpClient) : ICartApiClient
 {
-    private const string CartUrl = "/carts";
+    private const string CartUrl = "/admin/carts";
     public async Task AddItemAsync(
         Guid customerId,
         AddCartItemRequest request,

@@ -10,5 +10,8 @@ public interface IInventoryRepository
     Task AddAsync(
         InventoryItem inventoryItem,
         CancellationToken cancellationToken = default);
-   
+    Task<InventoryItem?>GetByProductByIdAsync(
+        Guid productId,
+        CancellationToken cancellationToken = default);
+
 }
