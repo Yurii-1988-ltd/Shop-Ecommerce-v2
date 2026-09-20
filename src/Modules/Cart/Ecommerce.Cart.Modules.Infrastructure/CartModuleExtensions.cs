@@ -1,6 +1,5 @@
 ﻿
-
-using Ecommerce.Cart.Modules.Application.Features.CreateCoupon;
+using Ecommerce.Cart.Modules.Infrastructure.Integrations.Inventory;
 
 
 namespace Ecommerce.Cart.Modules.Infrastructure;
@@ -42,6 +41,10 @@ public static class CartModuleExtensions
     {
         services.AddScoped<ICartRepository, CartRepository>();
         services.AddScoped<ICouponRepository, CouponRepository>();
+        services.AddHttpClient<IInventoryAvailability, InventoryAvailability>(client =>
+        {
+            client.BaseAddress = new Uri("https://localhost:7125");
+        }); 
         return services;
     }
     public static WebApplication UseWebApplicationExtensions(this WebApplication app)

@@ -26,4 +26,8 @@ public sealed class CartErrors
     new(
         "Cart.OwnerConflict",
         "CustomerId and GuestId cannot be specified together.",ErrorType.Conflict);
+    public static Error ProductInventoryNotFound =>
+        new Error("Product.Inventory.NotFound", "Product inventory not found", ErrorType.Validation);
+    public static Error ProductInventoryNotEnough =>
+        new Error("Product.Inventory.NotEnough", "Product inventory not enough", ErrorType.Validation);
 }

@@ -4,7 +4,8 @@ using Ecommerce.Domain.ValueObjects;
 namespace Ecommerce.Cart.Modules.Application.Features.AddCartItem;
 
 internal sealed class AddCartItemCommandHandler(
-    ICartRepository repository)
+    ICartRepository repository,
+    IInventoryAvailability inventory)
     : ICommandHandler<AddCartItemCommand>
 {
     public async Task<Result> Handle(
@@ -35,6 +36,15 @@ internal sealed class AddCartItemCommandHandler(
         if (cart is null)
             return CartErrors.NotFound(
                 request.CustomerId ?? request.GuestId ?? Guid.Empty);
+        var availiableQuantity = await inventory.GetAvailableQuantityAsync(
+            request.ProductId,
+            cancellationToken);
+        if (availiableQuantity is null)
+            return CartErrors.ProductInventoryNotFound;
+        var currentQuantity = cart.Items
+           .FirstOrDefault(i => i.ProductId == request.ProductId)?.Quantity ?? 0;
+        if (currentQuantity + request.Quantity > availiableQuantity.Value)
+            return CartErrors.ProductInventoryNotEnough;
 
         var priceResult = Money.Create(
             request.Price,
