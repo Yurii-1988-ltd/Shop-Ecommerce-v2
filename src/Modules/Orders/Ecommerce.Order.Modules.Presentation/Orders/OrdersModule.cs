@@ -1,8 +1,4 @@
-﻿
-
-
-
-namespace Ecommerce.Order.Modules.Presentation.Orders;
+﻿namespace Ecommerce.Order.Modules.Presentation.Orders;
 
 public sealed class OrdersModule : IModule
 {

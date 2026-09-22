@@ -26,6 +26,8 @@ internal sealed class InventoryItemConfiguration
 
         builder.HasIndex(x => x.SKU)
             .IsUnique();
+        builder.HasIndex(x => x.ProductId)
+                .IsUnique();
 
         builder.Property(x => x.OnHandQuantity)
             .IsRequired();

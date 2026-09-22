@@ -6,13 +6,19 @@ var sql = builder.AddSqlServer("sql")
 
 var database = sql.AddDatabase("Ecommerce");
 
-//RabbitMq 
+// RabbitMq 
 var messaging = builder.AddRabbitMQ("messaging")
     .WithManagementPlugin()
-    .WithEnvironment("RABBITMQ_DEFAULT_USER", "guest")
-    .WithEnvironment("RABBITMQ_DEFAULT_PASS", "guest")
-    .WithEnvironment("RABBITMQ_SERVER_ADDITIONAL_ERL_ARGS", "-rabbit loopback_users []");
-// Создаем ресурс Postgres с явным указанием переменной окружения POSTGRES_PASSWORD
+    .WithDataVolume()
+    .WithEnvironment(
+        "RABBITMQ_SERVER_ADDITIONAL_ERL_ARGS",
+        "-rabbit loopback_users []");
+
+//mailpit
+var mailpit = builder.AddContainer("mailpit", "axllent/mailpit")
+    .WithHttpEndpoint(port: 8025, targetPort: 8025, name: "dashboard")
+    .WithEndpoint(port: 1025, targetPort: 1025, name: "smtp");
+
 var postgres = builder.AddPostgres("postgres")
     .WithEnvironment(
         "POSTGRES_PASSWORD",

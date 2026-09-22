@@ -15,9 +15,11 @@ internal sealed class CreateOrderEndpoint
         {
             var command = new CreateOrderCommand(
                 request.CustomerId,
+                request.CustomerEmail,
                 request.ShippingAddress,
                 request.Items,
-                request.Currency);
+                request.Currency
+                );
 
             var result = await sender.Send(command, cancellationToken);
 

@@ -21,7 +21,13 @@ public static class ApiResults
 
     private static IEnumerable<KeyValuePair<string, object?>>? GetErrors(Result result)
     {
-        throw new NotImplementedException();
+        if (result.IsSuccess)
+            return null;
+
+        return new Dictionary<string, object?>
+        {
+            ["code"] = result.Error.Code
+        };
     }
 
     private static int? GetStatusCode(ErrorType type)

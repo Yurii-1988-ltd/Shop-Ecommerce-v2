@@ -1,5 +1,6 @@
 ﻿public sealed record CreateOrderCommand(
-       Guid CustomerId,
-    OrderAddressDto ShippingAddress, // 👈 Здесь ДОЛЖЕН быть OrderAddressDto, а не OrderAddress!
+    Guid CustomerId,
+    string CustomerEmail, // 👈 Добавляем email покупателя
+    OrderAddressDto ShippingAddress,
     List<CreateOrderItemDto> Items,
     string Currency) : ICommand<Guid>;

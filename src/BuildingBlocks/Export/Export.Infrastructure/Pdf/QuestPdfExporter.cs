@@ -37,7 +37,8 @@ public sealed class QuestPdfExporter : IPdfExporter
                         {
                             foreach (var _ in data.Columns)
                             {
-                                columns.RelativeColumn();
+                                columns.RelativeColumn(2);
+                              
                             }
                         });
 

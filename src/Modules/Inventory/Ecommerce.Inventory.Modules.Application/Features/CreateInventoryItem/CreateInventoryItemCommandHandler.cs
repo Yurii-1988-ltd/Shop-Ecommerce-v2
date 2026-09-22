@@ -8,6 +8,12 @@ public sealed class CreateInventoryItemCommandHandler(IInventoryRepository repos
       CreateInventoryItemCommand request,
       CancellationToken cancellationToken)
     {
+        var existing = await repository.GetByProductByIdAsync(
+      request.ProductId,
+      cancellationToken);
+
+        if (existing is not null)
+            return InventoryErrors.AlreadyExists;
         var result = InventoryItem.Create(
             request.ProductId,
             request.SKU,

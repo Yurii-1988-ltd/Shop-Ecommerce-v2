@@ -24,7 +24,7 @@ internal sealed class SendEmailCommandHandler(IEmailSender emailSender,
         }
         else
         {
-            notification.MarkAsfailed(sendResult.Error);
+            notification.MarkAsFailed(sendResult.Error);
         }
         await repository.AddAsync(notification, cancellationToken);
         return sendResult;

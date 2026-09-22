@@ -1,15 +1,14 @@
 ﻿using Ecommerce.Application.Abstractions;
-using Ecommerce.Application.CQRS;
 using Ecommerce.Domain.Constants;
-using Ecommerce.Domain.Domain;
 using Ecommerce.Domain.ValueObjects;
-using Ecommerce.Order.Modules.Domain.Entities;
-using Ecommerce.Order.Modules.Domain.Repositories;
 using Ecommerce.Order.Modules.Domain.ValueObjects;
+using Ecommerce.Shared.Contracts.IntegrationEvent; 
+using MassTransit; 
 
 public sealed class CreateOrderCommandHandler(
     IOrderRepository repository,
-    IEntityNumberGenerator orderNumberGenerator)
+    IEntityNumberGenerator orderNumberGenerator,
+    IPublishEndpoint publishEndpoint) 
     : ICommandHandler<CreateOrderCommand, Guid>
 {
     public async Task<Result<Guid>> Handle(
@@ -58,9 +57,20 @@ public sealed class CreateOrderCommandHandler(
             if (result.IsFailure)
                 return result.Error;
         }
+
         var count = order.Items.Count;
 
+        // Сохраняем заказ в БД
         await repository.InsertAsync(order, cancellationToken);
+
+        // 2. Публикуем событие в RabbitMQ для Notifications и других модулей
+        await publishEndpoint.Publish(new OrderCreatedIntegrationEvent(
+            OrderId: order.Id,
+            CustomerId: order.CustomerId,
+            CustomerEmail: request.CustomerEmail, 
+            TotalAmount: order.TotalQuantity,       
+            CreatedAtUtc: DateTime.UtcNow
+        ), cancellationToken);
 
         return order.Id;
     }

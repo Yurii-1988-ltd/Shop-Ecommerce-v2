@@ -1,5 +1,6 @@
 
 using Ecommerce.Inventory.Modules.Infrastructure;
+using Ecommerce.Notification.Modules.Presentation.Notifications;
 using Export.Infrastructure;
 using QuestPDF.Infrastructure;
 
@@ -30,7 +31,9 @@ internal class Program
             .AddModule<ProductsModule>(builder.Configuration)
             .AddModule<CartsModule>(builder.Configuration)
             .AddModule<OrdersModule>(builder.Configuration)
-            .AddModule<InventoriesModule>(builder.Configuration);
+            .AddModule<InventoriesModule>(builder.Configuration)
+            .AddModule<NotificationModule>(builder.Configuration);
+
           
 
 

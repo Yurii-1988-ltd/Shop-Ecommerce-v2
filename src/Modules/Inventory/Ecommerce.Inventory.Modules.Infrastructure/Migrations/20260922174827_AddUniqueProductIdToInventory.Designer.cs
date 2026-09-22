@@ -11,8 +11,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Ecommerce.Inventory.Modules.Infrastructure.Migrations
 {
     [DbContext(typeof(InventoryContext))]
-    [Migration("20260809092437_InitialCreate2")]
-    partial class InitialCreate2
+    [Migration("20260922174827_AddUniqueProductIdToInventory")]
+    partial class AddUniqueProductIdToInventory
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -50,6 +50,9 @@ namespace Ecommerce.Inventory.Modules.Infrastructure.Migrations
                         .HasColumnType("timestamp with time zone");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("ProductId")
+                        .IsUnique();
 
                     b.HasIndex("SKU")
                         .IsUnique();

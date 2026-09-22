@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Ecommerce.Inventory.Modules.Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialCreate : Migration
+    public partial class AddUniqueProductIdToInventory : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -27,6 +27,12 @@ namespace Ecommerce.Inventory.Modules.Infrastructure.Migrations
                 {
                     table.PrimaryKey("PK_inventories", x => x.Id);
                 });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_inventories_ProductId",
+                table: "inventories",
+                column: "ProductId",
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_inventories_SKU",

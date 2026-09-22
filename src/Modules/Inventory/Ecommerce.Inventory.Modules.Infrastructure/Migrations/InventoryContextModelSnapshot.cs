@@ -48,6 +48,9 @@ namespace Ecommerce.Inventory.Modules.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("ProductId")
+                        .IsUnique();
+
                     b.HasIndex("SKU")
                         .IsUnique();
 

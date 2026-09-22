@@ -7,12 +7,17 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="FluentEmail.Razor" Version="3.0.2" />
     <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="8.22.0" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\..\BuildingBlocks\Ecommerce.Application\Ecommerce.Application.csproj" />
     <ProjectReference Include="..\..\BuildingBlocks\Ecommerce.Presentation\Ecommerce.Presentation.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Components\Pages\Notifications\" />
   </ItemGroup>
 
 </Project>

@@ -1,0 +1,98 @@
+﻿@page "/inventories/create"
+@rendermode InteractiveServer
+@attribute [Authorize(Roles = "Admin")]
+
+<PageHeader Title="Add Inventory"
+            Subtitle="Create inventory for a product">
+</PageHeader>
+
+<MudPaper Class="entity-card pa-6" Elevation="2">
+
+    <MudForm @ref="_form">
+
+        <MudAutocomplete T="ProductListItemResponse"
+                         Label="Product"
+                         Placeholder="Select product..."
+                         Variant="Variant.Outlined"
+                         Value="_selectedProduct"
+                         ValueChanged="OnProductChanged"
+                         SearchFunc="SearchProducts"
+                         ToStringFunc="@(x => x is null ? string.Empty : $"{x.Sku} — {x.Name}")"
+                         Required="true"
+                         RequiredError="Product is required"
+                         Clearable="true"
+                         ResetValueOnEmptyText="true"
+                         CoerceText="true"
+                         Class="mb-4">
+
+            <ItemTemplate Context="product">
+                <div>
+                    <div>
+                        <strong>@product.Sku</strong>
+                    </div>
+
+                    <div class="text-secondary">
+                        @product.Name
+                    </div>
+                </div>
+            </ItemTemplate>
+
+        </MudAutocomplete>
+
+        @if (_selectedProduct is not null)
+        {
+            <MudAlert Severity="Severity.Info"
+                      Variant="Variant.Outlined"
+                      Class="mb-4">
+
+                <strong>SKU:</strong> @_selectedProduct.Sku
+            </MudAlert>
+        }
+
+        <MudNumericField T="int"
+                         Label="Initial Quantity"
+                         @bind-Value="_quantity"
+                         Variant="Variant.Outlined"
+                         Min="0"
+                         Required="true"
+                         RequiredError="Initial quantity is required"
+                         Class="mb-4" />
+
+        <MudNumericField T="int"
+                         Label="Minimum Quantity"
+                         @bind-Value="_minimumQuantity"
+                         Variant="Variant.Outlined"
+                         Min="0"
+                         Required="true"
+                         RequiredError="Minimum quantity is required"
+                         Class="mb-6" />
+
+        <div class="d-flex justify-end gap-2">
+
+            <MudButton Variant="Variant.Outlined"
+                       OnClick="Cancel">
+                Cancel
+            </MudButton>
+
+            <MudButton Variant="Variant.Filled"
+                       Color="Color.Primary"
+                       StartIcon="@Icons.Material.Filled.Save"
+                       OnClick="CreateInventory"
+                       Disabled="_saving || _selectedProduct is null">
+
+                @if (_saving)
+                {
+                    <MudProgressCircular Size="Size.Small"
+                                         Indeterminate="true"
+                                         Class="me-2" />
+                }
+
+                Create
+            </MudButton>
+
+        </div>
+
+    </MudForm>
+
+</MudPaper>
+

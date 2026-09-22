@@ -7,8 +7,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="MassTransit.RabbitMQ" Version="9.2.2" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\..\..\BuildingBlocks\Contracts\Ecommerce.Catalog.Contracts\Ecommerce.Catalog.Contracts.csproj" />
     <ProjectReference Include="..\..\..\BuildingBlocks\Ecommerce.Application\Ecommerce.Application.csproj" />
+    <ProjectReference Include="..\..\..\BuildingBlocks\Shared\Ecommerce.Shared.Contracts\Ecommerce.Shared.Contracts.csproj" />
     <ProjectReference Include="..\..\Users\Ecommerce.Modules.Users.Contracts\Ecommerce.Modules.Users.Contracts.csproj" />
     <ProjectReference Include="..\Ecommerce.Order.Modules.Domain\Ecommerce.Order.Modules.Domain.csproj" />
   </ItemGroup>

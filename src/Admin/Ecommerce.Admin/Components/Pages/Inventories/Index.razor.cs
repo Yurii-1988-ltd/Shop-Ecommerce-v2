@@ -1,5 +1,6 @@
 ﻿using Ecommerce.Admin.ApiClients.Inventories.Responses;
 using Ecommerce.Admin.Components.Pages.Inventories.Dialogs;
+using Ecommerce.Admin.Contracts;
 using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
 using MudBlazor;
@@ -77,33 +78,57 @@ public partial class Index
 
     // Универсальный метод вызова диалога
     private async Task ExecuteQuantityDialogAsync(
-        string title,
-        string actionText,
-        string icon,
-        InventoryReportItemResponse inventory,
-        string quantityLabel,
-        int currentQuantity,
-        Func<Guid, int, Task> apiAction)
+       string title,
+       string actionText,
+       string icon,
+       InventoryReportItemResponse inventory,
+       string quantityLabel,
+       int currentQuantity,
+       Func<Guid, int, Task> apiAction)
     {
         var parameters = new DialogParameters
-        {
-            { nameof(InventoryQuantityDialog.Title), title },
-            { nameof(InventoryQuantityDialog.ActionText), actionText },
-            { nameof(InventoryQuantityDialog.Icon), icon },
-            { nameof(InventoryQuantityDialog.SKU), inventory.SKU },
-            { nameof(InventoryQuantityDialog.QuantityLabel), quantityLabel },
-            { nameof(InventoryQuantityDialog.CurrentQuantity), currentQuantity } // <- Явная передача значения!
-        };
+    {
+        { nameof(InventoryQuantityDialog.Title), title },
+        { nameof(InventoryQuantityDialog.ActionText), actionText },
+        { nameof(InventoryQuantityDialog.Icon), icon },
+        { nameof(InventoryQuantityDialog.SKU), inventory.SKU },
+        { nameof(InventoryQuantityDialog.QuantityLabel), quantityLabel },
+        { nameof(InventoryQuantityDialog.CurrentQuantity), currentQuantity }
+    };
 
-        var dialog = await DialogService.ShowAsync<InventoryQuantityDialog>(title, parameters);
+        var dialog = await DialogService.ShowAsync<InventoryQuantityDialog>(
+            title,
+            parameters);
+
         var result = await dialog.Result;
 
         if (result is null || result.Canceled)
             return;
 
         var quantity = (int)result.Data!;
-        await apiAction(inventory.InventoryItemId, quantity);
-        await LoadInventory();
+
+        try
+        {
+            await apiAction(inventory.InventoryItemId, quantity);
+
+            Snackbar.Add(
+                $"{actionText} completed successfully.",
+                Severity.Success);
+
+            await LoadInventory();
+        }
+        catch (ApiException ex)
+        {
+            Snackbar.Add(
+                ex.Description,
+                Severity.Warning);
+        }
+        catch (HttpRequestException)
+        {
+            Snackbar.Add(
+                $"Failed to {actionText.ToLowerInvariant()} inventory.",
+                Severity.Error);
+        }
     }
 
     private Task ExportExcel() =>

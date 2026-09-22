@@ -50,11 +50,15 @@ namespace Ecommerce.Notification.Modules.Domain.Entities;
         ErrorDescription = null;
         return  Result.Success();
     }
-    public Result MarkAsfailed(Error error)
+    public Result MarkAsFailed(Error error)
     {
+        if (Status == NotificationStatus.Sent)
+            return NotificationErrors.AlreadySent;
+
         Status = NotificationStatus.Failed;
         ErrorCode = error.Code;
         ErrorDescription = error.Description;
+
         return Result.Success();
     }
     #endregion

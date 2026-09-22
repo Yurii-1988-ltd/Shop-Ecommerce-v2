@@ -1,5 +1,5 @@
 ﻿using Ecommerce.Inventory.Modules.Application.Features.CreateInventoryItem;
-using MediatR;
+
 
 namespace Ecommerce.Inventory.Modules.Presentation.Inventory;
 
@@ -26,12 +26,13 @@ internal sealed class CreateInventoryItemEndpoint
                 ? Results.Created(
                     $"/inventories/{result.Value}",
                     result.Value)
-                : Results.BadRequest(result.Error);
+                : ApiResults.Problem(result);
         })
         .WithTags(Tags.Inventory)
         .WithName("CreateInventoryItem")
         .Produces<Guid>(StatusCodes.Status201Created)
-        .Produces(StatusCodes.Status400BadRequest);
+        .ProducesProblem(StatusCodes.Status400BadRequest)
+        .ProducesProblem(StatusCodes.Status409Conflict);
     }
 }
 

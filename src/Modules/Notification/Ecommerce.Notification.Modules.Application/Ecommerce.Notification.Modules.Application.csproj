@@ -8,6 +8,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\..\BuildingBlocks\Ecommerce.Application\Ecommerce.Application.csproj" />
+    <ProjectReference Include="..\..\..\BuildingBlocks\Shared\Ecommerce.Shared.Contracts\Ecommerce.Shared.Contracts.csproj" />
     <ProjectReference Include="..\Ecommerce.Notification.Modules.Domain\Ecommerce.Notification.Modules.Domain.csproj" />
   </ItemGroup>
 

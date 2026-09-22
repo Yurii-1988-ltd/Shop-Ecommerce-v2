@@ -1,5 +1,6 @@
 ﻿using Ecommerce.Admin.ApiClients.Inventories.Contracts;
 using Ecommerce.Admin.ApiClients.Inventories.Responses;
+using Ecommerce.Admin.Contracts;
 
 namespace Ecommerce.Admin.ApiClients.Inventories.Api;
 
@@ -17,8 +18,7 @@ internal sealed class InventoryApiClient(
             $"{Inventories}/{inventoryItemId}/cancel",
             new InventoryQuantityRequest(quantity),
             cancellationToken);
-
-        response.EnsureSuccessStatusCode();
+        await EnsureSuccessAsync(response, cancellationToken);
     }
 
     public async Task CommitReservationAsync(
@@ -31,19 +31,19 @@ internal sealed class InventoryApiClient(
             new InventoryQuantityRequest(quantity),
             cancellationToken);
 
-        response.EnsureSuccessStatusCode();
+        await EnsureSuccessAsync(response, cancellationToken);
     }
 
     public async Task<Guid> CreateAsync(
-        CreateInventoryItemRequest request,
-        CancellationToken cancellationToken = default)
+      CreateInventoryItemRequest request,
+      CancellationToken cancellationToken = default)
     {
         var response = await httpClient.PostAsJsonAsync(
             Inventories,
             request,
             cancellationToken);
 
-        response.EnsureSuccessStatusCode();
+        await EnsureSuccessAsync(response, cancellationToken);
 
         return await response.Content.ReadFromJsonAsync<Guid>(
             cancellationToken);
@@ -59,7 +59,7 @@ internal sealed class InventoryApiClient(
             new InventoryQuantityRequest(quantity),
             cancellationToken);
 
-        response.EnsureSuccessStatusCode();
+      await EnsureSuccessAsync(response, cancellationToken);;
     }
 
     public async Task<byte[]> ExportExcelAsync(
@@ -99,7 +99,7 @@ internal sealed class InventoryApiClient(
             new InventoryQuantityRequest(quantity),
             cancellationToken);
 
-        response.EnsureSuccessStatusCode();
+      await EnsureSuccessAsync(response, cancellationToken);
     }
 
     public async Task ReserveStockAsync(
@@ -112,6 +112,22 @@ internal sealed class InventoryApiClient(
             new InventoryQuantityRequest(quantity),
             cancellationToken);
 
-        response.EnsureSuccessStatusCode();
+        await EnsureSuccessAsync(response, cancellationToken);
+    }
+    private async Task EnsureSuccessAsync(
+    HttpResponseMessage response,
+    CancellationToken cancellationToken)
+    {
+        if (response.IsSuccessStatusCode)
+            return;
+
+        var error = await response.Content.ReadFromJsonAsync<ApiError>(
+            cancellationToken);
+
+        if (error != null)
+            throw new ApiException(error);
+
+        throw new HttpRequestException(
+            $"Request failed with status code {response.StatusCode}");
     }
 }

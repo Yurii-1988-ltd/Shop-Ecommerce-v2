@@ -1,9 +1,7 @@
 ﻿
 
 using Ecommerce.Inventory.Modules.Application.Features.CommitReservation;
-using MediatR;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Http;
+
 
 namespace Ecommerce.Inventory.Modules.Presentation.Inventory;
 

@@ -11,4 +11,13 @@ internal sealed class NotificationRepository(NotificationsContext context) : INo
         await context.SaveChangesAsync(cancellationToken);
         
     }
+
+    public Task UpdateAsync(
+    Domain.Entities.Notification notification,
+    CancellationToken cancellationToken = default)
+    {
+        context.Notifications.Update(notification);
+
+        return Task.CompletedTask;
+    }
 }

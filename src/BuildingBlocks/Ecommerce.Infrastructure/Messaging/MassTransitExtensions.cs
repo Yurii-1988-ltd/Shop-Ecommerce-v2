@@ -20,6 +20,7 @@ public static class MassTransitExtensions
                 var connectionString = configuration.GetConnectionString("messaging")
                 ?? throw new InvalidOperationException("Connection string 'messaging' for RabbitMQ is missing.");
                 cfg.Host(connectionString);
+                var uri = new Uri(connectionString);
                 cfg.UseMessageRetry(x => x.Interval(3, TimeSpan.FromSeconds(5)));
                 cfg.ConfigureEndpoints(context);
             });
