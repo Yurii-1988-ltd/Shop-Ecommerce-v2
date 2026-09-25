@@ -1,6 +1,6 @@
-﻿
+﻿using Ecommerce.Notification.Modules.Infrastructure.Adapters;
 using Ecommerce.Notification.Modules.Infrastructure.Configuration;
-using Ecommerce.Notification.Modules.Infrastructure.Adapters;
+using Ecommerce.Notification.Modules.Infrastructure.Templates;
 
 namespace Ecommerce.Notification.Modules.Infrastructure;
 
@@ -10,15 +10,16 @@ public static class NotificationsModuleExtensions
         this IServiceCollection services,
         IConfiguration config)
     {
+        // 1. MediatR
         services.AddMediatR(cfg =>
             cfg.RegisterServicesFromAssembly(
                 typeof(INotificationService).Assembly));
 
-        // PostgreSQL
+        // 2. PostgreSQL
         var connectionString =
             config.GetConnectionString("notifications")
             ?? throw new InvalidOperationException(
-                "Connection string 'notifications' is not found.");
+                "Connection string 'notifications' is not configured.");
 
         services.AddNpgsqlDataSource(
             connectionString,
@@ -33,31 +34,30 @@ public static class NotificationsModuleExtensions
             options.UseNpgsql(dataSource);
         });
 
-        // MassTransit
+        // 3. MassTransit
         services.AddCustomTransit(
             config,
             typeof(NotificationsModuleExtensions).Assembly);
 
-        // SMTP
+        // 4. SMTP configuration
         var smtpOptions = config
             .GetSection("SmtpOptions")
             .Get<SmtpOptions>()
             ?? throw new InvalidOperationException(
                 "SmtpOptions configuration is not configured.");
 
-        Console.WriteLine(
-            $"SMTP CONFIG => {smtpOptions.Host}:{smtpOptions.Port}");
-
+        // 5. FluentEmail + SMTP
+        // Liquid rendering is handled by our custom
+        // IEmailTemplateRenderer implementation.
         services
             .AddFluentEmail(
                 smtpOptions.FromEmail,
                 smtpOptions.FromName)
-            .AddLiquidRenderer()
             .AddSmtpSender(
                 smtpOptions.Host,
                 smtpOptions.Port);
 
-        // Services
+        // 6. Application services
         services.AddScoped<
             INotificationUnitOfWork,
             NotificationsUnitOfWork>();
@@ -69,6 +69,10 @@ public static class NotificationsModuleExtensions
         services.AddScoped<
             IEmailSender,
             FluentEmailSender>();
+
+        services.AddScoped<
+            IEmailTemplateRenderer,
+            LiquidEmailTemplateRenderer>();
 
         services.AddScoped<
             INotificationService,

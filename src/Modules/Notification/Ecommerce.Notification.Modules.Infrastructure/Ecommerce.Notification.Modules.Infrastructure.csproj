@@ -22,6 +22,7 @@
 		<!-- PostgreSQL и Npgsql -->
 		<PackageReference Include="Npgsql.DependencyInjection" Version="9.0.3" />
 		<PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="9.0.3" />
+		<PackageReference Include="Fluid.Core" Version="2.13.1" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -33,5 +34,9 @@
 	<ItemGroup>
 	  <Folder Include="Templates\Emails\" />
 	</ItemGroup>
+	<ItemGroup>
+		<EmbeddedResource Include="Templates\Emails\**\*.liquid" />
+	</ItemGroup>
+
 
 </Project>

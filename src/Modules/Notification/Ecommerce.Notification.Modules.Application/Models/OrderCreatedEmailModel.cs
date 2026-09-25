@@ -1,6 +1,7 @@
 ﻿namespace Ecommerce.Notification.Modules.Application.Models;
 
 public sealed record OrderCreatedEmailModel(
-    Guid OrderId,
+    string OrderNumber,
     decimal TotalAmount,
-    string Currency);
+    string Currency,
+    IReadOnlyCollection<OrderCreatedEmailItemModel> Items);

@@ -1,8 +1,10 @@
-﻿namespace Ecommerce.Notification.Modules.Application.Abstractions;
+﻿using Ecommerce.Domain.Domain;
+
+namespace Ecommerce.Notification.Modules.Application.Abstractions;
 
 public interface IEmailTemplateRenderer
 {
-    Task<string> RenderAsync<TModel>(
+    Task<Result<string>> RenderAsync<TModel>(
         string templateName,
         TModel model,
         CancellationToken cancellationToken = default);

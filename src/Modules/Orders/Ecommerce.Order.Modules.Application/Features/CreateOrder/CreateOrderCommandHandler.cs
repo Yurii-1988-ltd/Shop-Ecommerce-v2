@@ -71,6 +71,14 @@ public sealed class CreateOrderCommandHandler(
 
         if (totalResult.IsFailure)
             return totalResult.Error;
+        var items = order.Items.Select(
+            item =>new OrderCreatedItemIntegrationEvent(
+                item.ProductId,
+                item.ProductName,
+                item.SKU,
+                item.UnitPrice.Amount,
+                item.Quantity))
+            .ToList();
 
         await repository.InsertAsync(
             order,
@@ -79,10 +87,12 @@ public sealed class CreateOrderCommandHandler(
         await publishEndpoint.Publish(
             new OrderCreatedIntegrationEvent(
                 OrderId: order.Id,
+                OrderNumber:orderNumber,
                 CustomerId: order.CustomerId,
                 CustomerEmail: request.CustomerEmail,
                 TotalAmount: totalResult.Value.Amount,
                 Currency: order.Currency,
+                Items: items,
                 CreatedAtUtc: DateTime.UtcNow),
             cancellationToken);
 

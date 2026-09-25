@@ -1,13 +1,39 @@
 <h2>Thank you for your order!</h2>
 
 <p>
-    Your order <strong>#{{ OrderId }}</strong> has been accepted.
+	Your order <strong>#{{ OrderNumber }}</strong> has been accepted.
+</p>
+
+<h3>Order items</h3>
+
+<table>
+	<thead>
+		<tr>
+			<th>Product</th>
+			<th>SKU</th>
+			<th>Quantity</th>
+			<th>Unit price</th>
+			<th>Total</th>
+		</tr>
+	</thead>
+
+	<tbody>
+		{% for item in Items %}
+		<tr>
+			<td>{{ item.ProductName }}</td>
+			<td>{{ item.Sku }}</td>
+			<td>{{ item.Quantity }}</td>
+			<td>{{ item.UnitPrice }} {{ Currency }}</td>
+			<td>{{ item.LineTotal }} {{ Currency }}</td>
+		</tr>
+		{% endfor %}
+	</tbody>
+</table>
+
+<p>
+	<strong>Total: {{ TotalAmount }} {{ Currency }}</strong>
 </p>
 
 <p>
-    Total: <strong>{{ TotalAmount }} {{ Currency }}</strong>
-</p>
-
-<p>
-    Thank you for shopping with Ecommerce Store!
+	Thank you for shopping with Ecommerce Store!
 </p>
