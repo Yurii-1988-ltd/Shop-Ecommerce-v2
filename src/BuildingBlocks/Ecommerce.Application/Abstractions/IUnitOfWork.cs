@@ -1,7 +1,7 @@
-﻿
-namespace Ecommerce.Application.Abstractions;
+﻿namespace Ecommerce.Inventory.Modules.Application.Abstractions;
 
-public interface IUnitOfWork
+public interface IInventoryUnitOfWork
 {
-    Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
+    Task<int> SaveChangesAsync(
+        CancellationToken cancellationToken = default);
 }

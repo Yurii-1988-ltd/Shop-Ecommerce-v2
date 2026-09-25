@@ -2,16 +2,14 @@
 using Ecommerce.Domain.Domain;
 using Ecommerce.Notification.Modules.Application.Abstractions;
 using Ecommerce.Shared.Contracts.IntegrationEvent;
-using Microsoft.Extensions.Logging;
 
 namespace Ecommerce.Notification.Modules.Application.Services;
 
-public sealed class NotificationService(
+public sealed class OrderNotificationService(
     INotificationRepository repository,
     INotificationUnitOfWork unitOfWork,
-    IEmailSender emailSender,
-    ILogger<NotificationService> logger)
-    : INotificationService
+    IEmailSender emailSender)
+    : IOrderNotificationService
 {
     public async Task<Result> SendOrderCreatedAsync(
         OrderCreatedIntegrationEvent message,
@@ -22,8 +20,8 @@ public sealed class NotificationService(
 
         var body = $"""
             <h2>Thank you for your order!</h2>
-            <p>Order: {message.OrderId}</p>
-            <p>Total: {message.TotalAmount}</p>
+            <p>Your order <strong>#{message.OrderId}</strong> has been accepted.</p>
+            <p>Total: <strong>{message.TotalAmount}</strong></p>
             """;
 
         var notificationResult = Domain.Entities.Notification.Create(
@@ -32,18 +30,10 @@ public sealed class NotificationService(
             body);
 
         if (notificationResult.IsFailure)
-        {
-            logger.LogError(
-                "Failed to create notification for order {OrderId}: {Error}",
-                message.OrderId,
-                notificationResult.Error.Description);
-
             return notificationResult.Error;
-        }
 
         var notification = notificationResult.Value;
 
-        // Save as Pending
         await repository.AddAsync(
             notification,
             cancellationToken);
@@ -51,7 +41,6 @@ public sealed class NotificationService(
         await unitOfWork.SaveChangesAsync(
             cancellationToken);
 
-        // Send email
         var sendResult = await emailSender.SendAsync(
             notification.Recipient,
             notification.Subject,
@@ -60,14 +49,7 @@ public sealed class NotificationService(
 
         if (sendResult.IsFailure)
         {
-            logger.LogError(
-                "Failed to send notification for order {OrderId} to {Recipient}: {Error}",
-                message.OrderId,
-                notification.Recipient,
-                sendResult.Error.Description);
-
-            notification.MarkAsFailed(
-                sendResult.Error);
+            notification.MarkAsFailed(sendResult.Error);
 
             await unitOfWork.SaveChangesAsync(
                 cancellationToken);
@@ -75,16 +57,10 @@ public sealed class NotificationService(
             return sendResult.Error;
         }
 
-        // Mark as Sent
         notification.MarkAsSent();
 
         await unitOfWork.SaveChangesAsync(
             cancellationToken);
-
-        logger.LogInformation(
-            "Notification for order {OrderId} sent successfully to {Recipient}",
-            message.OrderId,
-            notification.Recipient);
 
         return Result.Success();
     }

@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Ecommerce.Notification.Modules.Infrastructure.Migrations
 {
     [DbContext(typeof(NotificationsContext))]
-    [Migration("20260920090521_init")]
-    partial class init
+    [Migration("20260923162154_InitialNotification")]
+    partial class InitialNotification
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -28,7 +28,6 @@ namespace Ecommerce.Notification.Modules.Infrastructure.Migrations
             modelBuilder.Entity("Ecommerce.Notification.Modules.Domain.Entities.Notification", b =>
                 {
                     b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
                     b.Property<string>("Body")
@@ -64,7 +63,7 @@ namespace Ecommerce.Notification.Modules.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("notifications", "notifications");
+                    b.ToTable("notifications", (string)null);
                 });
 #pragma warning restore 612, 618
         }

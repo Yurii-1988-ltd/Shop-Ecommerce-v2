@@ -6,5 +6,6 @@ public sealed record OrderCreatedIntegrationEvent(
     Guid CustomerId,
     string CustomerEmail,
     decimal TotalAmount,
+    string Currency,
     DateTime CreatedAtUtc
 );

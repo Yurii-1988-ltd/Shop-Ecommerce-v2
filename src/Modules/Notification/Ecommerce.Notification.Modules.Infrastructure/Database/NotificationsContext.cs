@@ -1,9 +1,4 @@
-﻿
-using Ecommerce.Notification.Modules.Domain.Entities;
-using Microsoft.EntityFrameworkCore;
-using System.Reflection;
-
-namespace Ecommerce.Notification.Modules.Infrastructure.Database;
+﻿namespace Ecommerce.Notification.Modules.Infrastructure.Database;
 
 internal class NotificationsContext: DbContext
 {

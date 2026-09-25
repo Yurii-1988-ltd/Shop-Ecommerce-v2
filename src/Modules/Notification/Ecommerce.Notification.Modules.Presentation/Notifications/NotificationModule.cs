@@ -1,7 +1,7 @@
 ﻿
 
 using Ecommerce.Presentation;
-
+using Ecommerce.Notification.Modules.Infrastructure;
 
 
 namespace Ecommerce.Notification.Modules.Presentation.Notifications

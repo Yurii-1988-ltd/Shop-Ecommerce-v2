@@ -1,24 +1,24 @@
-﻿
-
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Ecommerce.Notification.Modules.Infrastructure.Database.Configurations;
 
-internal sealed class NotificationConfiguration : IEntityTypeConfiguration<Domain.Entities.Notification>
+internal sealed class NotificationConfiguration
+    : IEntityTypeConfiguration<Domain.Entities.Notification>
 {
-    public void Configure(EntityTypeBuilder<Domain.Entities.Notification> builder)
+    public void Configure(
+        EntityTypeBuilder<Domain.Entities.Notification> builder)
     {
-
-        builder.ToTable("notifications", "notifications");
-
+        builder.ToTable("notifications");
 
         builder.HasKey(n => n.Id);
 
-        // 3. Конфигурация полей
+        builder.Property(n => n.Id)
+            .ValueGeneratedNever();
+
         builder.Property(n => n.Recipient)
             .IsRequired()
-            .HasMaxLength(256); // Валидная максимальная длина для Email
+            .HasMaxLength(256);
 
         builder.Property(n => n.Subject)
             .IsRequired()
@@ -29,7 +29,7 @@ internal sealed class NotificationConfiguration : IEntityTypeConfiguration<Domai
 
         builder.Property(n => n.Status)
             .IsRequired()
-            .HasConversion<int>(); // Храним как целое число (Pending=0, Sent=1, Failed=2)
+            .HasConversion<int>();
 
         builder.Property(n => n.CreatedAtUtc)
             .IsRequired();

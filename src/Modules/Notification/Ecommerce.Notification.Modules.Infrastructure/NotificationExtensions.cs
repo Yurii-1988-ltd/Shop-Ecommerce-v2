@@ -1,47 +1,90 @@
-﻿using Ecommerce.Infrastructure.Messaging;
-using Ecommerce.Notification.Modules.Application.Services;
-using System.Net.Mail;
+﻿
+using Ecommerce.Notification.Modules.Infrastructure.Configuration;
+using Ecommerce.Notification.Modules.Infrastructure.Adapters;
 
-
-namespace Ecommerce.Notifications.Modules.Infrastructure;
+namespace Ecommerce.Notification.Modules.Infrastructure;
 
 public static class NotificationsModuleExtensions
 {
-    public static IServiceCollection AddNotificationsModule(this IServiceCollection services, IConfiguration config)
+    public static IServiceCollection AddNotificationsModule(
+        this IServiceCollection services,
+        IConfiguration config)
     {
-        // 1. MediatR
         services.AddMediatR(cfg =>
-            cfg.RegisterServicesFromAssembly(typeof(IEmailSender).Assembly));
+            cfg.RegisterServicesFromAssembly(
+                typeof(INotificationService).Assembly));
 
-        // 2. PostgreSQL
-        var connectionString = config.GetConnectionString("notifications")
-            ?? throw new InvalidOperationException("Connection string 'notifications' is not found.");
+        // PostgreSQL
+        var connectionString =
+            config.GetConnectionString("notifications")
+            ?? throw new InvalidOperationException(
+                "Connection string 'notifications' is not found.");
 
-        services.AddNpgsqlDataSource(connectionString);
+        services.AddNpgsqlDataSource(
+            connectionString,
+            serviceKey: "notification");
 
         services.AddDbContext<NotificationsContext>((sp, options) =>
         {
-            var dataSource = sp.GetRequiredService<NpgsqlDataSource>();
+            var dataSource =
+                sp.GetRequiredKeyedService<NpgsqlDataSource>(
+                    "notification");
+
             options.UseNpgsql(dataSource);
         });
 
-        // 3. MassTransit
-        services.AddCustomTransit(config, typeof(NotificationsModuleExtensions).Assembly);
-        // 3. SMTP-клиент
-        var smtpHost = config["Services:mailpit:smtp:0"] ?? "localhost";
-        var smtpPort = int.TryParse(config["Services:mailpit:smtp:1"], out var port) ? port : 1025;
+        // MassTransit
+        services.AddCustomTransit(
+            config,
+            typeof(NotificationsModuleExtensions).Assembly);
 
-        // 4. Регистрация FluentEmail + Liquid Template Engine
+        // SMTP
+        var smtpOptions = config
+            .GetSection("SmtpOptions")
+            .Get<SmtpOptions>()
+            ?? throw new InvalidOperationException(
+                "SmtpOptions configuration is not configured.");
+
+        Console.WriteLine(
+            $"SMTP CONFIG => {smtpOptions.Host}:{smtpOptions.Port}");
+
         services
-            .AddFluentEmail("noreply@ecommerce.com", "Ecommerce Store")
+            .AddFluentEmail(
+                smtpOptions.FromEmail,
+                smtpOptions.FromName)
             .AddLiquidRenderer()
-            .AddSmtpSender(new SmtpClient(smtpHost, smtpPort));
+            .AddSmtpSender(
+                smtpOptions.Host,
+                smtpOptions.Port);
 
-        // 4. Сервисы модуля
-        services.AddScoped<IEmailSender, FluentEmailSender>(); // 
-        services.AddScoped<INotificationService, NotificationService>();
-        services.AddScoped<INotificationRepository, NotificationRepository>();
+        // Services
+        services.AddScoped<
+            INotificationUnitOfWork,
+            NotificationsUnitOfWork>();
+
+        services.AddScoped<
+            INotificationRepository,
+            NotificationRepository>();
+
+        services.AddScoped<
+            IEmailSender,
+            FluentEmailSender>();
+
+        services.AddScoped<
+            INotificationService,
+            NotificationService>();
 
         return services;
+    }
+
+    public static async Task ApplyNotificationsMigrationsAsync(
+        this IHost host)
+    {
+        using var scope = host.Services.CreateScope();
+
+        var context = scope.ServiceProvider
+            .GetRequiredService<NotificationsContext>();
+
+        await context.Database.MigrateAsync();
     }
 }

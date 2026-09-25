@@ -73,7 +73,7 @@ public sealed class Order: Entity
     public Result<Money> GetTotalAmount()
     {
         if (!_items.Any())
-            return Money.Create(0, CurrencyConstant.UAH);
+            return Money.Create(0, Currency);
 
         Money total = _items[0].TotalPrice;
 

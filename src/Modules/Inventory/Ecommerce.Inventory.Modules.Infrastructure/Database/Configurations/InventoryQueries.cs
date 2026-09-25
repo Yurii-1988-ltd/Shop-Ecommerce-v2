@@ -1,12 +1,13 @@
 ﻿using Dapper;
 using Ecommerce.Inventory.Modules.Application.Abstractions;
 using Ecommerce.Inventory.Modules.Application.Responses;
+using Microsoft.Extensions.DependencyInjection;
 using Npgsql;
 
 namespace Ecommerce.Inventory.Modules.Infrastructure.Database.Queries;
 
 internal sealed class InventoryQueries(
-    NpgsqlDataSource dataSource)
+    [FromKeyedServices("inventory")] NpgsqlDataSource dataSource)
     : IInventoryQueries
 {
     public async Task<IReadOnlyList<InventoryReportItem>> GetReportAsync(

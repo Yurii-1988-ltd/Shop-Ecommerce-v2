@@ -1,5 +1,7 @@
 ﻿
 
+using Ecommerce.Inventory.Modules.Application.Abstractions;
+
 namespace Ecommerce.Inventory.Modules.Application.Tests;
 
 public class CreateInventoryItemCommandHandlerTests
@@ -8,7 +10,7 @@ public class CreateInventoryItemCommandHandlerTests
     public async Task Handle_Should_Create_InventoryItem()
     {
         var repository = new Mock<IInventoryRepository>();
-        var unitOfWork = new Mock<IUnitOfWork>();
+        var unitOfWork = new Mock<IInventoryUnitOfWork>();
 
         var handler = new CreateInventoryItemCommandHandler(
             repository.Object,
@@ -52,7 +54,7 @@ public class CreateInventoryItemCommandHandlerTests
     {
         // Arrange
         var repository = new Mock<IInventoryRepository>();
-        var unitOfWork = new Mock<IUnitOfWork>();
+        var unitOfWork = new Mock<IInventoryUnitOfWork>();
 
         var handler = new CreateInventoryItemCommandHandler(
             repository.Object,
@@ -93,7 +95,7 @@ public class CreateInventoryItemCommandHandlerTests
     {
         // Arrange
         var repository = new Mock<IInventoryRepository>();
-        var unitOfWork = new Mock<IUnitOfWork>();
+        var unitOfWork = new Mock<IInventoryUnitOfWork>();
 
         var handler = new CreateInventoryItemCommandHandler(
             repository.Object,
@@ -133,7 +135,7 @@ public class CreateInventoryItemCommandHandlerTests
     {
         // Arrange
         var repository = new Mock<IInventoryRepository>();
-        var unitOfWork = new Mock<IUnitOfWork>();
+        var unitOfWork = new Mock<IInventoryUnitOfWork>();
 
         var handler = new CreateInventoryItemCommandHandler(
             repository.Object,
@@ -173,7 +175,7 @@ public class CreateInventoryItemCommandHandlerTests
     {
         // Arrange
         var repository = new Mock<IInventoryRepository>();
-        var unitOfWork = new Mock<IUnitOfWork>();
+        var unitOfWork = new Mock<IInventoryUnitOfWork>();
 
         var handler = new CreateInventoryItemCommandHandler(
             repository.Object,

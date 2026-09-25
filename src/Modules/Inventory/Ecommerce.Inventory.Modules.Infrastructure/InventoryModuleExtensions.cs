@@ -24,25 +24,28 @@ public static class InventoryModuleExtensions
            cfg.RegisterServicesFromAssembly(typeof(GetInventoryReportQuery).Assembly));
         return services;
     }
-    public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration config)
+    public static IServiceCollection AddInfrastructure(
+       this IServiceCollection services,
+       IConfiguration config)
     {
         var connectionString = config.GetConnectionString("inventories")
-            ?? throw new InvalidOperationException("Inventory PostgreSQL connection string was not found.");
+            ?? throw new InvalidOperationException(
+                "Inventory PostgreSQL connection string was not found.");
 
-        // 1. Регистрируем NpgsqlDataSource первым (для Dapper и EF Core)
-        services.AddNpgsqlDataSource(connectionString);
+        services.AddNpgsqlDataSource(
+            connectionString,
+            serviceKey: "inventory");
 
-        // 2. EF Core подтянет зарегистрированный NpgsqlDataSource из DI автоматически
         services.AddDbContext<InventoryContext>((sp, options) =>
         {
-            var dataSource = sp.GetRequiredService<NpgsqlDataSource>();
+            var dataSource =
+                sp.GetRequiredKeyedService<NpgsqlDataSource>("inventory");
+
             options.UseNpgsql(dataSource);
         });
 
-        // Unit of Work
-        services.AddScoped<IUnitOfWork>(sp => sp.GetRequiredService<InventoryContext>());
+        services.AddScoped<IInventoryUnitOfWork, InventoryUnitOfWork>();
 
-        // Repositories & Queries
         services.AddScoped<IInventoryRepository, InventoryRepository>();
         services.AddScoped<IInventoryQueries, InventoryQueries>();
 

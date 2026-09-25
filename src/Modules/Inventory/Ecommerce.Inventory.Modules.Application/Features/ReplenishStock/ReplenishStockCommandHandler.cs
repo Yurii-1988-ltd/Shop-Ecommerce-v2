@@ -1,7 +1,7 @@
 ﻿
 namespace Ecommerce.Inventory.Modules.Application.Features.ReplenishStock;
 
-internal sealed class ReplenishStockCommandHandler(IInventoryRepository repository, IUnitOfWork unitOfWork) : ICommandHandler<ReplenishStockCommand>
+internal sealed class ReplenishStockCommandHandler(IInventoryRepository repository, IInventoryUnitOfWork unitOfWork) : ICommandHandler<ReplenishStockCommand>
 {
     public async Task<Result> Handle(ReplenishStockCommand request, CancellationToken cancellationToken)
     {

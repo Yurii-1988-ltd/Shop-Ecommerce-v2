@@ -1,6 +1,5 @@
 ﻿
 
-using Microsoft.EntityFrameworkCore.Design;
 
 namespace Ecommerce.Notification.Modules.Infrastructure.Database;
 

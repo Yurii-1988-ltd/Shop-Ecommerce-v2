@@ -2,6 +2,8 @@
 using Ecommerce.Inventory.Modules.Infrastructure;
 using Ecommerce.Notification.Modules.Presentation.Notifications;
 using Export.Infrastructure;
+using Ecommerce.Notification.Modules.Infrastructure;
+
 using QuestPDF.Infrastructure;
 
 internal class Program
@@ -48,6 +50,7 @@ internal class Program
         });
 
         var app = builder.Build();
+        await app.ApplyNotificationsMigrationsAsync();
 
         app.UseCors(policy => policy
             .AllowAnyOrigin()

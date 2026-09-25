@@ -13,5 +13,7 @@ internal sealed class CreateOrderValidator : AbstractValidator<CreateOrderComman
         RuleFor(x=>x.Currency).NotEmpty()
             .Must(currency=>Money.Create(0,currency).IsSuccess)
             .WithMessage("Invalid currency");
+        RuleFor(x => x.CustomerEmail)
+            .EmailAddress();
     }
 }

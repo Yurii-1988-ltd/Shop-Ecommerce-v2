@@ -1,7 +1,7 @@
 ﻿
 namespace Ecommerce.Inventory.Modules.Application.Features.CommitReservation;
 
-internal sealed class CommitReservationCommandHandler(IInventoryRepository repository,IUnitOfWork unitOfWork) : ICommandHandler<CommitReservationCommand>
+internal sealed class CommitReservationCommandHandler(IInventoryRepository repository,IInventoryUnitOfWork unitOfWork) : ICommandHandler<CommitReservationCommand>
 {
     public async Task<Result> Handle(CommitReservationCommand request, CancellationToken cancellationToken)
     {

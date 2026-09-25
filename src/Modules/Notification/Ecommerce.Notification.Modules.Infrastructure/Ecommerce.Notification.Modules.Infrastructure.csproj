@@ -30,4 +30,8 @@
 		<ProjectReference Include="..\Ecommerce.Notification.Modules.Application\Ecommerce.Notification.Modules.Application.csproj" />
 	</ItemGroup>
 
+	<ItemGroup>
+	  <Folder Include="Templates\Emails\" />
+	</ItemGroup>
+
 </Project>

@@ -1,12 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Ecommerce.Notification.Modules.Infrastructure.Database
+﻿internal sealed class NotificationsUnitOfWork(
+    NotificationsContext context) : INotificationUnitOfWork
 {
-    internal class NotificationUnitOfWork
-    {
-    }
+    public Task<int> SaveChangesAsync(
+        CancellationToken cancellationToken = default)
+        => context.SaveChangesAsync(cancellationToken);
 }

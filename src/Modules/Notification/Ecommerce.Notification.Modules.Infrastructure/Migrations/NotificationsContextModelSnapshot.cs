@@ -25,7 +25,6 @@ namespace Ecommerce.Notification.Modules.Infrastructure.Migrations
             modelBuilder.Entity("Ecommerce.Notification.Modules.Domain.Entities.Notification", b =>
                 {
                     b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
                     b.Property<string>("Body")
@@ -61,7 +60,7 @@ namespace Ecommerce.Notification.Modules.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("notifications", "notifications");
+                    b.ToTable("notifications", (string)null);
                 });
 #pragma warning restore 612, 618
         }

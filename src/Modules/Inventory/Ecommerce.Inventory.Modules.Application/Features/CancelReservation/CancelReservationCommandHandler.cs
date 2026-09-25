@@ -2,7 +2,7 @@
 
 namespace Ecommerce.Inventory.Modules.Application.Features.CancelReservation;
 
-internal sealed class CancelReservationCommandHandler(IInventoryRepository repository, Ecommerce.Application.Abstractions.IUnitOfWork unitOfWork) : ICommandHandler<CancelReservationCommand>
+internal sealed class CancelReservationCommandHandler(IInventoryRepository repository, IInventoryUnitOfWork unitOfWork) : ICommandHandler<CancelReservationCommand>
 {
     public async Task<Result> Handle(CancelReservationCommand request, CancellationToken cancellationToken)
     {

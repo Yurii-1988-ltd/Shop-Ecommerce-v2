@@ -6,17 +6,13 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Ecommerce.Notification.Modules.Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class init : Migration
+    public partial class InitialNotification : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.EnsureSchema(
-                name: "notifications");
-
             migrationBuilder.CreateTable(
                 name: "notifications",
-                schema: "notifications",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
@@ -39,8 +35,7 @@ namespace Ecommerce.Notification.Modules.Infrastructure.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "notifications",
-                schema: "notifications");
+                name: "notifications");
         }
     }
 }
