@@ -13,6 +13,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\..\BuildingBlocks\Ecommerce.Infrastructure\Ecommerce.Infrastructure.csproj" />
     <ProjectReference Include="..\..\..\BuildingBlocks\Mongo\Ecommerce.Mongo\Ecommerce.Mongo.csproj" />
+    <ProjectReference Include="..\..\Localization\Ecommerce.Localization.Modules.Application\Ecommerce.Localization.Modules.Application.csproj" />
     <ProjectReference Include="..\Ecommerce.Order.Modules.Application\Ecommerce.Order.Modules.Application.csproj" />
   </ItemGroup>
 

@@ -1,0 +1,9 @@
+﻿global using Ecommerce.Localization.Abstractions.Abstractions;
+global using Ecommerce.Localization.Modules.Application.Abstractions;
+global using Ecommerce.Localization.Modules.Application.Services;
+global using Ecommerce.Localization.Modules.Infrastructure.Database;
+global using Ecommerce.Localization.Modules.Infrastructure.Repositories;
+global using Microsoft.EntityFrameworkCore;
+global using Microsoft.Extensions.Configuration;
+global using Microsoft.Extensions.DependencyInjection;
+global using Npgsql;

@@ -5,6 +5,7 @@ using Export.Infrastructure;
 using Ecommerce.Notification.Modules.Infrastructure;
 
 using QuestPDF.Infrastructure;
+using Ecommerce.Localization.Modules.Infrastructure;
 
 internal class Program
 {
@@ -34,7 +35,8 @@ internal class Program
             .AddModule<CartsModule>(builder.Configuration)
             .AddModule<OrdersModule>(builder.Configuration)
             .AddModule<InventoriesModule>(builder.Configuration)
-            .AddModule<NotificationModule>(builder.Configuration);
+            .AddModule<NotificationModule>(builder.Configuration)
+            .AddLocalizationModule(builder.Configuration); 
 
           
 
@@ -51,6 +53,8 @@ internal class Program
 
         var app = builder.Build();
         await app.ApplyNotificationsMigrationsAsync();
+
+        await app.ApplyLocalizationMigrationsAsync();
 
         app.UseCors(policy => policy
             .AllowAnyOrigin()
