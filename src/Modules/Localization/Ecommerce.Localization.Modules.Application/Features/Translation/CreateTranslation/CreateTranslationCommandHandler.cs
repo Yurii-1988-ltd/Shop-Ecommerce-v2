@@ -15,7 +15,7 @@ public sealed class CreateTranslationCommandHandler(ITranslationRepository repos
         var cultureResult = Domain.ValueObject.CultureCode.Create(request.CultureCode);
         if (cultureResult.IsFailure)
             return cultureResult.Error;
-        var existing = await repository.GetAsync(request.Key,CultureInfo.GetCultureInfo(cultureResult.Value.Value),cancellationToken);
+        var existing = await repository.GetByKeyAsync(request.Key,CultureInfo.GetCultureInfo(cultureResult.Value.Value),cancellationToken);
         if (existing != null)
             return LocalizationErrors.DuplicateTranslation(request.Key,request.CultureCode);
         var result = Domain.Entities.Translation.Create(

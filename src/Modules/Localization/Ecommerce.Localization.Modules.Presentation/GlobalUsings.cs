@@ -1,0 +1,9 @@
+﻿global using Ecommerce.Localization.Modules.Infrastructure;
+global using Ecommerce.Presentation;
+global using Microsoft.AspNetCore.Routing;
+global using Microsoft.Extensions.Configuration;
+global using Microsoft.Extensions.DependencyInjection;
+global using Ecommerce.Localization.Modules.Application.Features.Translation.UpdateTranslation;
+global using MediatR;
+global using Microsoft.AspNetCore.Builder;
+global using Microsoft.AspNetCore.Http;

@@ -1,5 +1,6 @@
 ﻿
 using Ecommerce.Localization.Modules.Application.Features.Translation.CreateTranslation;
+using Ecommerce.Localization.Modules.Infrastructure.Database.Queries;
 using Microsoft.Extensions.Hosting;
 
 
@@ -35,6 +36,9 @@ public static class LocalizationModuleExtensions
         services.AddScoped<
             ITranslationRepository,
             TranslationRepository>();
+        services.AddScoped
+            <ILocalizationQueries,
+            LocalizationQueries>();
 
         services.AddScoped<
             ILocalizationService,

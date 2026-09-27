@@ -12,4 +12,8 @@
     <ProjectReference Include="..\Ecommerce.Localization.Modules.Domain\Ecommerce.Localization.Modules.Domain.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Features\Translation\GetById\" />
+  </ItemGroup>
+
 </Project>

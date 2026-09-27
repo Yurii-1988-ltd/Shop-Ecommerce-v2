@@ -1,7 +1,5 @@
-﻿
-using Ecommerce.Localization.Modules.Application.Abstractions;
+﻿using Ecommerce.Localization.Modules.Application.DTO;
 using Ecommerce.Localization.Modules.Domain.Entities;
-
 using System.Globalization;
 
 namespace Ecommerce.Localization.Modules.Infrastructure.Repositories;
@@ -13,11 +11,41 @@ internal sealed class TranslationRepository(LocalizationContext context) : ITran
         await context.Translations.AddAsync(translation, cancellationToken);
     }
 
-    public async Task<Translation?> GetAsync(string key, CultureInfo cultureCode, CancellationToken cancellationToken = default)
+    public Task UpdateAsync(
+     Translation translation,
+     CancellationToken cancellationToken = default)
     {
-       return await context.Translations
-            .AsNoTracking()
-            .FirstOrDefaultAsync(x => x.Key == key &&
-            x.CultureCode == cultureCode.Name, cancellationToken);
+        context.Translations.Update(translation);
+
+        return Task.CompletedTask;
+    }
+    public Task DeleteAsync(
+    Translation translation,
+    CancellationToken cancellationToken = default)
+    {
+        context.Translations.Remove(translation);
+
+        return Task.CompletedTask;
+    }
+
+    public async Task<Translation?> GetByIdAsync(Guid id, CancellationToken cancellationToken)
+    {
+        return await context.Translations
+          .FirstOrDefaultAsync(
+              x => x.Id == id,
+              cancellationToken);
+    }
+
+    public Task<Translation?> GetByKeyAsync(
+    string key,
+    CultureInfo culture,
+    CancellationToken cancellationToken = default)
+    {
+        return context.Translations
+            .FirstOrDefaultAsync(
+                x =>
+                    x.Key == key &&
+                    x.CultureCode == culture.Name,
+                cancellationToken);
     }
 }

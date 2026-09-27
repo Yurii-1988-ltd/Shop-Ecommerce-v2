@@ -6,6 +6,7 @@ using Ecommerce.Notification.Modules.Infrastructure;
 
 using QuestPDF.Infrastructure;
 using Ecommerce.Localization.Modules.Infrastructure;
+using Ecommerce.Localization.Modules.Presentation;
 
 internal class Program
 {
@@ -36,7 +37,7 @@ internal class Program
             .AddModule<OrdersModule>(builder.Configuration)
             .AddModule<InventoriesModule>(builder.Configuration)
             .AddModule<NotificationModule>(builder.Configuration)
-            .AddLocalizationModule(builder.Configuration); 
+            .AddModule<LocalizationModule>(builder.Configuration); 
 
           
 

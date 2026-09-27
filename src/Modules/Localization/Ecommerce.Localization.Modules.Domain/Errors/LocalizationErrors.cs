@@ -43,6 +43,10 @@ public static class LocalizationErrors
         Error.NotFound(
             "Localization.TranslationNotFound",
             $"Translation '{key}' for culture '{cultureCode}' was not found.");
+    public static Error TranslationNotFound(Guid id) =>
+    Error.NotFound(
+        "Localization.TranslationNotFound",
+        $"Translation with id '{id}' was not found.");
 
     public static Error DuplicateTranslation(
         string key,
