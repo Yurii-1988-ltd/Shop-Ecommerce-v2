@@ -12,6 +12,7 @@ public interface ITranslationRepository
     Task<Translation?> GetByKeyAsync(
         string key,
         CultureInfo culture,
+        string module,
         CancellationToken cancellationToken = default);
 
     Task AddAsync(

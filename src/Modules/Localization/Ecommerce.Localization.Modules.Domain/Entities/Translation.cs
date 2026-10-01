@@ -10,7 +10,7 @@ public sealed class Translation : Entity
     public string Key { get; private set; } = default!;
     public string CultureCode { get; private set; } = default!;
     public string Value { get; private set; } = default!;
-    public string Module { get; set; } = default!;
+    public string Module { get; private set; } = default!;
     public string? Description { get; private set; }
 
     private Translation()

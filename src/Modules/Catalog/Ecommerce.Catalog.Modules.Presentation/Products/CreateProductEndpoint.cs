@@ -1,39 +1,58 @@
 ﻿using Ecommerce.Catalog.Modules.Application.Features.Products.CreateProduct;
-using MediatR;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Routing;
+using Ecommerce.Localization.Abstractions.Abstractions;
 
 namespace Ecommerce.Catalog.Modules.Presentation.Products;
 
-
-    internal sealed class CreateProductEndpoint
+internal sealed class CreateProductEndpoint
+{
+    public void MapEndpoints(IEndpointRouteBuilder app)
     {
-        public void MapEndpoints(IEndpointRouteBuilder app)
+        app.MapPost("/products", async (
+            CreateProductRequest request,
+            ISender sender,
+            ILocalizationService localization,
+            ICurrentCulture currentCulture,
+            CancellationToken cancellationToken) =>
         {
-            app.MapPost("/products", async (
-                CreateProductRequest request,
-                ISender sender,
-                CancellationToken cancellationToken) =>
+            var command = new CreateCatalogCommand(
+                request.Name,
+                request.ProductNumber,
+                request.Description,
+                request.Sku,
+                request.Price,
+                request.Currency);
+
+            var result = await sender.Send(command, cancellationToken);
+
+            if (result.IsSuccess)
+                return Results.Created(
+                    $"/products/{result.Value}",
+                    result.Value);
+
+            var error = result.Error;
+
+            var translationKey =
+                ProductErrorLocalization.GetTranslationKey(error.Code);
+
+            if (translationKey is null)
+                return Results.BadRequest(error);
+
+            var message = await localization.GetAsync(
+                translationKey,
+                "Catalog",
+                currentCulture.Culture,
+                cancellationToken);
+
+            return Results.BadRequest(new
             {
-                var command = new CreateCatalogCommand(
-                    request.Name,
-                    request.ProductNumber,
-                    request.Description,
-                    request.Sku,
-                    request.Price,
-                    request.Currency);
-
-                var result = await sender.Send(command, cancellationToken);
-
-                return result.IsSuccess
-                    ? Results.Created($"/products/{result.Value}", result.Value)
-                    : Results.BadRequest(result.Error);
-            })
-            .WithTags(Tags.Products);
-        }
+                error.Code,
+                Description = message,
+                Type = error.Type.ToString()
+            });
+        })
+        .WithTags(Tags.Products);
     }
-
+}
 
 
 public sealed class CreateProductRequest

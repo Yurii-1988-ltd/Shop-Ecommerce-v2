@@ -1,6 +1,6 @@
 ﻿using Microsoft.OpenApi.Models;
 
-namespace Ecommerce.API.Extensions;
+namespace Ecommerce.API.Swagger;
 
 public static class SwaggerExtensions
 {
@@ -39,6 +39,7 @@ public static class SwaggerExtensions
                     Array.Empty<string>()
                 }
             });
+            options.OperationFilter<AcceptLanguageHeaderOperationFilter>();
         });
         return services;
     }

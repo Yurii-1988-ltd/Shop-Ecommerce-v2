@@ -7,6 +7,7 @@ using Ecommerce.Notification.Modules.Infrastructure;
 using QuestPDF.Infrastructure;
 using Ecommerce.Localization.Modules.Infrastructure;
 using Ecommerce.Localization.Modules.Presentation;
+using Ecommerce.API.Swagger;
 
 internal class Program
 {
@@ -75,6 +76,7 @@ internal class Program
 
         app.UseAuthentication();
         app.UseAuthorization();
+        app.UseLocalization();
 
         app.MapDefaultEndpoints();
         app.MapModules();

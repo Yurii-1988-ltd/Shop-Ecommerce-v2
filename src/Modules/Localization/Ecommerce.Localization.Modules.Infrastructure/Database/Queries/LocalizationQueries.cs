@@ -6,11 +6,12 @@ using System.Globalization;
 namespace Ecommerce.Localization.Modules.Infrastructure.Database.Queries;
 
 internal sealed class LocalizationQueries(
-    [FromKeyedServices("localization")] NpgsqlDataSource dataSource)
+    NpgsqlDataSource dataSource)
     : ILocalizationQueries
 {
     public async Task<string?> GetAsync(
         string key,
+        string module,
         CultureInfo culture,
         CancellationToken cancellationToken = default)
     {
@@ -19,6 +20,7 @@ internal sealed class LocalizationQueries(
             FROM "translations"
             WHERE "Key" = @Key
               AND "CultureCode" = @CultureCode
+              AND "Module" = @Module
             LIMIT 1;
             """;
 
@@ -31,6 +33,7 @@ internal sealed class LocalizationQueries(
             new
             {
                 Key = key,
+                Module = module,
                 CultureCode = culture.Name
             },
             cancellationToken: cancellationToken);
@@ -67,8 +70,27 @@ internal sealed class LocalizationQueries(
             command);
     }
 
- 
-        public async Task<PagedResult<TranslationResponse>> GetPagedAsync(
+
+    public async Task<CultureInfo?> GetDefaultCultureAsync(CancellationToken cancellationToken = default)
+    {
+        const string sql = """
+            SELECT "CultureCode" FROM languages
+            WHERE "IsDefault" = TRUE
+            AND "IsEnabled" = TRUE
+            LIMIT 1;
+            """;
+        await using var connection = await dataSource.OpenConnectionAsync(cancellationToken);
+        var cultureCode = await connection.QuerySingleOrDefaultAsync<string>(new CommandDefinition(
+
+            sql,
+            cancellationToken
+        ));
+        if ( cultureCode is null )
+            return null;
+        return CultureInfo.GetCultureInfo(cultureCode );
+    }
+
+    public async Task<PagedResult<TranslationResponse>> GetPagedAsync(
     string? key,
     string? cultureCode,
     string? module,

@@ -1,8 +1,4 @@
-﻿
-using Ecommerce.Localization.Modules.Application.Features.Translation.CreateTranslation;
-using Ecommerce.Localization.Modules.Infrastructure.Database.Queries;
-using Microsoft.Extensions.Hosting;
-
+﻿using Ecommerce.Localization.Modules.Infrastructure.Services;
 
 namespace Ecommerce.Localization.Modules.Infrastructure;
 
@@ -15,50 +11,47 @@ public static class LocalizationModuleExtensions
         var connectionString =
             config.GetConnectionString("localizations")
             ?? throw new InvalidOperationException(
-                "Connection string 'localization' is not configured.");
+                "Connection string 'localizations' is not configured.");
 
-        services.AddNpgsqlDataSource(
-            connectionString,
-            serviceKey: "localization");
+     
+        var dataSourceBuilder = new NpgsqlDataSourceBuilder(connectionString);
+        var dataSource = dataSourceBuilder.Build();
 
-        services.AddDbContext<LocalizationContext>(
-            (sp, options) =>
-            {
-                var dataSource =
-                    sp.GetRequiredKeyedService<NpgsqlDataSource>(
-                        "localization");
+        services.AddSingleton(dataSource);
 
-                options.UseNpgsql(dataSource);
-            });
+        // 2. EF Core
+        services.AddDbContext<LocalizationContext>(options =>
+        {
+            options.UseNpgsql(dataSource);
+        });
+
+        // 3. MediatR
         services.AddMediatR(cfg =>
-                cfg.RegisterServicesFromAssembly(typeof(CreateTranslationCommandHandler).Assembly));
+            cfg.RegisterServicesFromAssembly(
+                typeof(CreateTranslationCommandHandler).Assembly));
 
-        services.AddScoped<
-            ITranslationRepository,
-            TranslationRepository>();
-        services.AddScoped
-            <ILocalizationQueries,
-            LocalizationQueries>();
+        // 4. Repositories
+        services.AddScoped<ITranslationRepository, TranslationRepository>();
+        services.AddScoped<ILanguageRepository, LanguageRepository>();
 
-        services.AddScoped<
-            ILocalizationService,
-            LocalizationService>();
-        services.AddScoped<ILocalizationUnitOfWork,
-            LocalizationUnitOfWork>();
+        // 5. Dapper queries
+        services.AddScoped<ILocalizationQueries, LocalizationQueries>();
+        services.AddScoped<ILanguageQueries, LanguageQueries>();
+
+        // 6. Services
+        services.AddScoped<ILocalizationService, LocalizationService>();
+        services.AddScoped<ILocalizationUnitOfWork, LocalizationUnitOfWork>();
+        services.AddScoped<ICurrentCulture, CurrentCulture>();
 
         return services;
     }
 
-    public static async Task ApplyLocalizationMigrationsAsync(
-        this IHost host)
+    public static async Task ApplyLocalizationMigrationsAsync(this IHost host)
     {
-        using var scope = host.Services.CreateScope();
-
-        var context = scope.ServiceProvider
-            .GetRequiredService<LocalizationContext>();
+        await using var scope = host.Services.CreateAsyncScope();
+        var context = scope.ServiceProvider.GetRequiredService<LocalizationContext>();
 
         await context.Database.MigrateAsync();
-
         await LocalizationSeeder.SeedAsync(context);
     }
 }

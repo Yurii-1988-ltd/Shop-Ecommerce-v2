@@ -1,11 +1,14 @@
 ﻿using Ecommerce.Catalog.Modules.Application.Abstractions.Data;
 using Ecommerce.Catalog.Modules.Application.Mapping;
+using Ecommerce.Localization.Abstractions.Abstractions;
 using MongoDB.Driver;
 
 namespace Ecommerce.Catalog.Modules.Application.Features.Products.GetProduct;
 
 internal sealed class GetProductQueryHandler(
-    ICatalogDatabase context)
+    ICatalogDatabase context,
+    ILocalizationService localization,
+    ICurrentCulture currentCulture)
     : IQueryHandler<GetProductQuery, ProductResponse>
 {
     public async Task<Result<ProductResponse>> Handle(
@@ -17,8 +20,15 @@ internal sealed class GetProductQueryHandler(
             .FirstOrDefaultAsync(cancellationToken);
 
         if (product is null)
-       
-            return ProductErrors.NotFound(request.Id);
+        {
+            var message = await localization.GetAsync(
+                "Product.NotFound",
+                "Catalog",
+                currentCulture.Culture,
+                cancellationToken);
+
+            return ProductErrors.NotFound(message);
+        }
 
         return product.ToResponse();
     }

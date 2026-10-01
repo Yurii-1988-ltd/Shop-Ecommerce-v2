@@ -9,13 +9,14 @@ internal sealed class UpdateTranslationEndpoint
             async (
                 Guid id,
                 UpdateTranslationRequest request,
-                ISender sender) =>
+                ISender sender,
+                CancellationToken cancellationToken) =>
             {
                 var result = await sender.Send(
                     new UpdateTranslationCommand(
                         id,
                         request.Value,
-                        request.Description));
+                        request.Description),cancellationToken);
 
                 if (result.IsFailure)
                     return Results.BadRequest(result.Error);

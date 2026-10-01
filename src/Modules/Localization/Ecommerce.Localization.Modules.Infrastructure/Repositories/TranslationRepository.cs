@@ -39,13 +39,16 @@ internal sealed class TranslationRepository(LocalizationContext context) : ITran
     public Task<Translation?> GetByKeyAsync(
     string key,
     CultureInfo culture,
+    string module,
     CancellationToken cancellationToken = default)
     {
         return context.Translations
             .FirstOrDefaultAsync(
                 x =>
                     x.Key == key &&
-                    x.CultureCode == culture.Name,
+                    x.CultureCode == culture.Name
+                    && x.Module == module,
+
                 cancellationToken);
     }
 }
