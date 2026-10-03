@@ -8,6 +8,7 @@ using QuestPDF.Infrastructure;
 using Ecommerce.Localization.Modules.Infrastructure;
 using Ecommerce.Localization.Modules.Presentation;
 using Ecommerce.API.Swagger;
+using Ecommerce.Promotions.Modules.Presentation.Promotions;
 
 internal class Program
 {
@@ -38,7 +39,9 @@ internal class Program
             .AddModule<OrdersModule>(builder.Configuration)
             .AddModule<InventoriesModule>(builder.Configuration)
             .AddModule<NotificationModule>(builder.Configuration)
-            .AddModule<LocalizationModule>(builder.Configuration); 
+            .AddModule<LocalizationModule>(builder.Configuration)
+            .AddModule<PromotionsModule>(builder.Configuration);
+
 
           
 

@@ -1,0 +1,11 @@
+﻿global using Ecommerce.Promotions.Modules.Application.Features.CreateCoupon;
+global using Ecommerce.Promotions.Modules.Domain.Enums;
+global using Ecommerce.Promotions.Modules.Presentation.Responses;
+global using MediatR;
+global using Microsoft.AspNetCore.Builder;
+global using Microsoft.AspNetCore.Http;
+global using Microsoft.AspNetCore.Routing;
+global using Ecommerce.Presentation;
+global using Ecommerce.Promotions.Modules.Infrastructure;
+global using Microsoft.Extensions.Configuration;
+global using Microsoft.Extensions.DependencyInjection;

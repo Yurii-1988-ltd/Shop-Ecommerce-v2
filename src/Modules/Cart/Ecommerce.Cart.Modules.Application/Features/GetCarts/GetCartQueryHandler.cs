@@ -1,14 +1,14 @@
-﻿using Ecommerce.Application.CQRS;
+﻿
 using Ecommerce.Application.Pagination;
-using Ecommerce.Cart.Modules.Application.Features.GetCarts;
-using Ecommerce.Cart.Modules.Application.Features.Responses;
-using Ecommerce.Cart.Modules.Domain.Repositories;
-using Ecommerce.Domain.Domain;
+using Ecommerce.Cart.Modules.Application.Features.Cart.Mapping;
+
+
+namespace Ecommerce.Cart.Modules.Application.Features.GetCarts;
 
 internal sealed class GetCartsQueryHandler(ICartRepository cartRepository)
-    : IQueryHandler<GetCartsQuery, PagedResult<CartListResponse>>
+    : IQueryHandler<GetCartsQuery, PagedResult<CartResponse>>
 {
-    public async Task<Result<PagedResult<CartListResponse>>> Handle(
+    public async Task<Result<PagedResult<CartResponse>>> Handle(
         GetCartsQuery request,
         CancellationToken cancellationToken)
     {
@@ -17,9 +17,9 @@ internal sealed class GetCartsQueryHandler(ICartRepository cartRepository)
             request.PageSize,
             cancellationToken);
 
-        var items = carts.Select(x => x.ToListResponse()).ToList();
+        var items = carts.Select(x => x.ToResponse()).ToList();
 
-        return Result.Success(new PagedResult<CartListResponse>
+        return Result.Success(new PagedResult<CartResponse>
         {
             Items = items,
             Page = request.Page,

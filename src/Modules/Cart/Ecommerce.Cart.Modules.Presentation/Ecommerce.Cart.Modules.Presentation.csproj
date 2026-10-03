@@ -11,4 +11,8 @@
     <ProjectReference Include="..\Ecommerce.Cart.Modules.Infrastructure\Ecommerce.Cart.Modules.Infrastructure.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Responses\" />
+  </ItemGroup>
+
 </Project>

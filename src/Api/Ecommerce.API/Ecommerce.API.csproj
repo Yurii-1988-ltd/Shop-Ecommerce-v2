@@ -25,6 +25,7 @@
     <ProjectReference Include="..\..\Modules\Localization\Ecommerce.Localization.Modules.Presentation\Ecommerce.Localization.Modules.Presentation.csproj" />
     <ProjectReference Include="..\..\Modules\Notification\Ecommerce.Notification.Modules.Presentation\Ecommerce.Notification.Modules.Presentation.csproj" />
     <ProjectReference Include="..\..\Modules\Orders\Ecommerce.Order.Modules.Presentation\Ecommerce.Order.Modules.Presentation.csproj" />
+    <ProjectReference Include="..\..\Modules\Promotions\Ecommerce.Promotions.Modules.Presentation\Ecommerce.Promotions.Modules.Presentation.csproj" />
     <ProjectReference Include="..\..\Modules\Users\Ecommerce.Modules.Users.Presentation\Ecommerce.Modules.Users.Presentation.csproj" />
   </ItemGroup>
 

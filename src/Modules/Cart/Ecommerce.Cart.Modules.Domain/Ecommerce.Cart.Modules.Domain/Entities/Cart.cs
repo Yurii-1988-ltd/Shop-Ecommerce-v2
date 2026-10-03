@@ -8,14 +8,21 @@ namespace Ecommerce.Cart.Modules.Domain.Entities;
 
 public sealed class Cart : Entity
 {
-    private  List<CartItem> _items = new();
+    private List<CartItem> _items = [];
 
     public Guid? CustomerId { get; private set; }
-    public Guid? GuestId { get; set; }
-    public Coupon? AppliedCoupon { get; private set; }
+
+    public Guid? GuestId { get; private set; }
+
+    public string? AppliedCouponCode { get; private set; }
+
+    public Money? AppliedDiscount { get; private set; }
+
     public IReadOnlyCollection<CartItem> Items => _items.AsReadOnly();
 
-    private Cart() { }
+    private Cart()
+    {
+    }
 
     private Cart(
         Guid id,
@@ -49,44 +56,63 @@ public sealed class Cart : Entity
             guestId);
     }
 
-    public Result AddItem(Guid productId, string name, Money price, int quantity)
+    public Result AddItem(
+        Guid productId,
+        string name,
+        Money price,
+        int quantity)
     {
         var firstItem = _items.FirstOrDefault();
-        if (firstItem != null && firstItem.Currency != price.Currency)
+
+        if (firstItem is not null &&
+            firstItem.Currency != price.Currency)
         {
             return MoneyErrors.CurrencyMismatch;
         }
 
-        var existingItem = _items.SingleOrDefault(x => x.ProductId == productId);
-        if (existingItem != null)
+        var existingItem = _items.SingleOrDefault(
+            x => x.ProductId == productId);
+
+        if (existingItem is not null)
         {
-            return existingItem.UpdateQuantity(existingItem.Quantity + quantity);
+            var updateResult = existingItem.UpdateQuantity(
+                existingItem.Quantity + quantity);
+
+            if (updateResult.IsFailure)
+                return updateResult;
+
+            ClearAppliedDiscount();
+
+            return Result.Success();
         }
 
-        var itemResult = CartItem.Create(productId, name, price, quantity);
+        var itemResult = CartItem.Create(
+            productId,
+            name,
+            price,
+            quantity);
+
         if (itemResult.IsFailure)
             return Result.Failure(itemResult.Error);
 
         _items.Add(itemResult.Value);
+
+        ClearAppliedDiscount();
+
         return Result.Success();
     }
 
     public Result RemoveItem(Guid productId)
     {
-        var item = _items.SingleOrDefault(y => y.ProductId == productId);
-        if (item == null)
-        {
+        var item = _items.SingleOrDefault(
+            x => x.ProductId == productId);
+
+        if (item is null)
             return CartItemErrors.NotFound(productId);
-        }
 
         _items.Remove(item);
 
-        // Если сумма упала ниже порога скидки — сбрасываем купон
-        var subtotalResult = GetSubtotal();
-        if (subtotalResult.IsSuccess && AppliedCoupon != null && !AppliedCoupon.IsSatisfiedBy(subtotalResult.Value))
-        {
-            RemoveCoupon();
-        }
+        ClearAppliedDiscount();
 
         return Result.Success();
     }
@@ -96,20 +122,18 @@ public sealed class Cart : Entity
         if (quantity == 0)
             return RemoveItem(productId);
 
-        var item = _items.SingleOrDefault(x => x.ProductId == productId);
+        var item = _items.SingleOrDefault(
+            x => x.ProductId == productId);
+
         if (item is null)
             return CartItemErrors.NotFound(productId);
 
         var updateResult = item.UpdateQuantity(quantity);
+
         if (updateResult.IsFailure)
             return updateResult;
 
-        // Проверяем актуальность купона при уменьшении количества
-        var subtotalResult = GetSubtotal();
-        if (subtotalResult.IsSuccess && AppliedCoupon != null && !AppliedCoupon.IsSatisfiedBy(subtotalResult.Value))
-        {
-            RemoveCoupon();
-        }
+        ClearAppliedDiscount();
 
         return Result.Success();
     }
@@ -117,43 +141,57 @@ public sealed class Cart : Entity
     public void Clear()
     {
         _items.Clear();
-        AppliedCoupon = null;
+        ClearAppliedDiscount();
     }
 
-    // --- Domain Actions for Coupons ---
-    public Result ApplyCoupon(Coupon coupon, DateTime currentDateUtc)
+    public Result ApplyCoupon(
+        string couponCode,
+        Money discount)
     {
+        if (string.IsNullOrWhiteSpace(couponCode))
+            return CartErrors.InvalidCouponCode;
 
-        if (!coupon.IsValid(currentDateUtc))
-            return CouponErrors.CouponExpired;
+        if (discount is null)
+            return CartErrors.InvalidDiscount;
 
         var subtotalResult = GetSubtotal();
+
         if (subtotalResult.IsFailure)
             return subtotalResult.Error;
 
-        if (!coupon.IsSatisfiedBy(subtotalResult.Value))
-            return CouponErrors.CouponMinimumSpendNotMet;
+        var subtotal = subtotalResult.Value;
 
-        AppliedCoupon = coupon;
+        if (discount.Currency != subtotal.Currency)
+            return MoneyErrors.CurrencyMismatch;
+
+        if (discount.Amount < 0 ||
+            discount.Amount > subtotal.Amount)
+        {
+            return CartErrors.InvalidDiscount;
+        }
+
+        AppliedCouponCode = couponCode.Trim();
+        AppliedDiscount = discount;
+
         return Result.Success();
     }
 
     public Result RemoveCoupon()
     {
-        AppliedCoupon = null;
+        ClearAppliedDiscount();
+
         return Result.Success();
     }
 
     public Result<Money> GetSubtotal()
     {
-       
-
-        if (!_items.Any())
+        if (_items.Count == 0)
             return Money.Create(0, CurrencyConstant.UAH);
 
         var currency = _items[0].Currency;
-        var totalAmount = _items.Sum(x => x.TotalPrice.Amount);
 
+        var totalAmount = _items.Sum(
+            item => item.TotalPrice.Amount);
 
         return Money.Create(totalAmount, currency);
     }
@@ -161,25 +199,52 @@ public sealed class Cart : Entity
     public Result<Money> GetDiscountTotal()
     {
         var subtotalResult = GetSubtotal();
-        if (subtotalResult.IsFailure) return subtotalResult.Error;
 
-        if (AppliedCoupon is null)
-            return Money.Create(0, subtotalResult.Value.Currency);
+        if (subtotalResult.IsFailure)
+            return subtotalResult.Error;
 
-        return AppliedCoupon.CalculateDiscount(subtotalResult.Value);
+        var subtotal = subtotalResult.Value;
+
+        if (AppliedDiscount is null)
+            return Money.Create(0, subtotal.Currency);
+
+        if (AppliedDiscount.Currency != subtotal.Currency)
+            return MoneyErrors.CurrencyMismatch;
+
+        if (AppliedDiscount.Amount < 0 ||
+            AppliedDiscount.Amount > subtotal.Amount)
+        {
+            return CartErrors.InvalidDiscount;
+        }
+
+        return AppliedDiscount;
     }
 
     public Result<Money> GetTotalCost()
     {
         var subtotalResult = GetSubtotal();
-        if (subtotalResult.IsFailure) return subtotalResult.Error;
+
+        if (subtotalResult.IsFailure)
+            return subtotalResult.Error;
 
         var discountResult = GetDiscountTotal();
-        if (discountResult.IsFailure) return discountResult.Error;
 
-        var finalAmount = Math.Max(0, subtotalResult.Value.Amount - discountResult.Value.Amount);
-        return Money.Create(finalAmount, subtotalResult.Value.Currency);
+        if (discountResult.IsFailure)
+            return discountResult.Error;
+
+        var subtotal = subtotalResult.Value;
+        var discount = discountResult.Value;
+
+        var finalAmount = Math.Max(
+            0,
+            subtotal.Amount - discount.Amount);
+
+        return Money.Create(finalAmount, subtotal.Currency);
     }
 
-   
+    private void ClearAppliedDiscount()
+    {
+        AppliedCouponCode = null;
+        AppliedDiscount = null;
+    }
 }

@@ -6,4 +6,10 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\BuildingBlocks\Ecommerce.Presentation\Ecommerce.Presentation.csproj" />
+    <ProjectReference Include="..\..\Cart\Ecommerce.Cart.Modules.Application\Ecommerce.Cart.Modules.Application.csproj" />
+    <ProjectReference Include="..\Ecommerce.Promotions.Modules.Infrastructure\Ecommerce.Promotions.Modules.Infrastructure.csproj" />
+  </ItemGroup>
+
 </Project>

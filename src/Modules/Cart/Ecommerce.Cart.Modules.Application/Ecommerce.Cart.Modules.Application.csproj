@@ -9,6 +9,8 @@
   <ItemGroup>
     <ProjectReference Include="..\..\..\BuildingBlocks\Ecommerce.Application\Ecommerce.Application.csproj" />
     <ProjectReference Include="..\..\..\BuildingBlocks\Mongo\Ecommerce.Mongo\Ecommerce.Mongo.csproj" />
+    <ProjectReference Include="..\..\Promotions\Ecommerce.Promotions.Modules.Application\Ecommerce.Promotions.Modules.Application.csproj" />
+    <ProjectReference Include="..\..\Promotions\Ecommerce.Promotions.Modules.Domain\Ecommerce.Promotions.Modules.Domain.csproj" />
     <ProjectReference Include="..\Ecommerce.Cart.Modules.Domain\Ecommerce.Cart.Modules.Domain\Ecommerce.Cart.Modules.Domain.csproj" />
   </ItemGroup>
 

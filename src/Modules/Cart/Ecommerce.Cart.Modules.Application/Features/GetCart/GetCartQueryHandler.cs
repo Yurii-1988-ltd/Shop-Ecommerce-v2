@@ -1,5 +1,7 @@
 ﻿
 
+using Ecommerce.Cart.Modules.Application.Features.Cart.Mapping;
+
 namespace Ecommerce.Cart.Modules.Application.Features.GetCart;
 
 internal sealed class GetCartQueryHandler(ICartRepository repository) : IQueryHandler<GetCartQuery,CartResponse>

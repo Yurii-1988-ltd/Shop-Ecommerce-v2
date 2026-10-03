@@ -19,8 +19,9 @@ public sealed class CartsModule : IModule
         new RemoveCartItemEndpoint().MapEndpoint(app);
         new ChangeCartItemQuantityEndpoint().MapEndpoint(app);
         new RemoveCartEndpoint().MapEndpoint(app);
-        new ApplyCouponEndpoint().MapEndpoint(app);
+
+        //  new CreateCouponEndpoint().MapEndpoint(app);
         new RemoveCouponEndpoint().MapEndpoint(app);
-      //  new CreateCouponEndpoint().MapEndpoint(app);
+        new ApplyCouponEndpoint().MapEndpoint(app);
     }
 }

@@ -1,0 +1,17 @@
+﻿global using Ecommerce.Mongo;
+global using Ecommerce.Promotions.Contracts;
+global using Ecommerce.Promotions.Modules.Application.Abstractions.Data;
+global using Ecommerce.Promotions.Modules.Application.Features.CreateCoupon;
+global using Ecommerce.Promotions.Modules.Application.Mapping;
+global using Ecommerce.Promotions.Modules.Infrastructure.Repositories;
+global using Ecommerce.Promotions.Modules.Infrastructure.Services;
+global using Microsoft.AspNetCore.Builder;
+global using Microsoft.Extensions.Configuration;
+global using Microsoft.Extensions.DependencyInjection;
+global using Ecommerce.Domain.Domain;
+global using Ecommerce.Domain.Errors;
+global using Ecommerce.Domain.ValueObjects;
+global using Ecommerce.Promotions.Modules.Domain.Errors;
+global using Ecommerce.Promotions.Modules.Domain.ValueObjects;
+global using Ecommerce.Promotions.Modules.Domain.Entities;
+global using MongoDB.Driver;
