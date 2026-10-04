@@ -1,6 +1,7 @@
 
 using Ecommerce.Storefront.ApiClients.Carts.Models;
 using Ecommerce.Storefront.ApiClients.Inventories;
+using Ecommerce.Storefront.ApiClients.Orders;
 using Ecommerce.Storefront.Endpoints.Identity;
 using Ecommerce.Storefront.Middleware;
 
@@ -19,6 +20,10 @@ builder.Services.AddHttpClient<IIdentityApiClient, IdentityApiClient>(client =>
     client.BaseAddress = new Uri("https://localhost:7125");
 });
 builder.Services.AddHttpClient<IInventoryApiClient, InventoryApiClient>(client =>
+{
+    client.BaseAddress = new Uri("https://localhost:7125");
+});
+builder.Services.AddHttpClient<IOrderApiClient, OrderApiClient>(client =>
 {
     client.BaseAddress = new Uri("https://localhost:7125");
 });

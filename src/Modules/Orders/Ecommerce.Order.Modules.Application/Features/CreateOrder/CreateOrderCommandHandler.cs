@@ -1,17 +1,19 @@
 ﻿using Ecommerce.Application.Abstractions;
 using Ecommerce.Domain.Constants;
 using Ecommerce.Domain.ValueObjects;
+using Ecommerce.Order.Modules.Application.Contracts;
 using Ecommerce.Order.Modules.Domain.ValueObjects;
 using Ecommerce.Shared.Contracts.IntegrationEvent;
+using Ecommerce.Shared.Contracts.Orders;
 using MassTransit;
 
 public sealed class CreateOrderCommandHandler(
     IOrderRepository repository,
     IEntityNumberGenerator orderNumberGenerator,
     IPublishEndpoint publishEndpoint)
-    : ICommandHandler<CreateOrderCommand, Guid>
+    : ICommandHandler<CreateOrderCommand, CreateOrderResponse>
 {
-    public async Task<Result<Guid>> Handle(
+    public async Task<Result<CreateOrderResponse>> Handle(
         CreateOrderCommand request,
         CancellationToken cancellationToken)
     {
@@ -96,6 +98,6 @@ public sealed class CreateOrderCommandHandler(
                 CreatedAtUtc: DateTime.UtcNow),
             cancellationToken);
 
-        return order.Id;
+        return new CreateOrderResponse(order.Id, orderNumber);
     }
 }

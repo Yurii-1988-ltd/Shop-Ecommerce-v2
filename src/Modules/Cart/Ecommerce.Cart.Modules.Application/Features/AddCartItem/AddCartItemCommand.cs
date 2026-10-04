@@ -9,6 +9,7 @@ public sealed record AddCartItemCommand(
     Guid? GuestId,
     Guid ProductId,
     string Name,
+    string Sku,
     decimal Price,
     string Currency,
     int Quantity) : ICommand;

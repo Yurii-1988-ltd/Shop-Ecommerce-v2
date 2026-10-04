@@ -59,6 +59,7 @@ public sealed class Cart : Entity
     public Result AddItem(
         Guid productId,
         string name,
+        string sku,
         Money price,
         int quantity)
     {
@@ -89,6 +90,7 @@ public sealed class Cart : Entity
         var itemResult = CartItem.Create(
             productId,
             name,
+            sku,
             price,
             quantity);
 

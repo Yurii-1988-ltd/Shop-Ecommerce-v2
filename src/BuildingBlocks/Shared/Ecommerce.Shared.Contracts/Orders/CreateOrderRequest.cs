@@ -1,6 +1,6 @@
 ﻿
 
-namespace Ecommerce.Order.Modules.Application.Contracts;
+namespace Ecommerce.Shared.Contracts.Orders;
 
 public sealed record CreateOrderRequest(
     Guid CustomerId,

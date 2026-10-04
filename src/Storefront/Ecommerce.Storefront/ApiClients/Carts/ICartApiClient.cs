@@ -17,5 +17,7 @@ public interface ICartApiClient
   Task<CartResponse?> GetAsync(
     CancellationToken cancellationToken = default);
     Task <Guid>CreateAsync(CancellationToken cancellationToken = default);
-      
+    Task ClearAsync(
+     CancellationToken cancellationToken = default);
+
 }

@@ -11,9 +11,10 @@ namespace Ecommerce.Cart.Modules.Presentation.Carts
         {
             app.MapDelete("/carts/{customerId:guid}/items", async (
                 Guid customerId,
-                ISender sender) =>
+                ISender sender,
+                CancellationToken cancellationToken) =>
             {
-                var result = await sender.Send(new ClearCartCommand(customerId));
+                var result = await sender.Send(new ClearCartCommand(customerId), cancellationToken);
 
                 return result.IsSuccess
                     ? Results.NoContent()
@@ -21,7 +22,7 @@ namespace Ecommerce.Cart.Modules.Presentation.Carts
             })
             .WithTags(Tags.Carts)
             .WithName("ClearCart")
-            .Produces<CartResponse>(StatusCodes.Status204NoContent)
+            .Produces(StatusCodes.Status204NoContent)
             .Produces(StatusCodes.Status404NotFound);
         }
     }

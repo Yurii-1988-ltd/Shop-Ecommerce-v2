@@ -8,6 +8,7 @@ public sealed class CartItem : Entity
 {
     public Guid ProductId { get; private set; }
     public string Name { get; private set; }
+    public string Sku { get;private set; }
     public Money Price { get; private set; }
     public int Quantity { get; private set; }
 
@@ -17,27 +18,30 @@ public sealed class CartItem : Entity
 
     private CartItem(){}
 
-    private CartItem(Guid id, Guid productId, string name, Money price, int quantity)
+    private CartItem(Guid id, Guid productId, string name, string sku, Money price, int quantity)
     {
         Id = id; // Установка Id из базового Entity
         ProductId = productId;
         Name = name;
+        Sku = sku;
         Price = price;
         Quantity = quantity;
     }
 
-    public static Result<CartItem> Create(Guid productId, string name, Money price, int quantity)
+    public static Result<CartItem> Create(Guid productId, string name, string sku, Money price, int quantity)
     {
         if (productId == Guid.Empty)
             return CartItemErrors.InvalidProductId;
         if (string.IsNullOrWhiteSpace(name))
             return CartItemErrors.NameIsRequired;
+        if (string.IsNullOrWhiteSpace(sku))
+            return CartItemErrors.SkuIsRequired;
         if (quantity <= 0)
             return CartItemErrors.NegativeQuantity;
         if (price is null)
             return CartItemErrors.InvalidPrice;
 
-        return new CartItem(Guid.NewGuid(), productId, name, price, quantity);
+        return new CartItem(Guid.NewGuid(), productId, name, sku, price, quantity);
     }
 
     public Result UpdateQuantity(int newQuantity)

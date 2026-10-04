@@ -6,9 +6,9 @@ internal sealed class ClearCartCommandHandler(ICartRepository repository): IComm
 {
     public async Task<Result> Handle(ClearCartCommand request, CancellationToken cancellationToken)
     {
-        var cart = await repository.GetByCustomerIdAsync(request.CustomerId);
+        var cart = await repository.GetByCustomerIdAsync(request.CustomerId, cancellationToken);
         if (cart is null)
-            return CartItemErrors.NotFound(request.CustomerId);
+            return CartErrors.NotFound(request.CustomerId);
         cart.Clear();
         await repository.UpdateAsync(cart, cancellationToken);
         return Result.Success();

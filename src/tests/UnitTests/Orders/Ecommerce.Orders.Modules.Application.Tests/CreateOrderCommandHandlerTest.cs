@@ -1,5 +1,6 @@
 ﻿using Ecommerce.Application.Abstractions;
 using Ecommerce.Shared.Contracts.IntegrationEvent;
+using Ecommerce.Shared.Contracts.Orders;
 using MassTransit;
 
 namespace Ecommerce.Orders.Modules.Application.Tests;
@@ -68,7 +69,7 @@ public sealed class CreateOrderCommandHandlerTest
 
         // Assert
         result.IsSuccess.Should().BeTrue();
-        result.Value.Should().NotBeEmpty();
+        result.Value.Should().NotBeNull();
 
         repositoryMock.Verify(
             x => x.InsertAsync(
@@ -85,7 +86,7 @@ public sealed class CreateOrderCommandHandlerTest
                     e.CustomerId == customerId &&
                     e.CustomerEmail == customerEmail &&
                     e.TotalAmount == 300.00m &&
-                    e.OrderId == result.Value),
+                    e.OrderId == result.Value.OrderId),
                 It.IsAny<CancellationToken>()),
             Times.Once);
     }

@@ -1,0 +1,333 @@
+﻿
+@page "/checkout"
+@rendermode InteractiveServer
+
+@using Ecommerce.Storefront.ApiClients.Orders
+
+@inject ICartApiClient CartApiClient
+@inject NavigationManager Navigation
+@inject IOrderApiClient OrdersApiClient
+@inject ICurrentUser CurrentUser
+
+<PageTitle>Checkout</PageTitle>
+
+<div class="checkout-page">
+
+    <div class="checkout-header">
+        <div>
+            <h1>Checkout</h1>
+            <p>Review your order and enter your shipping information.</p>
+        </div>
+
+        <a href="/cart" class="checkout-back">
+            ← Back to cart
+        </a>
+    </div>
+
+    @if (_isLoading)
+    {
+        <div class="checkout-loading">
+            <div class="checkout-spinner"></div>
+            <span>Loading checkout...</span>
+        </div>
+    }
+    else if (_cart is null || !_cart.Items.Any())
+    {
+        <div class="checkout-empty">
+            <div class="checkout-empty__icon">🛒</div>
+
+            <h2>Your cart is empty</h2>
+
+            <p>
+                Add some products to your cart before proceeding to checkout.
+            </p>
+
+            <a href="/products" class="checkout-button checkout-button--primary">
+                Continue shopping
+            </a>
+        </div>
+    }
+    else
+    {
+        <div class="checkout-layout">
+
+            <main class="checkout-main">
+
+                <section class="checkout-card">
+                    <div class="checkout-card__header">
+                        <div>
+                            <span class="checkout-step">1</span>
+                            <div>
+                                <h2>Customer information</h2>
+                                <p>Information used for your order.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="checkout-form">
+
+                        <div class="checkout-field">
+                            <label for="checkout-email">Email</label>
+
+                            <input id="checkout-email"
+                                   type="email"
+                                   value="@_email"
+                                   placeholder="you@example.com"
+                                   @oninput="OnEmailChanged" />
+
+                            <span class="checkout-field__hint">
+                                We'll send your order confirmation to this email.
+                            </span>
+                        </div>
+
+                    </div>
+                </section>
+
+                <section class="checkout-card">
+                    <div class="checkout-card__header">
+                        <div>
+                            <span class="checkout-step">2</span>
+                            <div>
+                                <h2>Shipping address</h2>
+                                <p>Where should we deliver your order?</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="checkout-form">
+
+                        <div class="checkout-form__row">
+
+                            <div class="checkout-field">
+                                <label for="first-name">First name</label>
+
+                                <input id="first-name"
+                                       type="text"
+                                       @bind="_firstName"
+                                       placeholder="First name" />
+                            </div>
+
+                            <div class="checkout-field">
+                                <label for="last-name">Last name</label>
+
+                                <input id="last-name"
+                                       type="text"
+                                       @bind="_lastName"
+                                       placeholder="Last name" />
+                            </div>
+
+                        </div>
+
+                        <div class="checkout-field">
+                            <label for="address">Address</label>
+
+                            <input id="address"
+                                   type="text"
+                                   @bind="_address"
+                                   placeholder="Street and house number" />
+                        </div>
+
+                        <div class="checkout-form__row checkout-form__row--three">
+
+                            <div class="checkout-field">
+                                <label for="city">City</label>
+
+                                <input id="city"
+                                       type="text"
+                                       @bind="_city"
+                                       placeholder="City" />
+                            </div>
+
+                            <div class="checkout-field">
+                                <label for="postal-code">Postal code</label>
+
+                                <input id="postal-code"
+                                       type="text"
+                                       @bind="_postalCode"
+                                       placeholder="Postal code" />
+                            </div>
+
+                            <div class="checkout-field">
+                                <label for="country">Country</label>
+
+                                <input id="country"
+                                       type="text"
+                                       @bind="_country"
+                                       placeholder="Country" />
+                            </div>
+
+                        </div>
+
+                        <div class="checkout-field">
+                            <label for="phone">Phone</label>
+
+                            <input id="phone"
+                                   type="tel"
+                                   @bind="_phone"
+                                   placeholder="+380..." />
+                        </div>
+
+                    </div>
+                </section>
+
+                <section class="checkout-card">
+                    <div class="checkout-card__header">
+                        <div>
+                            <span class="checkout-step">3</span>
+                            <div>
+                                <h2>Delivery</h2>
+                                <p>Select your preferred delivery method.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="checkout-delivery">
+
+                        <label class="checkout-delivery-option checkout-delivery-option--selected">
+                            <input type="radio"
+                                   name="delivery"
+                                   value="standard"
+                                   checked />
+
+                            <span class="checkout-delivery-option__content">
+                                <strong>Standard delivery</strong>
+                                <span>Delivery within 2–5 business days</span>
+                            </span>
+
+                            <span class="checkout-delivery-option__price">
+                                Free
+                            </span>
+                        </label>
+
+                    </div>
+                </section>
+
+                <section class="checkout-card">
+                    <div class="checkout-card__header">
+                        <div>
+                            <span class="checkout-step">4</span>
+                            <div>
+                                <h2>Payment</h2>
+                                <p>Payment method for this order.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="checkout-payment">
+
+                        <div class="checkout-payment-option">
+                            <div class="checkout-payment-option__icon">
+                                💳
+                            </div>
+
+                            <div>
+                                <strong>Online payment</strong>
+                                <span>Payment will be processed securely.</span>
+                            </div>
+
+                            <span class="checkout-payment-option__badge">
+                                Coming soon
+                            </span>
+                        </div>
+
+                    </div>
+                </section>
+
+            </main>
+
+            <aside class="checkout-sidebar">
+
+                <section class="checkout-summary">
+
+                    <div class="checkout-summary__header">
+                        <h2>Order summary</h2>
+                        <span>@_cart.TotalItems items</span>
+                    </div>
+
+                    <div class="checkout-items">
+
+                        @foreach (var item in _cart.Items)
+                        {
+                            <div class="checkout-item">
+
+                                <div class="checkout-item__info">
+                                    <strong>@item.Name</strong>
+
+                                    <span>
+                                        @item.Quantity × @item.Price.ToString("N2")
+                                        @item.Currency
+                                    </span>
+                                </div>
+
+                                <strong class="checkout-item__total">
+                                    @item.TotalPrice.ToString("N2")
+                                    @item.Currency
+                                </strong>
+
+                            </div>
+                        }
+
+                    </div>
+
+                    <div class="checkout-summary__divider"></div>
+
+                    <div class="checkout-summary__row">
+                        <span>Subtotal</span>
+
+                        <span>
+                            @_cart.Subtotal.ToString("N2") @_cart.Currency
+                        </span>
+                    </div>
+
+                    @if (_cart.Discount > 0)
+                    {
+                        <div class="checkout-summary__row checkout-summary__row--discount">
+                            <span>Discount</span>
+
+                            <span>
+                                -@_cart.Discount.ToString("N2") @_cart.Currency
+                            </span>
+                        </div>
+                    }
+
+                    <div class="checkout-summary__row">
+                        <span>Delivery</span>
+                        <span>Free</span>
+                    </div>
+
+                    <div class="checkout-summary__divider"></div>
+
+                    <div class="checkout-summary__total">
+                        <span>Total</span>
+
+                        <strong>
+                            @_cart.TotalAmount.ToString("N2") @_cart.Currency
+                        </strong>
+                    </div>
+                    @if (!string.IsNullOrWhiteSpace(_errorMessage))
+                    {
+                        <div style="margin-top:12px; padding:12px; border:1px solid #ccc;">
+                            @_errorMessage
+                        </div>
+                    }
+                    <button type="button"
+                            class="checkout-button checkout-button--primary checkout-button--full"
+                            @onclick="PlaceOrder">
+
+                        Place order
+                    </button>
+
+                    <p class="checkout-secure">
+                        🔒 Secure checkout
+                    </p>
+
+                </section>
+
+            </aside>
+
+        </div>
+    }
+
+</div>
+
+

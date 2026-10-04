@@ -1,0 +1,54 @@
+﻿
+@page "/order-success/{OrderId:guid}"
+
+<PageTitle>Order confirmed</PageTitle>
+
+<div class="order-success">
+
+    <div class="order-success__card">
+
+        <div class="order-success__icon">
+            ✓
+        </div>
+
+        <h1>Thank you for your order!</h1>
+
+        <p class="order-success__message">
+            Your order has been successfully placed.
+        </p>
+
+        <div class="order-success__number">
+            <span>Order number</span>
+            <strong>@OrderNumber</strong>
+        </div>
+
+        <p class="order-success__info">
+            We have received your order and will start processing it shortly.
+            You will receive order information by email.
+        </p>
+
+        <div class="order-success__actions">
+
+            <a href="/"
+               class="order-success__button order-success__button--primary">
+                Continue shopping
+            </a>
+
+            <a href="/orders"
+               class="order-success__button order-success__button--secondary">
+                My orders
+            </a>
+
+        </div>
+
+    </div>
+
+</div>
+
+@code {
+    [Parameter]
+    public Guid OrderId { get; set; }
+
+    [SupplyParameterFromQuery]
+    public string? OrderNumber { get; set; }
+}

@@ -8,6 +8,8 @@ public  sealed class CartItemErrors
         new("Invalid.Price", "The price is invalid",ErrorType.Validation);
     public static Error NameIsRequired =>
         new("Name.IsRequired", "The name is required", ErrorType.Validation);
+    public static Error SkuIsRequired =>
+        new("Sku.IsRequired", "The SKU is required", ErrorType.Validation);
     
     public static Error NegativePrice =>
         new("Negative.Price", "The Price can not be negative", ErrorType.Validation);

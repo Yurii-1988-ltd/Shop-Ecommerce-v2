@@ -1,8 +1,8 @@
 ﻿
 
-using Ecommerce.Cart.Modules.Domain.Entities;
 
 using Ecommerce.Domain.ValueObjects;
+using Ecommerce.Promotions.Modules.Domain.Entities;
 using Ecommerce.Promotions.Modules.Domain.ValueObjects;
 using FluentAssertions;
 using Xunit;

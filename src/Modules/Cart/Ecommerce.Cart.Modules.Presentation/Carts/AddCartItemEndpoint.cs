@@ -22,6 +22,7 @@ internal sealed class AddCartItemEndpoint
               guestId,
                request.ProductId,
                request.Name,
+               request.Sku,
                request.Price,
                request.Currency,
                request.Quantity
@@ -43,6 +44,7 @@ internal sealed class AddCartItemEndpoint
 internal sealed record AddCartItemRequest(
     Guid ProductId,
     string Name,
+    string Sku,
     decimal Price,
     string Currency,
     int Quantity);

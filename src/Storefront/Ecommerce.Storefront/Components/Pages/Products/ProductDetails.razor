@@ -136,6 +136,7 @@ else
         var request = new AddCartItemRequest(
             _product.Id,
             _product.Name,
+            _product.Sku,
             _product.SalePrice ?? _product.Price,
             _product.Currency,
             1);

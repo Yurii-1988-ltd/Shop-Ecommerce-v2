@@ -1,4 +1,6 @@
-﻿public sealed record CreateOrderItemDto(
+﻿ namespace Ecommerce.Shared.Contracts.Orders;
+
+public sealed record CreateOrderItemDto(
     Guid ProductId,
     string ProductName,
     string Sku,

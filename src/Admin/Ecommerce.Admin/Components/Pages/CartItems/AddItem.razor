@@ -20,7 +20,9 @@
     private async Task Save(CartItemFormModel model)
     {
         var request = new AddCartItemRequest(model.ProductId,
-            model.Name,model.Price, model.Currency,model.Quantity);
+            model.Name,
+            model.Sku,
+            model.Price, model.Currency,model.Quantity);
 
         await CartApi.AddItemAsync(model.CustomerId,request);
 

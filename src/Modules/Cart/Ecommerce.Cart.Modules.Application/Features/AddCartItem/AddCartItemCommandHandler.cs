@@ -56,6 +56,7 @@ internal sealed class AddCartItemCommandHandler(
         var result = cart.AddItem(
             request.ProductId,
             request.Name,
+            request.Sku,
             priceResult.Value,
             request.Quantity);
 

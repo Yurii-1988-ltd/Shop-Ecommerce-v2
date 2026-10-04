@@ -122,4 +122,19 @@ internal sealed class CartApiClient(HttpClient httpClient,
         response.EnsureSuccessStatusCode();
         return await response.Content.ReadFromJsonAsync<Guid>(cancellationToken);
     }
+  
+public async Task ClearAsync(
+    CancellationToken cancellationToken = default)
+    {
+        if (!currentUser.IsAuthenticated)
+            throw new InvalidOperationException(
+                "Clearing a guest cart is not supported by this endpoint.");
+
+        var response = await httpClient.DeleteAsync(
+            $"{CartUrl}/{currentUser.UserId}/items",
+            cancellationToken);
+
+        response.EnsureSuccessStatusCode();
+    }
+
 }

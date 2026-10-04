@@ -1,4 +1,6 @@
-﻿public sealed record OrderAddressDto(
+﻿namespace Ecommerce.Shared.Contracts.Orders;
+
+public sealed record OrderAddressDto(
     string FirstName,
     string LastName,
     string Country,

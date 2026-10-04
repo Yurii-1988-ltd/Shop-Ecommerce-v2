@@ -107,8 +107,9 @@
                     </strong>
                 </div>
 
-                <button class="cart-summary__checkout"
-                        type="button">
+                <button type="button"
+                        class="cart-summary__checkout"
+                        @onclick="GoToCheckout">
                     Proceed to checkout
                 </button>
 
@@ -165,5 +166,12 @@
         }
 
         await LoadCart();
+    }
+    [Inject]
+    private NavigationManager Navigation { get; set; } = default!;
+
+    private void GoToCheckout()
+    {
+        Navigation.NavigateTo("/checkout");
     }
 }

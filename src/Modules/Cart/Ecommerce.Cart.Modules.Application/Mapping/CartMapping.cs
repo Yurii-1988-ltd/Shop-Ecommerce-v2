@@ -33,6 +33,7 @@ public static class CartMapping
             .Select(item => new CartItemResponse(
                 ProductId: item.ProductId,
                 Name: item.Name,
+                Sku: item.Sku,
                 Price: item.Price.Amount,
                 Currency: item.Currency,
                 Quantity: item.Quantity,

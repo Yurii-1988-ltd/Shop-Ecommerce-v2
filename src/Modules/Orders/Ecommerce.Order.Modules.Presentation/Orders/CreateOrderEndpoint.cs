@@ -1,6 +1,5 @@
-﻿using Ecommerce.Order.Modules.Application.Contracts;
-
-using MediatR;
+﻿
+using Ecommerce.Shared.Contracts.Orders;
 
 namespace Ecommerce.Order.Modules.Presentation.Orders;
 
@@ -18,13 +17,16 @@ internal sealed class CreateOrderEndpoint
                 request.CustomerEmail,
                 request.ShippingAddress,
                 request.Items,
-                request.Currency
-                );
+                request.Currency);
 
-            var result = await sender.Send(command, cancellationToken);
+            var result = await sender.Send(
+                command,
+                cancellationToken);
 
             return result.IsSuccess
-                ? Results.Created($"/orders/{result.Value}", result.Value)
+                ? Results.Created(
+                    $"/orders/{result.Value.OrderId}",
+                    result.Value)
                 : Results.BadRequest(result.Error);
         })
         .WithTags(Tags.Orders)
