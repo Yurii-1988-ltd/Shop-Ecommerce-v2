@@ -10,16 +10,22 @@ internal sealed class CartApiClient(HttpClient httpClient,
     private const string CartUrl = "/carts";
 
     public async Task AddItemAsync(
-  
-        AddCartItemRequest request,
-        CancellationToken cancellationToken = default)
+    AddCartItemRequest request,
+    CancellationToken cancellationToken = default)
     {
         var response = await httpClient.PostAsJsonAsync(
             $"{CartUrl}/items?{GetOwnerQuery()}",
             request,
             cancellationToken);
 
-        response.EnsureSuccessStatusCode();
+        if (!response.IsSuccessStatusCode)
+        {
+            var error = await response.Content.ReadAsStringAsync(
+                cancellationToken);
+
+            throw new HttpRequestException(
+                $"Cart API returned {(int)response.StatusCode}: {error}");
+        }
     }
 
     public async Task ChangeQuantityAsync(

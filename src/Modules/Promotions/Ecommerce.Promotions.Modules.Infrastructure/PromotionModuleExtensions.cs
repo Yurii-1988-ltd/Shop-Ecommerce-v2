@@ -17,7 +17,7 @@ public static class PromotionModuleExtensions
     {
         MongoMappings.Register();
 
-        CouponMapping.Register();
+        CouponRegisterMapping.Register();
 
         services.AddMongo();
 

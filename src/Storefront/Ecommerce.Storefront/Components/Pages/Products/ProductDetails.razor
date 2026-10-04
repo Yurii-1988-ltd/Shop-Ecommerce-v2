@@ -1,4 +1,6 @@
 ﻿@page "/products/{Id:guid}"
+@rendermode InteractiveServer
+@inject CartState CartState
 
 
 <PageTitle>@(_product?.Name ?? "Product")</PageTitle>
@@ -139,5 +141,7 @@ else
             1);
 
         await CartApiClient.AddItemAsync(request);
+        var cart = await CartApiClient.GetAsync();
+        CartState.SetTotalItems(cart?.TotalItems??0);
     }
 }

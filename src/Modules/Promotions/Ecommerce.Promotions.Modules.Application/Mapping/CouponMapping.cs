@@ -1,41 +1,12 @@
-﻿using Ecommerce.Cart.Modules.Domain.Entities;
-using Ecommerce.Promotions.Modules.Domain.Entities;
-using Ecommerce.Promotions.Modules.Infrastructure.Serializers;
-using MongoDB.Bson.Serialization;
+﻿
+using Ecommerce.Promotions.Modules.Application.Features.GetCoupon;
 
 namespace Ecommerce.Promotions.Modules.Application.Mapping;
 
 public static class CouponMapping
 {
-    public static void Register()
+    public static CouponResponse ToResponse(this Coupon coupon)
     {
-        if (!BsonClassMap.IsClassMapRegistered(typeof(Coupon)))
-        {
-            BsonClassMap.RegisterClassMap<Coupon>(cm =>
-            {
-                cm.AutoMap();
-
-                cm.SetIsRootClass(true);
-
-                cm.MapMember(c => c.Code)
-                    .SetSerializer(new CustomCouponCodeSerializer());
-            });
-        }
-
-        if (!BsonClassMap.IsClassMapRegistered(typeof(FixedAmountCoupon)))
-        {
-            BsonClassMap.RegisterClassMap<FixedAmountCoupon>(cm =>
-            {
-                cm.AutoMap();
-            });
-        }
-
-        if (!BsonClassMap.IsClassMapRegistered(typeof(PercentageCoupon)))
-        {
-            BsonClassMap.RegisterClassMap<PercentageCoupon>(cm =>
-            {
-                cm.AutoMap();
-            });
-        }
+        return new CouponResponse(coupon.Id, coupon.Code.Value);
     }
 }

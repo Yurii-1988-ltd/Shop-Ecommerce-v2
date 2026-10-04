@@ -1,5 +1,4 @@
-﻿// DTO без поля Code
-using Ecommerce.Cart.Modules.Application.Features.RemoveCart;
+﻿using Ecommerce.Cart.Modules.Application.Features.RemoveCart;
 
 namespace Ecommerce.Cart.Modules.Presentation.Carts;
 
@@ -7,10 +6,10 @@ internal sealed class RemoveCartEndpoint
 {
     public void MapEndpoint(IEndpointRouteBuilder app)
     {
-        app.MapDelete("/admin/carts/{customerId:guid}", async (
-            Guid customerId,
-            ISender sender,
-            CancellationToken cancellationToken) =>
+        app.MapDelete("/carts/{customerId:guid}", async (
+     Guid customerId,
+     ISender sender,
+     CancellationToken cancellationToken) =>
         {
             var result = await sender.Send(
                 new RemoveCartCommand(customerId),
@@ -18,9 +17,9 @@ internal sealed class RemoveCartEndpoint
 
             return result.IsSuccess
                 ? Results.NoContent()
-                : Results.NotFound(new { error = result.Error.Code, description = result.Error.Description });
+                : Results.NotFound(result.Error);
         })
-        .WithName("RemoveCart")
-        .WithTags(Tags.Carts);
+            .WithTags(Tags.Carts);
+
     }
 }

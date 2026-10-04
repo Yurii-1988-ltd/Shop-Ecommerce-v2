@@ -1,15 +1,66 @@
-﻿<nav class="nav">
-    <a href="/" class="nav__logo">
-        Ecommerce
-    </a>
+﻿@inject CartState CartState
+@implements IDisposable
 
-    <div class="nav__links">
-        <a href="/">Home</a>
-        <a href="/products">Products</a>
+<nav class="nav">
+
+    <div class="nav__container">
+
+        <a href="/" class="nav__logo">
+            <span class="nav__logo-mark">E</span>
+            <span>Ecommerce</span>
+        </a>
+
+        <div class="nav__links">
+            <a href="/" class="nav__link">Home</a>
+            <a href="/products" class="nav__link">Products</a>
+            <a href="/products?category=featured" class="nav__link">Featured</a>
+            <a href="/products?category=sale" class="nav__link nav__link--sale">
+                Sale
+            </a>
+        </div>
+
+        <div class="nav__search">
+            <span class="nav__search-icon">⌕</span>
+
+            <input type="text"
+                   placeholder="Search products..." />
+        </div>
+
+        <div class="nav__actions">
+
+            <a href="/account" class="nav__action" aria-label="Account">
+                ♙
+            </a>
+
+            <a href="/cart" class="nav__action nav__cart" aria-label="Cart">
+                🛒
+                @if (CartState.TotalItems > 0)
+                {
+                    <span class="nav__cart-count">
+                        @CartState.TotalItems
+                    </span>
+                }
+            </a>
+
+        </div>
+
     </div>
 
-    <div class="nav__actions">
-        <a href="/products">Search</a>
-        <a href="/cart">Cart</a>
-    </div>
 </nav>
+
+@code {
+    protected override void OnInitialized()
+    {
+        CartState.Changed += OnCartChanged;
+    }
+
+    private void OnCartChanged()
+    {
+        InvokeAsync(StateHasChanged);
+    }
+
+    public void Dispose()
+    {
+        CartState.Changed -= OnCartChanged;
+    }
+}

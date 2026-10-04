@@ -1,7 +1,4 @@
 ﻿
-
-
-using Ecommerce.Promotions.Modules.Domain.ValueObjects;
 using MongoDB.Bson.Serialization;
 using MongoDB.Bson.Serialization.Serializers;
 namespace Ecommerce.Promotions.Modules.Infrastructure.Serializers;

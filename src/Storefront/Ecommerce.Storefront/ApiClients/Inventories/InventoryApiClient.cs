@@ -2,11 +2,25 @@
 
 namespace Ecommerce.Storefront.ApiClients.Inventories;
 
-internal sealed class InventoryApiClient(HttpClient httpClient) : IInventoryApiClient
+internal sealed class InventoryApiClient(HttpClient httpClient)
+    : IInventoryApiClient
 {
-    public const string InventoryUrl = "/inventories";
-    public async Task<InventoryAvailabilityResponse> GetAvailabilityAsync(Guid productId, CancellationToken cancellationToken = default)
+    private const string InventoryUrl = "/inventories";
+
+    public async Task<InventoryAvailabilityResponse?> GetAvailabilityAsync(
+        Guid productId,
+        CancellationToken cancellationToken = default)
     {
-        return await httpClient.GetFromJsonAsync<InventoryAvailabilityResponse>($"{InventoryUrl}/product/{productId}", cancellationToken);
+        var response = await httpClient.GetAsync(
+            $"{InventoryUrl}/product/{productId}",
+            cancellationToken);
+
+        if (!response.IsSuccessStatusCode)
+        {
+            return null;
+        }
+
+        return await response.Content.ReadFromJsonAsync<InventoryAvailabilityResponse>(
+            cancellationToken);
     }
 }

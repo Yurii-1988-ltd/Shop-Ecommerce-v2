@@ -1,7 +1,4 @@
-﻿using Ecommerce.Storefront.ApiClients.Identity;
-using Ecommerce.Storefront.ApiClients.Identity.Authentication;
-using Ecommerce.Storefront.ApiClients.Identity.Models;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 
 namespace Ecommerce.Storefront.Endpoints.Identity;
 
@@ -21,7 +18,8 @@ public sealed class LoginEndpoint
 
             if (authentication is null)
             {
-                return Results.Unauthorized();
+                return Results.Redirect(
+                    "/auth/login?error=invalid_credentials");
             }
 
             await authenticationService.SignInAsync(
@@ -29,6 +27,7 @@ public sealed class LoginEndpoint
                 cancellationToken);
 
             return Results.Redirect("/");
-        });
+        })
+            .DisableAntiforgery();
     }
 }

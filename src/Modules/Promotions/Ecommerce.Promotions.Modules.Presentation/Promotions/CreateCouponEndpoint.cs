@@ -1,13 +1,9 @@
-﻿
+﻿using Ecommerce.Promotions.Modules.Presentation;
 
-
-namespace Ecommerce.Promotions.Modules.Presentation;
-
-public class CreateCouponEndpoint
+internal sealed class CreateCouponEndpoint
 {
     public void MapEndpoint(IEndpointRouteBuilder app)
     {
-        // Ручное создание купона
         app.MapPost("/api/admin/coupons", async (
             CreateCouponRequest request,
             ISender sender,
@@ -22,28 +18,37 @@ public class CreateCouponEndpoint
                 request.ExpirationDateUtc,
                 request.MaxDiscountAmount);
 
-            var result = await sender.Send(command, cancellationToken);
+            var result = await sender.Send(
+                command,
+                cancellationToken);
 
             if (result.IsFailure)
             {
-                return Results.BadRequest(new { error = result.Error.Code, description = result.Error.Description });
+                return Results.BadRequest(new
+                {
+                    error = result.Error.Code,
+                    description = result.Error.Description
+                });
             }
 
-            return Results.Created($"/api/admin/coupons/{result.Value}", new CouponResponse(result.Value, request.Code));
+            return Results.Created(
+                $"/api/admin/coupons/{result.Value}",
+                new CouponResponse(
+                    result.Value,
+                    request.Code));
         })
-        .WithName("CreateCoupon")
-        .WithTags("Coupons");
-
-
+        .WithTags(Tags.Promotions)
+        .Accepts<CreateCouponRequest>("application/json")
+        .Produces<CouponResponse>(StatusCodes.Status201Created)
+        .Produces(StatusCodes.Status400BadRequest);
     }
-    public record CreateCouponRequest(
-    string Code,
-    CouponType Type,
-    decimal AmountOrPercentage,
-    decimal MinimumSpend,
-    string Currency,
-    DateTime ExpirationDateUtc,
-    decimal? MaxDiscountAmount = null);
 
-
+    public sealed record CreateCouponRequest(
+        string Code,
+        CouponType Type,
+        decimal AmountOrPercentage,
+        decimal MinimumSpend,
+        string Currency,
+        DateTime ExpirationDateUtc,
+        decimal? MaxDiscountAmount = null);
 }

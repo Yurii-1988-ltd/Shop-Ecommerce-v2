@@ -1,4 +1,5 @@
 
+using Ecommerce.Storefront.ApiClients.Carts.Models;
 using Ecommerce.Storefront.ApiClients.Inventories;
 using Ecommerce.Storefront.Endpoints.Identity;
 using Ecommerce.Storefront.Middleware;
@@ -21,6 +22,7 @@ builder.Services.AddHttpClient<IInventoryApiClient, InventoryApiClient>(client =
 {
     client.BaseAddress = new Uri("https://localhost:7125");
 });
+builder.Services.AddScoped<CartState>();
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
 builder.Services.AddStorefrontAuthentication();

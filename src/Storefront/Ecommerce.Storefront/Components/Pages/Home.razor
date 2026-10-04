@@ -2,53 +2,198 @@
 
 @inject ICatalogApiClient CatalogApiClient
 
-<PageTitle>Home</PageTitle>
+<PageTitle>Ecommerce — Home</PageTitle>
 
 <section class="hero">
+
     <div class="hero__content">
-        <h1>Welcome to our store</h1>
+
+        <span class="hero__eyebrow">
+            NEW COLLECTION 2026
+        </span>
+
+        <h1>
+            Everything you need.
+            <span>All in one place.</span>
+        </h1>
 
         <p>
-            Discover products you'll love.
+            Discover products selected for quality, design and everyday life.
         </p>
 
-        <a href="/products" class="hero__button">
-            Shop now
-        </a>
+        <div class="hero__actions">
+
+            <a href="/products" class="hero__button">
+                Shop now
+            </a>
+
+            <a href="/products?category=featured" class="hero__secondary-button">
+                Explore collection
+            </a>
+
+        </div>
+
     </div>
+
+    <div class="hero__visual">
+        <div class="hero__circle"></div>
+        <div class="hero__product">
+            E
+        </div>
+    </div>
+
 </section>
 
-<section class="featured-products">
-    <div class="featured-products__header">
-        <h2>Featured Products</h2>
+
+<section class="categories">
+
+    <div class="section-header">
+
+        <div>
+            <span class="section-header__eyebrow">
+                EXPLORE
+            </span>
+
+            <h2>Shop by category</h2>
+        </div>
 
         <a href="/products">
-            View all
+            View all →
         </a>
+
+    </div>
+
+    <div class="categories-grid">
+
+        <a href="/products" class="category-card">
+            <span class="category-card__icon">📱</span>
+            <span>Electronics</span>
+        </a>
+
+        <a href="/products" class="category-card">
+            <span class="category-card__icon">💻</span>
+            <span>Computers</span>
+        </a>
+
+        <a href="/products" class="category-card">
+            <span class="category-card__icon">🎧</span>
+            <span>Audio</span>
+        </a>
+
+        <a href="/products" class="category-card">
+            <span class="category-card__icon">⌚</span>
+            <span>Accessories</span>
+        </a>
+
+    </div>
+
+</section>
+
+
+<section class="featured-products">
+
+    <div class="section-header">
+
+        <div>
+            <span class="section-header__eyebrow">
+                HAND PICKED
+            </span>
+
+            <h2>Featured products</h2>
+        </div>
+
+        <a href="/products">
+            View all →
+        </a>
+
     </div>
 
     @if (_loading)
     {
-        <p>Loading products...</p>
+        <div class="products-loading">
+            Loading products...
+        </div>
     }
     else if (_products.Count == 0)
     {
-        <p>No products available.</p>
+        <div class="products-empty">
+            No products available.
+        </div>
     }
     else
     {
         <div class="products-grid">
+
             @foreach (var product in _products)
             {
                 <ProductCard Product="product" />
             }
+
         </div>
     }
+
 </section>
 
-@code
-{
+
+<section class="promo">
+
+    <div class="promo__content">
+
+        <span class="promo__eyebrow">
+            LIMITED OFFER
+        </span>
+
+        <h2>
+            Better products.
+            Better prices.
+        </h2>
+
+        <p>
+            Discover our latest deals and special offers.
+        </p>
+
+        <a href="/products" class="promo__button">
+            Explore deals
+        </a>
+
+    </div>
+
+</section>
+
+
+<section class="benefits">
+
+    <div class="benefit">
+        <span>🚚</span>
+        <div>
+            <h3>Fast delivery</h3>
+            <p>Get your order delivered quickly.</p>
+        </div>
+    </div>
+
+    <div class="benefit">
+        <span>🔒</span>
+        <div>
+            <h3>Secure payment</h3>
+            <p>Your payment information is protected.</p>
+        </div>
+    </div>
+
+    <div class="benefit">
+        <span>↩</span>
+        <div>
+            <h3>Easy returns</h3>
+            <p>Simple and convenient returns.</p>
+        </div>
+    </div>
+
+</section>
+
+
+@code {
+
     private readonly List<ProductListItemResponse> _products = [];
+
     private bool _loading;
 
     protected override async Task OnInitializedAsync()

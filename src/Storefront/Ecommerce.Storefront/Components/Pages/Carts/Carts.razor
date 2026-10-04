@@ -1,70 +1,127 @@
-﻿@page "/cart"
+﻿
+@page "/cart"
 
+@using Ecommerce.Storefront.ApiClients.Cart.Models
 @using Ecommerce.Storefront.ApiClients.Carts
 @using Ecommerce.Storefront.ApiClients.Carts.Models
 
 @inject ICartApiClient CartApiClient
 
-<PageTitle>Cart</PageTitle>
+<PageTitle>Shopping Cart</PageTitle>
 
-<h1>Shopping Cart</h1>
-
-@if (_loading)
-{
-    <p>Loading...</p>
-}
-else if (_cart is null)
-{
-    <p>Your cart is empty.</p>
-}
-else if (_cart.Items.Count == 0)
-{
-    <p>Your cart is empty.</p>
-}
-else
-{
-    <div class="cart">
-
-        @foreach (var item in _cart.Items)
-        {
-            <div class="cart-item">
-
-                <div>
-                    <strong>@item.Name</strong>
-                </div>
-
-                <div>
-                    Quantity: @item.Quantity
-                </div>
-
-                <div>
-                    @item.TotalPrice @item.Currency
-                </div>
-
-            </div>
-        }
-
-        <hr />
-
-        <div>
-            Subtotal: @_cart.Subtotal @_cart.Currency
-        </div>
-
-        <div>
-            Discount: @_cart.Discount @_cart.Currency
-        </div>
-
-        <div>
-            <strong>
-                Total: @_cart.TotalAmount @_cart.Currency
-            </strong>
-        </div>
-
+<section class="cart-page">
+    <div class="cart-page__header">
+        <span class="cart-page__eyebrow">SHOPPING</span>
+        <h1>Shopping Cart</h1>
+        <p>Review the items in your cart before checkout.</p>
     </div>
-}
 
-@code
-{
+    @if (_loading)
+    {
+        <div class="cart-state">
+            <p>Loading...</p>
+        </div>
+    }
+    else if (_cart is null || _cart.Items.Count == 0)
+    {
+        <div class="cart-empty">
+            <div class="cart-empty__icon">🛒</div>
+
+            <h2>Your cart is empty</h2>
+
+            <p>
+                Looks like you haven't added anything to your cart yet.
+            </p>
+
+            <a href="/products" class="cart-empty__button">
+                Continue shopping
+            </a>
+        </div>
+    }
+    else
+    {
+        <div class="cart-layout">
+
+            <div class="cart-items">
+                @foreach (var item in _cart.Items)
+                {
+                    <article class="cart-item">
+                        <div class="cart-item__info">
+                            <h2 class="cart-item__name">
+                                @item.Name
+                            </h2>
+
+                            <span class="cart-item__unit-price">
+                                @item.Price @item.Currency each
+                            </span>
+                        </div>
+
+                        <div class="cart-item__quantity">
+                            <button type="button"
+                                    class="cart-item__quantity-button"
+                                    @onclick="() => DecreaseQuantity(item)">
+                                −
+                            </button>
+
+                            <span class="cart-item__quantity-value">
+                                @item.Quantity
+                            </span>
+
+                            <button type="button"
+                                    class="cart-item__quantity-button"
+                                    @onclick="() => IncreaseQuantity(item)">
+                                +
+                            </button>
+                        </div>
+
+                        <div class="cart-item__total">
+                            @item.TotalPrice @item.Currency
+                        </div>
+                    </article>
+                }
+            </div>
+
+            <aside class="cart-summary">
+                <h2>Order Summary</h2>
+
+                <div class="cart-summary__row">
+                    <span>Subtotal</span>
+                    <span>
+                        @_cart.Subtotal @_cart.Currency
+                    </span>
+                </div>
+
+                <div class="cart-summary__row">
+                    <span>Discount</span>
+                    <span class="cart-summary__discount">
+                        -@_cart.Discount @_cart.Currency
+                    </span>
+                </div>
+
+                <div class="cart-summary__divider"></div>
+
+                <div class="cart-summary__total">
+                    <span>Total</span>
+                    <strong>
+                        @_cart.TotalAmount @_cart.Currency
+                    </strong>
+                </div>
+
+                <button class="cart-summary__checkout"
+                        type="button">
+                    Proceed to checkout
+                </button>
+
+                <a href="/products" class="cart-summary__continue">
+                    Continue shopping
+                </a>
+            </aside>
+
+        </div>
+    }
+</section>
+
+@code {
     private CartResponse? _cart;
     private bool _loading;
 
@@ -80,5 +137,33 @@ else
         {
             _loading = false;
         }
+    }
+    private async Task LoadCart()
+    {
+        _cart = await CartApiClient.GetAsync();
+    }
+    private async Task IncreaseQuantity(CartItemResponse item)
+    {
+        await CartApiClient.ChangeQuantityAsync(
+            item.ProductId,
+            new ChangeCartItemQuantityRequest(item.Quantity + 1));
+
+        await LoadCart();
+    }
+
+    private async Task DecreaseQuantity(CartItemResponse item)
+    {
+        if (item.Quantity <= 1)
+        {
+            await CartApiClient.RemoveItemAsync(item.ProductId);
+        }
+        else
+        {
+            await CartApiClient.ChangeQuantityAsync(
+                item.ProductId,
+                new ChangeCartItemQuantityRequest(item.Quantity - 1));
+        }
+
+        await LoadCart();
     }
 }
