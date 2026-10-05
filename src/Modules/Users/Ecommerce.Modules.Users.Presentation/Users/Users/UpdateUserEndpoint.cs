@@ -16,7 +16,9 @@ internal sealed class UpdateUserEndpoint
                 new UpdateUserCommand(
                     id,
                     request.FirstName,
-                    request.LastName),
+                    request.LastName,
+                    request.Email,
+                    request.PhoneNumber),
                 cancellationToken);
 
             return result.IsSuccess
@@ -28,4 +30,4 @@ internal sealed class UpdateUserEndpoint
         .Produces(StatusCodes.Status404NotFound);
     }
 }
-internal sealed record UpdateUserRequest(string FirstName, string LastName);
+internal sealed record UpdateUserRequest(string FirstName, string LastName, string Email, string PhoneNumber);

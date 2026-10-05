@@ -1,25 +1,27 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Ecommerce.Storefront.ApiClients.Identity.Contracts;
+using Microsoft.AspNetCore.Mvc;
 
-namespace Ecommerce.Storefront.Endpoints;
+namespace Ecommerce.Storefront.Endpoints.Identity;
 
-public sealed class LoginEndpoint
+public sealed class RegisterEndpoint
 {
     public void MapEndpoint(IEndpointRouteBuilder app)
     {
-        app.MapPost("/login", async (
-                [FromForm] LoginRequest request,
+        app.MapPost("/register", async (
+                [FromForm] RegisterRequest request,
                 IIdentityApiClient identityApiClient,
                 IStorefrontAuthenticationService authenticationService,
                 CancellationToken cancellationToken) =>
         {
-            var authentication = await identityApiClient.LoginAsync(
-                request,
-                cancellationToken);
+            var authentication =
+                await identityApiClient.RegisterAsync(
+                    request,
+                    cancellationToken);
 
             if (authentication is null)
             {
                 return Results.Redirect(
-                    "/auth/login?error=invalid_credentials");
+                    "/auth/register?error=registration_failed");
             }
 
             await authenticationService.SignInAsync(

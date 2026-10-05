@@ -14,7 +14,7 @@ internal sealed class UpdateUserCommandHandler(IUserRepository userRepository, I
         {
             return UserErrors.NotFound(request.Id);
         }
-        user.Update(request.FirstName, request.LastName);
+        user.UpdateProfile(request.FirstName, request.LastName, request.Email, request.PhoneNumber);
         await unitOfWork.SaveChangesAsync(cancellationToken);
         return Result.Success();
 

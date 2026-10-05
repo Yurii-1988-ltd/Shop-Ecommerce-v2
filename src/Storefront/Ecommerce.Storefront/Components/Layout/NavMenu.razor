@@ -12,9 +12,17 @@
 
         <div class="nav__links">
             <a href="/" class="nav__link">Home</a>
-            <a href="/products" class="nav__link">Products</a>
-            <a href="/products?category=featured" class="nav__link">Featured</a>
-            <a href="/products?category=sale" class="nav__link nav__link--sale">
+
+            <a href="/products" class="nav__link">
+                Products
+            </a>
+
+            <a href="/products?category=featured" class="nav__link">
+                Featured
+            </a>
+
+            <a href="/products?category=sale"
+               class="nav__link nav__link--sale">
                 Sale
             </a>
         </div>
@@ -28,18 +36,47 @@
 
         <div class="nav__actions">
 
-            <a href="/auth/account" class="nav__action" aria-label="Account">
-                ♙
-            </a>
+            <AuthorizeView>
+                <Authorized>
+                    <a href="/auth/account"
+                       class="nav__action"
+                       aria-label="Account">
+                        ♙
+                    </a>
 
-            <a href="/cart" class="nav__action nav__cart" aria-label="Cart">
+                    <form method="post"
+                          action="/logout"
+                          class="nav__logout-form">
+                        <button type="submit"
+                                class="nav__action nav__logout"
+                                aria-label="Sign out">
+                            ↪
+                        </button>
+                    </form>
+                </Authorized>
+
+                <NotAuthorized>
+                    <a href="/auth/login"
+                       class="nav__action"
+                       aria-label="Sign in">
+                        ♙
+                    </a>
+                </NotAuthorized>
+            </AuthorizeView>
+
+            <a href="/cart"
+               class="nav__action nav__cart"
+               aria-label="Cart">
+
                 🛒
+
                 @if (CartState.TotalItems > 0)
                 {
                     <span class="nav__cart-count">
                         @CartState.TotalItems
                     </span>
                 }
+
             </a>
 
         </div>

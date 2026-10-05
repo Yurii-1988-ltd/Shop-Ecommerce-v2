@@ -1,6 +1,7 @@
 ﻿
 using Ecommerce.Domain.Domain;
 using Ecommerce.Modules.Users.Contracts.Requests;
+using Ecommerce.Modules.Users.Contracts.Responses;
 
 namespace Ecommerce.Modules.Users.Contracts.Abstractions;
 
@@ -22,5 +23,12 @@ public interface IUserService
     string email,
     CancellationToken cancellationToken);
     Task<UserAuthenticationResponse?> GetByIdAsync(Guid userId, CancellationToken cancellationToken);
+    Task<Result> UpdateProfileAsync(Guid userId,
+                            string firstName,
+                            string lastName,
+                            string email,
+                            string phoneNumber,
+                            CancellationToken cancellationToken);
+        Task<UserProfileResponse?> GetProfileAsync(Guid userId, CancellationToken cancellationToken);
 
 }

@@ -1,8 +1,11 @@
 ﻿
 @page "/auth/account"
+@rendermode InteractiveServer
 
 @using System.Security.Claims
 @using Microsoft.AspNetCore.Components.Authorization
+
+@inject IIdentityApiClient IdentityApiClient
 
 <PageTitle>My Account</PageTitle>
 
@@ -28,7 +31,6 @@
             <div class="account-grid">
 
                 <!-- Profile -->
-
                 <section class="account-card account-card--profile">
 
                     <div class="account-card__header">
@@ -106,9 +108,24 @@
 
                             <button type="button"
                                     class="account-button"
+                                    disabled="@_isSaving"
                                     @onclick="SaveProfile">
-                                Save changes
+                                @(_isSaving ? "Saving..." : "Save changes")
                             </button>
+
+                            @if (_saveSuccess)
+                            {
+                                <div class="account-save-success">
+                                    Profile updated successfully.
+                                </div>
+                            }
+
+                            @if (!string.IsNullOrWhiteSpace(_saveError))
+                            {
+                                <div class="account-save-error">
+                                    @_saveError
+                                </div>
+                            }
 
                         </div>
 
@@ -116,9 +133,7 @@
 
                 </section>
 
-
                 <!-- My Orders -->
-
                 <section class="account-card account-card--orders">
 
                     <div class="account-section-header">
@@ -163,9 +178,7 @@
 
                 </section>
 
-
                 <!-- Shopping Cart -->
-
                 <a href="/cart"
                    class="account-card account-link account-link--cart">
 
@@ -217,32 +230,3 @@
     </NotAuthorized>
 
 </AuthorizeView>
-
-@code {
-
-    private string _firstName = string.Empty;
-    private string _lastName = string.Empty;
-    private string _email = string.Empty;
-    private string _phone = string.Empty;
-
-    protected override async Task OnInitializedAsync()
-    {
-        await Task.CompletedTask;
-    }
-
-    private async Task SaveProfile()
-    {
-        // Will be connected to Identity API.
-        await Task.CompletedTask;
-    }
-
-    private static string GetInitials(ClaimsPrincipal user)
-    {
-        var email = user.FindFirstValue(ClaimTypes.Email);
-
-        if (string.IsNullOrWhiteSpace(email))
-            return "U";
-
-        return email[..1].ToUpperInvariant();
-    }
-}

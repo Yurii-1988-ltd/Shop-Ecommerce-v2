@@ -1,4 +1,6 @@
 
+using Ecommerce.Modules.Users.Presentation.Users.Users;
+
 public sealed class UsersModule : IModule
 {
     public void MapEndpoints(IEndpointRouteBuilder app)
@@ -16,6 +18,8 @@ public sealed class UsersModule : IModule
         new AssignRoleEndpoint().MapEndpoint(app);
         new GetUserRolesendpoint().MapEndpoint(app);
         new RemoveUserRoleEndpoint().MapEndpoint(app);
+        new UpdateProfileEndpoint().MapEndpoints(app);
+        new GetProfileEndpoint().MapEndpoints(app);
     }
 
     public void RegisterServices(IServiceCollection services, IConfiguration config)

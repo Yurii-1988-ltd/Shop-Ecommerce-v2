@@ -1,15 +1,11 @@
-﻿using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-using Ecommerce.Storefront.ApiClients.Identity.Models;
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authentication.Cookies;
-
-namespace Ecommerce.Storefront.ApiClients.Identity.Authentication;
+﻿namespace Ecommerce.Storefront.ApiClients.Identity.Authentication;
 
 internal sealed class StorefrontAuthenticationService(
     IHttpContextAccessor httpContextAccessor)
     : IStorefrontAuthenticationService
 {
+
+
     public async Task SignInAsync(
         AuthenticationResponse authenticationResponse,
         CancellationToken cancellationToken = default)
@@ -33,6 +29,10 @@ internal sealed class StorefrontAuthenticationService(
                 x.Type == ClaimTypes.Email ||
                 x.Type == ClaimTypes.Role)
             .ToList();
+
+        claims.Add(new Claim(
+            AuthenticationClaimTypes.AccessToken,
+            authenticationResponse.AccessToken));
 
         var identity = new ClaimsIdentity(
             claims,

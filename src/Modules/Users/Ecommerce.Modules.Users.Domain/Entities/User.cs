@@ -10,13 +10,13 @@ public sealed class User : Entity
     {
     }
 
-    public Guid Id { get; private set; }
 
     public string Email { get; private set; } = string.Empty;
 
     public string FirstName { get; private set; } = string.Empty;
 
     public string LastName { get; private set; } = string.Empty;
+    public string PhoneNumber { get; private set; } = string.Empty;
 
     public string PasswordHash { get; private set; } = string.Empty;
 
@@ -59,7 +59,7 @@ public sealed class User : Entity
         return Result<User>.Success(user);
     }
 
-    public  Result Update(string firstName, string lastName)
+    public  Result UpdateProfile(string firstName, string lastName,string email, string phoneNumber)
     {
         if (string.IsNullOrWhiteSpace(firstName))
         {
@@ -69,8 +69,14 @@ public sealed class User : Entity
         {
             return UserErrors.LastNameRequired;
         }
-        FirstName = firstName;
-        LastName = lastName;
+        if (string.IsNullOrWhiteSpace(email))
+            return UserErrors.EmailRequired;
+        FirstName = firstName.Trim();
+        LastName = lastName.Trim();
+        Email = email.Trim();
+        PhoneNumber = phoneNumber.Trim();
+
+
         AddDomainEvent(new UserUpdatedDomainEvent(Id));
         return Result.Success();
     }

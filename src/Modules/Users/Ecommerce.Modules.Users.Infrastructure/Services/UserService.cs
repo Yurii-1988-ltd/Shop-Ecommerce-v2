@@ -1,6 +1,8 @@
 ﻿
 
 
+using Ecommerce.Modules.Users.Contracts.Responses;
+
 namespace Ecommerce.Modules.Users.Infrastructure.Services;
 
 internal sealed class UserService(IUserRepository userRepository, IUserUnitOfWork unitOfWork) : IUserService
@@ -14,7 +16,7 @@ internal sealed class UserService(IUserRepository userRepository, IUserUnitOfWor
         }
         var user = result.Value;
         userRepository.Insert(user);
-        await unitOfWork.SaveChangesAsync();
+        await unitOfWork.SaveChangesAsync(cancellationToken);
 
         return Result<Guid>.Success(user.Id);
     }
@@ -30,9 +32,9 @@ internal sealed class UserService(IUserRepository userRepository, IUserUnitOfWor
         return new UserAuthenticationResponse(user.Id, user.Email, user.PasswordHash);
     }
 
-    public async Task<Result> ChangePasswordAsync(Guid userId, string passwordHash, CancellationToken cancellation)
+    public async Task<Result> ChangePasswordAsync(Guid userId, string passwordHash, CancellationToken cancellationToken)
     {
-        var user = await userRepository.GetByIdAsync(userId, cancellation);
+        var user = await userRepository.GetByIdAsync(userId, cancellationToken);
         if(user is null)
         {
            return Result.Failure(UserErrors.NotFound(userId));
@@ -42,7 +44,7 @@ internal sealed class UserService(IUserRepository userRepository, IUserUnitOfWor
         {
             return result;
         }
-        await unitOfWork.SaveChangesAsync();
+        await unitOfWork.SaveChangesAsync(cancellationToken);
         return Result.Success();
 
     }
@@ -75,4 +77,42 @@ internal sealed class UserService(IUserRepository userRepository, IUserUnitOfWor
             user.PasswordHash);
     }
 
+    public async Task<Result> UpdateProfileAsync(Guid userId, string firstName, string lastName, string email, string phoneNumber, CancellationToken cancellationToken)
+    {
+        var user = await userRepository.GetByIdAsync(userId, cancellationToken);
+        if (user is null)
+        {
+            return UserErrors.NotFound(userId);
+        }
+        var emailExists = await userRepository.GetByEmailAsync(email, cancellationToken);
+        if (emailExists != null && emailExists.Id != userId)
+        {
+            return UserErrors.EmailAlreadyExists(email);
+        }
+        var result = user.UpdateProfile(firstName, lastName, email, phoneNumber);
+        if (result.IsFailure)
+        {
+            return result;
+        }
+        await unitOfWork.SaveChangesAsync(cancellationToken);
+        return Result.Success();
+
+    }
+
+    public async Task<UserProfileResponse?> GetProfileAsync(Guid userId, CancellationToken cancellationToken)
+    {
+        var user = await userRepository.GetByIdAsync(userId, cancellationToken);
+        if (user is null)
+        {
+            return null;
+        }
+
+        return new UserProfileResponse(
+            user.Id,
+            user.FirstName,
+            user.LastName,
+            user.Email,
+            user.PhoneNumber
+        );
+    }
 }
