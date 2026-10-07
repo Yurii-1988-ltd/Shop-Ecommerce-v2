@@ -12,18 +12,38 @@ internal sealed class CartApiClient(HttpClient httpClient,
     private const string CartUrl = "/carts";
 
     public async Task AddItemAsync(
-    AddCartItemRequest request,
-    CancellationToken cancellationToken = default)
+      AddCartItemRequest request,
+      CancellationToken cancellationToken = default)
     {
         var response = await httpClient.PostAsJsonAsync(
             $"{CartUrl}/items?{GetOwnerQuery()}",
             request,
             cancellationToken);
 
+        // Если корзина не найдена, создаем её и повторяем попытку добавления товара
         if (!response.IsSuccessStatusCode)
         {
-            var error = await response.Content.ReadAsStringAsync(
-                cancellationToken);
+            var error = await response.Content.ReadAsStringAsync(cancellationToken);
+
+            if (response.StatusCode == HttpStatusCode.BadRequest && error.Contains("Cart.NotFound"))
+            {
+                // Создаем корзину
+                await CreateAsync(cancellationToken);
+
+                // Повторяем попытку добавления
+                response = await httpClient.PostAsJsonAsync(
+                    $"{CartUrl}/items?{GetOwnerQuery()}",
+                    request,
+                    cancellationToken);
+
+                if (response.IsSuccessStatusCode)
+                {
+                    return;
+                }
+
+                // Вычитываем новое сообщение об ошибке, если повторный запрос снова упал
+                error = await response.Content.ReadAsStringAsync(cancellationToken);
+            }
 
             throw new HttpRequestException(
                 $"Cart API returned {(int)response.StatusCode}: {error}");

@@ -7,6 +7,7 @@ public sealed record ProductListItemResponse(
     string Sku,
     decimal Price,
     string Currency,
+    decimal? SalePrice,
     int StockQuantity,
     bool IsActive,
     string? ImageUrl);

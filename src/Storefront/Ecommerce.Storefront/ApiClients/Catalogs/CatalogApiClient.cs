@@ -1,5 +1,7 @@
 ﻿using Ecommerce.Application.Pagination;
+using Ecommerce.Domain.Enums;
 using Ecommerce.Storefront.ApiClients.Catalogs.Models;
+using Microsoft.AspNetCore.WebUtilities;
 
 namespace Ecommerce.Storefront.ApiClients.Catalogs
 {
@@ -19,20 +21,47 @@ namespace Ecommerce.Storefront.ApiClients.Catalogs
 
         }
 
-        public  async Task<PagedResult<ProductListItemResponse>?> GetProductsAsync(int page, int pageSize, string? search = null, CancellationToken cancellationToken = default)
+        public async Task<PagedResult<ProductListItemResponse>?> GetProductsAsync(
+         int page = 1,
+         int pageSize = 20,
+         string? search = null,
+         Guid? categoryId = null,
+         Guid? brandId = null,
+         decimal? minPrice = null,
+         decimal? maxPrice = null,
+         bool inStockOnly = false,
+         ProductSortOptions sortOption = ProductSortOptions.Relevance,
+         CancellationToken cancellationToken = default)
         {
-            var url = $"{ProductsUrl}?page={page}&pageSize={pageSize}";
+            var queryParams = new Dictionary<string, string?>
+            {
+                ["page"] = page.ToString(),
+                ["pageSize"] = pageSize.ToString(),
+                ["sortOption"] = sortOption.ToString()
+            };
 
             if (!string.IsNullOrWhiteSpace(search))
-            {
-                url += $"&search={Uri.EscapeDataString(search)}";
-            }
+                queryParams["search"] = search;
 
-            return await httpClient.GetFromJsonAsync<
-                PagedResult<ProductListItemResponse>>(
-                    url,
-                    cancellationToken);
+            if (categoryId.HasValue)
+                queryParams["categoryId"] = categoryId.Value.ToString();
 
+            if (brandId.HasValue)
+                queryParams["brandId"] = brandId.Value.ToString();
+
+            if (minPrice.HasValue)
+                queryParams["minPrice"] = minPrice.Value.ToString();
+
+            if (maxPrice.HasValue)
+                queryParams["maxPrice"] = maxPrice.Value.ToString();
+
+            if (inStockOnly)
+                queryParams["inStockOnly"] = "true";
+
+            var uri = QueryHelpers.AddQueryString("/products", queryParams);
+
+            return await httpClient.GetFromJsonAsync<PagedResult<ProductListItemResponse>>(uri, cancellationToken);
         }
     }
+    
 }

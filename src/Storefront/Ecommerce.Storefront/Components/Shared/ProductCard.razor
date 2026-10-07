@@ -1,41 +1,45 @@
-﻿
+﻿@using Ecommerce.Storefront.ApiClients.Catalogs.Models
+@inject IConfiguration Configuration
 
 <div class="product-card">
-
-    <a class="product-card__image"
-       href="@($"/products/{Product.Id}")">
-
+    <a href="/products/@Product.Id" class="product-card__image">
         @if (!string.IsNullOrWhiteSpace(Product.ImageUrl))
         {
-            <img src="@Product.ImageUrl"
-                 alt="@Product.Name" />
+            <img src="@GetFullImageUrl(Product.ImageUrl)" alt="@Product.Name" loading="lazy" />
         }
         else
         {
             <div class="product-card__no-image">
-                No image
+                <span>No Image</span>
             </div>
         }
-
     </a>
 
     <div class="product-card__content">
-
-        <a class="product-card__name"
-           href="@($"/products/{Product.Id}")">
+        <a href="/products/@Product.Id" class="product-card__name" title="@Product.Name">
             @Product.Name
         </a>
 
         <div class="product-card__price">
-            @Product.Price @Product.Currency
+            <span>@Product.Price @Product.Currency</span>
         </div>
-
     </div>
-
 </div>
 
-@code
-{
+@code {
     [Parameter, EditorRequired]
     public ProductListItemResponse Product { get; set; } = default!;
+
+    private string GetFullImageUrl(string url)
+    {
+        if (url.StartsWith("http://", StringComparison.OrdinalIgnoreCase) ||
+            url.StartsWith("https://", StringComparison.OrdinalIgnoreCase))
+        {
+            return url;
+        }
+
+        // Берем URL бэкенда из appsettings.json фронтенда
+        var apiBaseUrl = Configuration["ApiSettings:BaseUrl"] ?? "https://localhost:7125";
+        return $"{apiBaseUrl.TrimEnd('/')}/{url.TrimStart('/')}";
+    }
 }

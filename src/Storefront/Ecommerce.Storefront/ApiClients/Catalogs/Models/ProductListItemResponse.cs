@@ -2,9 +2,11 @@
 
 public sealed record ProductListItemResponse(
     Guid Id,
+    string ProductNumber,
     string Name,
+    string Sku,
     decimal Price,
     string Currency,
-    decimal? SalePrice,
-    string? ImageUrl,
-    bool IsAvailable);
+    int StockQuantity,
+    bool IsActive,
+    string? ImageUrl);

@@ -9,24 +9,39 @@ internal static class ProductMappings
 {
     public static ProductListItemResponse ToListItemResponse(this Product product)
     {
-        return new(
+        var mainImageUrl = product.Images?
+            .OrderByDescending(i => i.IsPrimary)
+            .ThenBy(i => i.DisplayOrder)
+            .Select(i => $"/uploads/products/{i.StorageKey}")
+            .FirstOrDefault();
+
+        return new ProductListItemResponse(
             product.Id,
             product.ProductNumber,
             product.Name,
-        
             product.Sku,
             product.Price.Amount,
             product.Price.Currency,
+            product.SalePrice?.Amount,
             product.StockQuantity,
             product.IsActive,
-            product.Images
-                .OrderBy(i => i.DisplayOrder)
-                .Select(i => $"/uploads/products/{i.StorageKey}")
-                .FirstOrDefault());
+            mainImageUrl);
     }
 
     public static ProductResponse ToResponse(this Product product)
     {
+        var images = product.Images?
+            .OrderByDescending(x => x.IsPrimary)
+            .ThenBy(x => x.DisplayOrder)
+            .Select(x => new ProductImageResponse(
+                x.Id,
+                $"/uploads/products/{x.StorageKey}",
+                x.StorageKey,
+                x.AltText,
+                x.IsPrimary,
+                x.DisplayOrder))
+            .ToList() ?? [];
+
         return new ProductResponse(
             product.Id,
             product.ProductNumber,
@@ -40,16 +55,7 @@ internal static class ProductMappings
             product.IsActive,
             product.CategoryId,
             product.BrandId,
-            product.Images
-                .OrderBy(x => x.DisplayOrder)
-               .Select(x => new ProductImageResponse(
-                    x.Id,
-                    $"/uploads/products/{x.StorageKey}",
-                    x.StorageKey,
-                    x.AltText,
-                    x.IsPrimary,
-                    x.DisplayOrder))
-                .ToList(),
+            images,
             product.CreatedAtUtc,
             product.UpdatedAtUtc);
     }

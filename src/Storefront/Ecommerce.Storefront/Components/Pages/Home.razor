@@ -1,200 +1,149 @@
 ﻿@page "/"
+@using Ecommerce.Domain.Enums
 
 @inject ICatalogApiClient CatalogApiClient
 
 <PageTitle>Ecommerce — Home</PageTitle>
 
+<!-- HERO SECTION -->
 <section class="hero">
-
     <div class="hero__content">
-
-        <span class="hero__eyebrow">
-            NEW COLLECTION 2026
-        </span>
-
-        <h1>
+        <span class="hero__eyebrow">NEW COLLECTION 2026</span>
+        <h1 class="hero__title">
             Everything you need.
             <span>All in one place.</span>
         </h1>
-
-        <p>
-            Discover products selected for quality, design and everyday life.
+        <p class="hero__description">
+            Discover products selected for quality, design, and everyday life.
         </p>
 
         <div class="hero__actions">
-
-            <a href="/products" class="hero__button">
+            <a href="/products" class="hero__button hero__button--primary">
                 Shop now
             </a>
-
-            <a href="/products?category=featured" class="hero__secondary-button">
+            <a href="/products?category=featured" class="hero__button hero__button--secondary">
                 Explore collection
             </a>
-
         </div>
-
     </div>
 
-    <div class="hero__visual">
+    <div class="hero__visual" @onmousemove="HandleMouseMove">
         <div class="hero__circle"></div>
-        <div class="hero__product">
-            E
+        <div class="hero__product-card" style="transform: translate(@(_mouseX)px, @(_mouseY)px)">
+            <span class="hero__badge">Featured</span>
+            <div class="hero__placeholder-logo">E</div>
         </div>
     </div>
-
 </section>
 
-
+<!-- CATEGORIES SECTION -->
 <section class="categories">
-
     <div class="section-header">
-
         <div>
-            <span class="section-header__eyebrow">
-                EXPLORE
-            </span>
-
+            <span class="section-header__eyebrow">EXPLORE</span>
             <h2>Shop by category</h2>
         </div>
-
-        <a href="/products">
-            View all →
-        </a>
-
+        <a href="/products" class="section-header__link">View all →</a>
     </div>
 
     <div class="categories-grid">
-
-        <a href="/products" class="category-card">
+        <a href="/products?category=electronics" class="category-card">
             <span class="category-card__icon">📱</span>
-            <span>Electronics</span>
+            <span class="category-card__title">Electronics</span>
         </a>
-
-        <a href="/products" class="category-card">
+        <a href="/products?category=computers" class="category-card">
             <span class="category-card__icon">💻</span>
-            <span>Computers</span>
+            <span class="category-card__title">Computers</span>
         </a>
-
-        <a href="/products" class="category-card">
+        <a href="/products?category=audio" class="category-card">
             <span class="category-card__icon">🎧</span>
-            <span>Audio</span>
+            <span class="category-card__title">Audio</span>
         </a>
-
-        <a href="/products" class="category-card">
+        <a href="/products?category=accessories" class="category-card">
             <span class="category-card__icon">⌚</span>
-            <span>Accessories</span>
+            <span class="category-card__title">Accessories</span>
         </a>
-
     </div>
-
 </section>
 
-
+<!-- FEATURED PRODUCTS SECTION -->
 <section class="featured-products">
-
     <div class="section-header">
-
         <div>
-            <span class="section-header__eyebrow">
-                HAND PICKED
-            </span>
-
+            <span class="section-header__eyebrow">HAND PICKED</span>
             <h2>Featured products</h2>
         </div>
-
-        <a href="/products">
-            View all →
-        </a>
-
+        <a href="/products" class="section-header__link">View all →</a>
     </div>
 
     @if (_loading)
     {
-        <div class="products-loading">
-            Loading products...
+        <div class="products-grid">
+            @for (int i = 0; i < 4; i++)
+            {
+                <div class="product-skeleton"></div>
+            }
         </div>
     }
     else if (_products.Count == 0)
     {
         <div class="products-empty">
-            No products available.
+            <p>No products available at the moment.</p>
         </div>
     }
     else
     {
         <div class="products-grid">
-
             @foreach (var product in _products)
             {
                 <ProductCard Product="product" />
             }
-
         </div>
     }
-
 </section>
 
-
+<!-- PROMO BANNER -->
 <section class="promo">
-
     <div class="promo__content">
-
-        <span class="promo__eyebrow">
-            LIMITED OFFER
-        </span>
-
-        <h2>
-            Better products.
-            Better prices.
-        </h2>
-
-        <p>
-            Discover our latest deals and special offers.
-        </p>
-
-        <a href="/products" class="promo__button">
-            Explore deals
-        </a>
-
+        <span class="promo__eyebrow">LIMITED OFFER</span>
+        <h2>Better products. Better prices.</h2>
+        <p>Discover our latest deals and special offers with up to 30% discount.</p>
+        <a href="/products?sale=true" class="promo__button">Explore deals</a>
     </div>
-
 </section>
 
-
+<!-- BENEFITS SECTION -->
 <section class="benefits">
-
     <div class="benefit">
-        <span>🚚</span>
-        <div>
+        <div class="benefit__icon">🚚</div>
+        <div class="benefit__info">
             <h3>Fast delivery</h3>
             <p>Get your order delivered quickly.</p>
         </div>
     </div>
-
     <div class="benefit">
-        <span>🔒</span>
-        <div>
+        <div class="benefit__icon">🔒</div>
+        <div class="benefit__info">
             <h3>Secure payment</h3>
             <p>Your payment information is protected.</p>
         </div>
     </div>
-
     <div class="benefit">
-        <span>↩</span>
-        <div>
+        <div class="benefit__icon">↩</div>
+        <div class="benefit__info">
             <h3>Easy returns</h3>
-            <p>Simple and convenient returns.</p>
+            <p>Simple and convenient 30-day returns.</p>
         </div>
     </div>
-
 </section>
 
-
 @code {
-
     private readonly List<ProductListItemResponse> _products = [];
-
     private bool _loading;
+
+    // Переменные для движения карточки за мышью
+    private double _mouseX = 0;
+    private double _mouseY = 0;
 
     protected override async Task OnInitializedAsync()
     {
@@ -202,9 +151,11 @@
 
         try
         {
+            // Передаем параметр сортировки (например, ProductSortOption.Relevance или ProductSortOption.Newest)
             var result = await CatalogApiClient.GetProductsAsync(
                 page: 1,
-                pageSize: 4);
+                pageSize: 4,
+                sortOption: ProductSortOptions.Relevance);
 
             if (result is not null)
             {
@@ -215,5 +166,12 @@
         {
             _loading = false;
         }
+    }
+
+    // Обработчик движения мыши
+    private void HandleMouseMove(MouseEventArgs e)
+    {
+        _mouseX = (e.OffsetX - 150) * 0.03;
+        _mouseY = (e.OffsetY - 150) * 0.03;
     }
 }

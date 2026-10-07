@@ -71,6 +71,7 @@ app.UseAuthorization();
 new LoginEndpoint().MapEndpoint(app);
 new LogoutEndpoint().MapEndpoint(app);
 new RegisterEndpoint().MapEndpoint(app);
+app.UseStaticFiles();
 
 app.UseHttpsRedirection();
 app.UseAntiforgery();
