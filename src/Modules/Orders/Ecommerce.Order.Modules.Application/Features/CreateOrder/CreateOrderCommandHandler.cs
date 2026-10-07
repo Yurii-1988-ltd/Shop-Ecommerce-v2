@@ -1,7 +1,6 @@
 ﻿using Ecommerce.Application.Abstractions;
 using Ecommerce.Domain.Constants;
 using Ecommerce.Domain.ValueObjects;
-using Ecommerce.Order.Modules.Application.Contracts;
 using Ecommerce.Order.Modules.Domain.ValueObjects;
 using Ecommerce.Shared.Contracts.IntegrationEvent;
 using Ecommerce.Shared.Contracts.Orders;
@@ -39,6 +38,7 @@ public sealed class CreateOrderCommandHandler(
 
         var orderResult = Order.Create(
             request.CustomerId,
+            request.CustomerEmail,
             orderNumber,
             shippingAddress,
             request.Currency);

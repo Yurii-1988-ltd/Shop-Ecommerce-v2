@@ -1,4 +1,5 @@
-﻿using Ecommerce.Storefront.ApiClients.Carts.Services;
+﻿using Ecommerce.Shared.Contracts.Orders;
+using Ecommerce.Storefront.ApiClients.Carts.Services;
 using Microsoft.AspNetCore.Authentication.Cookies;
 
 namespace Ecommerce.Storefront.Extensions;

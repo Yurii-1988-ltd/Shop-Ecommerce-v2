@@ -249,4 +249,24 @@ public sealed class Cart : Entity
         AppliedCouponCode = null;
         AppliedDiscount = null;
     }
+    public Result Merge(Cart guestCart)
+    {
+        if (guestCart is null)
+           throw new ArgumentNullException(nameof(guestCart));
+
+        foreach (var item in guestCart.Items)
+        {
+            var result = AddItem(
+                item.ProductId,
+                item.Name,
+                item.Sku,
+                item.Price,
+                item.Quantity);
+
+            if (result.IsFailure)
+                return result;
+        }
+
+        return Result.Success();
+    }
 }

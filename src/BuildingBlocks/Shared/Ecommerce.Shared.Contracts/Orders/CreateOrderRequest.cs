@@ -1,10 +1,9 @@
-﻿
-
-namespace Ecommerce.Shared.Contracts.Orders;
+﻿using Ecommerce.Shared.Contracts.Orders;
 
 public sealed record CreateOrderRequest(
-    Guid CustomerId,
+    Guid? CustomerId,
     string CustomerEmail,
     OrderAddressDto ShippingAddress,
-    List<CreateOrderItemDto> Items,
-    string Currency);
+    IReadOnlyCollection<CreateOrderItemDto> Items,
+    string Currency,
+    Guid? GuestId = null);

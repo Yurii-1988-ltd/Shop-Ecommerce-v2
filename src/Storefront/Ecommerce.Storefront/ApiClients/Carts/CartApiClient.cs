@@ -1,11 +1,13 @@
-﻿using Ecommerce.Storefront.ApiClients.Carts.Models;
+﻿using Ecommerce.Shared.Contracts.Orders;
+using Ecommerce.Storefront.ApiClients.Carts.Models;
 using Ecommerce.Storefront.ApiClients.Carts.Services;
+using Ecommerce.Storefront.ApiClients.Identity.Contracts;
 using System.Net;
 
 namespace Ecommerce.Storefront.ApiClients.Cart;
 
 internal sealed class CartApiClient(HttpClient httpClient,
-    ICurrentUser currentUser,IGuestCartService guestCartService) : ICartApiClient
+    ICurrentUser currentUser, IGuestCartService guestCartService) : ICartApiClient
 {
     private const string CartUrl = "/carts";
 
@@ -136,5 +138,55 @@ public async Task ClearAsync(
 
         response.EnsureSuccessStatusCode();
     }
+
+    public async Task MergeAsync(Guid guestId, Guid customerId, CancellationToken cancellationToken = default)
+    {
+        var request = new  MergeGuestCartRequest(guestId, customerId);
+        var response = await httpClient.PostAsJsonAsync(
+            $"{CartUrl}/merge",
+            request,
+            cancellationToken);
+        response.EnsureSuccessStatusCode();
+
+    }
+
+    public async Task ClearGuestCartAsync(Guid guestId, CancellationToken cancellationToken = default)
+    {
+        if (guestId == Guid.Empty)
+        {
+            return;
+        }
+
+   
+        var requestUri = $"{CartUrl.TrimEnd('/')}/guests/{guestId}";
+
+        var response = await httpClient.DeleteAsync(requestUri, cancellationToken);
+
+    
+        response.EnsureSuccessStatusCode();
+    }
+
+    public async Task ClearGuestCartAsync(CancellationToken cancellationToken = default)
+    {
+        var guestId = guestCartService.GetGuestId(cancellationToken);
+
+        if (guestId == Guid.Empty)
+        {
+            return;
+        }
+
+        // В Storefront API маршрут для гостей: /carts/guests/{guestId}
+        var requestUri = $"api/carts/guests/{guestId}";
+        var response = await httpClient.DeleteAsync(requestUri, cancellationToken);
+
+        // Игнорируем 404, если корзина уже пустая/удалена, чтобы не ломать поток заказа
+        if (response.StatusCode == System.Net.HttpStatusCode.NotFound)
+        {
+            return;
+        }
+
+        response.EnsureSuccessStatusCode();
+    }
+
 
 }

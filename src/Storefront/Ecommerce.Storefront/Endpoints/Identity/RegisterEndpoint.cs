@@ -1,4 +1,5 @@
-﻿using Ecommerce.Storefront.ApiClients.Identity.Contracts;
+﻿using Ecommerce.Storefront.ApiClients.Carts.Services;
+using Ecommerce.Storefront.ApiClients.Identity.Contracts;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Ecommerce.Storefront.Endpoints.Identity;
@@ -10,6 +11,7 @@ public sealed class RegisterEndpoint
         app.MapPost("/register", async (
                 [FromForm] RegisterRequest request,
                 IIdentityApiClient identityApiClient,
+                ICartMergeService cartMergeService,
                 IStorefrontAuthenticationService authenticationService,
                 CancellationToken cancellationToken) =>
         {
@@ -27,6 +29,7 @@ public sealed class RegisterEndpoint
             await authenticationService.SignInAsync(
                 authentication,
                 cancellationToken);
+            await cartMergeService.MergeGuestCartAsync(cancellationToken);
 
             return Results.Redirect("/");
         })

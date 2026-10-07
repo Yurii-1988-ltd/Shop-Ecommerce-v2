@@ -19,5 +19,10 @@ public interface ICartApiClient
     Task <Guid>CreateAsync(CancellationToken cancellationToken = default);
     Task ClearAsync(
      CancellationToken cancellationToken = default);
-
+    Task MergeAsync(Guid guestId, Guid customerId, CancellationToken cancellationToken = default);
+    Task ClearGuestCartAsync(
+        Guid guestId,
+        CancellationToken cancellationToken = default);
+    Task ClearGuestCartAsync(CancellationToken cancellationToken = default);
+    
 }

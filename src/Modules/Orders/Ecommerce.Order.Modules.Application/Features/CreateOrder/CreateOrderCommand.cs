@@ -1,9 +1,9 @@
-﻿
-using Ecommerce.Shared.Contracts.Orders;
+﻿using Ecommerce.Shared.Contracts.Orders;
 
 public sealed record CreateOrderCommand(
-    Guid CustomerId,
-    string CustomerEmail, // 👈 Добавляем email покупателя
+    Guid? CustomerId, // 👈
+    string CustomerEmail,
     OrderAddressDto ShippingAddress,
-    List<CreateOrderItemDto> Items,
-    string Currency) : ICommand<CreateOrderResponse>;
+    IReadOnlyCollection<CreateOrderItemDto> Items, 
+    string Currency,
+    Guid? GuestId = null) : ICommand<CreateOrderResponse>;

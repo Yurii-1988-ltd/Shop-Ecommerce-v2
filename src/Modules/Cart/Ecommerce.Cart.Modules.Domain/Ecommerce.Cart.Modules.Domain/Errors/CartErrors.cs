@@ -39,4 +39,21 @@ public sealed class CartErrors
         new("Cart.InvalidCouponCode",
         "The coupon code is invalid.",
         ErrorType.Validation);
+    public static Error CustomerCartRequired =>
+    new(
+        "Cart.CustomerRequired",
+        "Customer cart is required.",
+        ErrorType.Validation);
+
+    public static Error GuestCartRequired =>
+        new(
+            "Cart.GuestRequired",
+            "Guest cart is required.",
+            ErrorType.Validation);
+    public static Error CustomerAlreadyExists(Guid id)
+    =>new Error(
+        $"Already.Exists",
+        "Customer with {id} already exist",
+        ErrorType.Validation);
+
 }

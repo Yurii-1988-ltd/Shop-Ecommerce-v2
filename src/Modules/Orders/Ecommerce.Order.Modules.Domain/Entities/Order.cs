@@ -1,18 +1,18 @@
 ﻿namespace Ecommerce.Order.Modules.Domain.Entities;
 
-public sealed class Order: Entity
+public sealed class Order : Entity
 {
+    #region fields and constructors
+    private readonly List<OrderItem> _items = new();
 
-    #region  fields and constructors
-    private  List<OrderItem> _items = new();
-
-    public Guid CustomerId { get;private set; }
+    public Guid? CustomerId { get; private set; } // Nullable для гостей
+    public string CustomerEmail { get; private set; }
     public string OrderNumber { get; private set; } = default!;
-    public OrderStatus Status { get;private set; }
-    public OrderAddress  ShippingAddress { get;private set; }
-    public string Currency { get;private set; }
+    public OrderStatus Status { get; private set; }
+    public OrderAddress ShippingAddress { get; private set; }
+    public string Currency { get; private set; }
     public DateTime CreatedAtUtc { get; private set; }
-    public DateTime ? UpdatedAtUtc { get; private set; }
+    public DateTime? UpdatedAtUtc { get; private set; }
     public DateTime? PaidAtUtc { get; private set; }
     public DateTime? ShippedAtUtc { get; private set; }
     public DateTime? CancelledAtUtc { get; private set; }
@@ -20,20 +20,23 @@ public sealed class Order: Entity
     public IReadOnlyCollection<OrderItem> Items => _items.AsReadOnly();
     public int TotalQuantity => _items.Sum(item => item.Quantity);
     #endregion
-#region static factory methods
+
+    #region static factory methods
     private Order()
     {
-        
     }
+
     private Order(
-     Guid id,
-     Guid customerId,
-     string orderNumber,
-     OrderAddress shippingAddress,
-     string currency = CurrencyConstant.UAH)
+        Guid id,
+        Guid? customerId, // 👈 Изменено на Guid?
+        string customerEmail,
+        string orderNumber,
+        OrderAddress shippingAddress,
+        string currency = CurrencyConstant.UAH)
     {
         Id = id;
         CustomerId = customerId;
+        CustomerEmail = customerEmail;
         OrderNumber = orderNumber;
 
         ShippingAddress = shippingAddress ?? throw new ArgumentNullException(nameof(shippingAddress));
@@ -45,14 +48,20 @@ public sealed class Order: Entity
         Status = OrderStatus.Draft;
         CreatedAtUtc = DateTime.UtcNow;
     }
+
     public static Result<Order> Create(
-     Guid customerId,
-     string orderNumber,
-     OrderAddress shippingAddress,
-     string currency = CurrencyConstant.UAH)
+        Guid? customerId, // 👈 Изменено на Guid?
+        string customerEmail,
+        string orderNumber,
+        OrderAddress shippingAddress,
+        string currency = CurrencyConstant.UAH)
     {
-        if (customerId == Guid.Empty)
+        // Проверяем на Guid.Empty только если ID передан (для авторизованных пользователей)
+        if (customerId.HasValue && customerId.Value == Guid.Empty)
             return OrderErrors.GuidEmpty;
+
+        if (string.IsNullOrWhiteSpace(customerEmail))
+            return OrderErrors.CustomerEmailIsRequired(customerEmail);
 
         if (string.IsNullOrWhiteSpace(orderNumber))
             return OrderErrors.OrderNumberIsRequired(orderNumber);
@@ -60,6 +69,7 @@ public sealed class Order: Entity
         var order = new Order(
             Guid.NewGuid(),
             customerId,
+            customerEmail,
             orderNumber,
             shippingAddress,
             currency);
@@ -89,15 +99,14 @@ public sealed class Order: Entity
 
         return total;
     }
- 
+
     public Result AddItem(
-    Guid productId,
-    string productName,
-    string sku,
-    Money price,
-    int quantity)
+        Guid productId,
+        string productName,
+        string sku,
+        Money price,
+        int quantity)
     {
-       
         var existing = _items.FirstOrDefault(x => x.ProductId == productId);
 
         if (existing is not null)
@@ -131,6 +140,7 @@ public sealed class Order: Entity
         UpdatedAtUtc = DateTime.UtcNow;
         return Result.Success();
     }
+
     public Result ChangeStatus(OrderStatus newStatus)
     {
         if (Status == newStatus)
@@ -155,35 +165,23 @@ public sealed class Order: Entity
 
         return Result.Success();
     }
+
     private static bool IsValidTransition(OrderStatus current, OrderStatus next)
     {
         return current switch
         {
-            // 1. Черновик: можно отправить на оформление (Pending) или отменить (Cancelled)
             OrderStatus.Draft => next is OrderStatus.Pending or OrderStatus.Cancelled,
-
-            // 2. Ожидает оплаты: можно оплатить (Paid) или отменить (Cancelled)
             OrderStatus.Pending => next is OrderStatus.Paid or OrderStatus.Cancelled,
-
-            // 3. Оплачен: передается в комплектацию/обработку (Processing)
             OrderStatus.Paid => next is OrderStatus.Processing,
-
-            // 4. В обработке: передается в доставку (Shipped)
             OrderStatus.Processing => next is OrderStatus.Shipped,
-
-            // 5. Отправлен: переходит в доставлен (Delivered)
             OrderStatus.Shipped => next is OrderStatus.Delivered,
-
-            // 6. Доставлен: доступен только возврат (Refunded)
             OrderStatus.Delivered => next is OrderStatus.Refunded,
-
-            // Финальные статусы — переходы из них запрещены
             OrderStatus.Cancelled => false,
             OrderStatus.Refunded => false,
-
             _ => false
         };
     }
+
     public Result ForceChangeStatus(OrderStatus newStatus, Guid changeBy, string reason)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(reason);
@@ -204,7 +202,6 @@ public sealed class Order: Entity
         return Result.Success();
     }
 
-
     public Result Submit()
     {
         if (Status != OrderStatus.Draft)
@@ -214,13 +211,14 @@ public sealed class Order: Entity
             return OrderErrors.EmptyOrder();
 
         if (ShippingAddress is null)
-            return OrderErrors.ShippimhAddressRequired();
+            return OrderErrors.ShippingAddressRequired();
 
         Status = OrderStatus.Pending;
         UpdatedAtUtc = DateTime.UtcNow;
 
         return Result.Success();
     }
+
     public Result Cancel()
     {
         if (Status == OrderStatus.Delivered)
@@ -232,6 +230,7 @@ public sealed class Order: Entity
         AddDomainEvent(new OrderCancelledDomainEvent(Id));
         return Result.Success();
     }
+
     public Result UpdateShppingAddress(OrderAddress shippingAddress)
     {
         ArgumentNullException.ThrowIfNull(shippingAddress);
@@ -240,26 +239,27 @@ public sealed class Order: Entity
         AddDomainEvent(new OrderShippingAddressUpdatedDomainEvent(Id));
         return Result.Success();
     }
+
     public Result ChangeItemQuantity(Guid orderItemId, int quantity)
     {
-        if(Status!= OrderStatus.Draft)
+        if (Status != OrderStatus.Draft)
         {
-            return OrderErrors.OrderCannotModdified(Status);
+            return OrderErrors.OrderCannotBeModified(Status);
         }
-        if(quantity <=0)
+        if (quantity <= 0)
         {
             return OrderErrors.NegativeQuantity;
         }
-        var item = _items.FirstOrDefault(x=>x.Id == orderItemId);
+        var item = _items.FirstOrDefault(x => x.Id == orderItemId);
         if (item is null)
         {
             return OrderErrors.OrderItemNotFound(orderItemId);
         }
         item.ChangeQuantity(quantity);
-        UpdatedAtUtc= DateTime.UtcNow;
+        UpdatedAtUtc = DateTime.UtcNow;
         return Result.Success();
-
     }
+
     public Result RemoveOrderItem(Guid orderItemId)
     {
         var item = _items.FirstOrDefault(x => x.Id == orderItemId);
@@ -280,9 +280,5 @@ public sealed class Order: Entity
 
         return Result.Success();
     }
-
     #endregion
-
-
 }
-

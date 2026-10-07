@@ -1,6 +1,6 @@
 ﻿using Ecommerce.Application.Pagination;
 using Ecommerce.Modules.Users.Contracts.Abstractions;
-using Ecommerce.Order.Modules.Application.Features.Responses;
+using Ecommerce.Shared.Contracts.Orders;
 
 namespace Ecommerce.Order.Modules.Application.Features.GetOrders;
 
@@ -38,7 +38,11 @@ internal sealed class GetOrdersQueryHandler(
         }
 
         // 2. Оптимизация N+1: параллельное или пакетное получение пользователей
-        var customerIds = orders.Select(x => x.CustomerId).Distinct().ToList();
+        var customerIds = orders
+            .Where(x => x.CustomerId.HasValue)
+            .Select(x => x.CustomerId.Value)
+            .Distinct()
+            .ToList();
 
         // Запрашиваем всех уникальных пользователей параллельно
         var userTasks = customerIds.Select(id => userQueries.GetByIdAsync(id, cancellationToken));
@@ -51,7 +55,7 @@ internal sealed class GetOrdersQueryHandler(
         // 3. Формирование ответа
         var items = orders.Select(order =>
         {
-            usersDictionary.TryGetValue(order.CustomerId, out var user);
+            usersDictionary.TryGetValue(order.CustomerId.Value, out var user);
             return order.ToListResponse(user);
         }).ToList();
 

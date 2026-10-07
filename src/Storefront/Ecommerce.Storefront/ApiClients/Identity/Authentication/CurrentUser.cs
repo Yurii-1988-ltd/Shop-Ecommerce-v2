@@ -1,4 +1,6 @@
-﻿internal sealed class CurrentUser(IHttpContextAccessor httpContextAccessor)
+﻿using Ecommerce.Shared.Contracts.Orders;
+
+internal sealed class CurrentUser(IHttpContextAccessor httpContextAccessor)
     : ICurrentUser
 {
     private ClaimsPrincipal User =>

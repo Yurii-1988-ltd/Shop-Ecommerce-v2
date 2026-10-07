@@ -4,20 +4,26 @@ using Ecommerce.Order.Modules.Application.Features.Responses;
 internal static class OrderMappings
 {
     public static OrderResponse ToResponse(
-        this Ecommerce.Order.Modules.Domain.Entities.Order order,
+        this Order order,
         UserDto? user)
     {
-        var total = order.GetTotalAmount().Value;
+        var totalResult = order.GetTotalAmount();
+        var totalAmount = totalResult.IsSuccess ? totalResult.Value.Amount : 0m;
+        var currency = totalResult.IsSuccess ? totalResult.Value.Currency : order.Currency;
 
-        var customerName = user is null
-            ? "Unknown"
-            : $"{user.FirstName} {user.LastName}";
+        // Определяем имя покупателя: Пользователь -> Адрес доставки -> Guest
+        var customerName = user is not null
+            ? $"{user.FirstName} {user.LastName}".Trim()
+            : !string.IsNullOrWhiteSpace(order.ShippingAddress?.FirstName)
+                ? $"{order.ShippingAddress.FirstName} {order.ShippingAddress.LastName}".Trim()
+                : "Guest";
 
         return new OrderResponse(
             order.Id,
             order.OrderNumber,
             order.CustomerId,
             customerName,
+            order.CustomerEmail, // 👈 Полезно добавить Email в детальный ответ
             order.Status,
             new AddressResponse(
                 order.ShippingAddress.FirstName,
@@ -38,8 +44,8 @@ internal static class OrderMappings
                     x.TotalPrice.Amount))
                 .ToList(),
             order.TotalQuantity,
-            total.Amount,
-            total.Currency,
+            totalAmount,
+            currency,
             order.CreatedAtUtc,
             order.PaidAtUtc,
             order.ShippedAtUtc,
@@ -48,24 +54,47 @@ internal static class OrderMappings
     }
 
     internal static OrderListResponse ToListResponse(
-        this Ecommerce.Order.Modules.Domain.Entities.Order order,
+        this Order order,
         UserDto? user)
     {
-        var total = order.GetTotalAmount().Value;
+        var totalResult = order.GetTotalAmount();
+        var totalAmount = totalResult.IsSuccess ? totalResult.Value.Amount : 0m;
+        var currency = totalResult.IsSuccess ? totalResult.Value.Currency : order.Currency;
 
-        var customerName = user is null
-            ? "Unknown"
-            : $"{user.FirstName} {user.LastName}";
+        var customerName = user is not null
+            ? $"{user.FirstName} {user.LastName}".Trim()
+            : !string.IsNullOrWhiteSpace(order.ShippingAddress?.FirstName)
+                ? $"{order.ShippingAddress.FirstName} {order.ShippingAddress.LastName}".Trim()
+                : "Guest";
 
         return new OrderListResponse(
             order.Id,
             order.OrderNumber,
             order.CustomerId,
             customerName,
-            order.Status,
+            order.Status.ToString(),
             order.TotalQuantity,
-            total.Amount,
-            total.Currency,
+            totalAmount,
+            currency,
+            order.CreatedAtUtc);
+    }
+
+    internal static OrderListResponse ToMyOrderListResponse(
+        this Order order)
+    {
+        var totalResult = order.GetTotalAmount();
+        var totalAmount = totalResult.IsSuccess ? totalResult.Value.Amount : 0m;
+        var currency = totalResult.IsSuccess ? totalResult.Value.Currency : order.Currency;
+
+        return new OrderListResponse(
+            order.Id,
+            order.OrderNumber,
+            order.CustomerId,
+            CustomerName: null,
+            order.Status.ToString(),
+            order.TotalQuantity,
+            totalAmount,
+            currency,
             order.CreatedAtUtc);
     }
 }

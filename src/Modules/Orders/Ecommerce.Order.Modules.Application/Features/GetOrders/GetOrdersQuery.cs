@@ -1,6 +1,7 @@
 ﻿using Ecommerce.Application.Pagination;
 using Ecommerce.Order.Modules.Application.Features.Responses;
 using Ecommerce.Order.Modules.Domain.Enums;
+using Ecommerce.Shared.Contracts.Orders;
 
 namespace Ecommerce.Order.Modules.Application.Features.GetOrders;
 

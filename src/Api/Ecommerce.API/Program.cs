@@ -22,7 +22,7 @@ internal class Program
         builder.AddServiceDefaults<GlobalExceptionHandler>();
 
         builder.Services.AddSwaggerDocumentation();
-        builder.Services.AddAntiforgery();
+       builder.Services.AddAntiforgery();
         builder.Services.AddCors();
 
         builder.Services.AddExportModule();

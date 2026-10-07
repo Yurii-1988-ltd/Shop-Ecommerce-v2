@@ -1,11 +1,14 @@
-﻿
-
+﻿using Ecommerce.Domain.Constants;
 using Ecommerce.Domain.Domain;
 using Ecommerce.Domain.ValueObjects;
 using Ecommerce.Order.Modules.Application.Contracts;
 using Ecommerce.Order.Modules.Application.Features.AddOrderItem;
 using Ecommerce.Order.Modules.Application.Services;
+using Ecommerce.Order.Modules.Domain.Entities;
 using Ecommerce.Order.Modules.Domain.Errors;
+using FluentAssertions;
+using Moq;
+using Xunit;
 
 namespace Ecommerce.Orders.Modules.Application.Tests;
 
@@ -26,7 +29,11 @@ public sealed class AddOrderItemCommandHandlerTest
             "Street",
             "01001");
 
-        var order = Order.Modules.Domain.Entities.Order.Create(Guid.NewGuid(), "ORD-2026-000001", address).Value;
+        var order = Order.Modules.Domain.Entities.Order.Create(
+            Guid.NewGuid(),
+            "ORD-2026-000001",
+            "ivan@example.com",
+            address).Value;
 
         repository
             .Setup(x => x.GetByIdAsync(
@@ -38,7 +45,9 @@ public sealed class AddOrderItemCommandHandlerTest
             Guid.NewGuid(),
             "iPhone",
             "IP-001",
-            Money.Create(100, CurrencyConstant.UAH).Value);
+            Money.Create(
+                100,
+                CurrencyConstant.UAH).Value);
 
         productService
             .Setup(x => x.GetProductAsync(
@@ -62,10 +71,22 @@ public sealed class AddOrderItemCommandHandlerTest
             2);
 
         // Act
-        var result = await handler.Handle(command, CancellationToken.None);
+        var result = await handler.Handle(
+            command,
+            CancellationToken.None);
 
         // Assert
         result.IsSuccess.Should().BeTrue();
+
+        order.Items.Should().ContainSingle();
+
+        var item = order.Items.First();
+
+        item.ProductId.Should().Be(product.Id);
+        item.ProductName.Should().Be(product.Name);
+        item.SKU.Should().Be(product.Sku);
+        item.Quantity.Should().Be(2);
+        item.UnitPrice.Amount.Should().Be(100);
 
         repository.Verify(
             x => x.UpdateAsync(
@@ -73,6 +94,7 @@ public sealed class AddOrderItemCommandHandlerTest
                 It.IsAny<CancellationToken>()),
             Times.Once);
     }
+
     [Fact]
     public async Task Handle_Should_Return_NotFound_When_Order_Does_Not_Exist()
     {
@@ -99,7 +121,9 @@ public sealed class AddOrderItemCommandHandlerTest
             2);
 
         // Act
-        var result = await handler.Handle(command, CancellationToken.None);
+        var result = await handler.Handle(
+            command,
+            CancellationToken.None);
 
         // Assert
         result.IsFailure.Should().BeTrue();

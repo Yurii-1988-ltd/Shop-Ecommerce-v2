@@ -15,6 +15,7 @@ public sealed class OrdersModule : IModule
         new ChangeOrderItemQuantityEndpoint().MapEndpoint(app);
         new ForceChangeOrderStatusEndpoint().MapEndpoint(app);
         new RemoveOrderItemEndpoint().MapEndpoint(app);
+        new GetMyOrdersEndpoint().MapEndpoint(app);
     }
 
     public void RegisterServices(IServiceCollection services, IConfiguration config)

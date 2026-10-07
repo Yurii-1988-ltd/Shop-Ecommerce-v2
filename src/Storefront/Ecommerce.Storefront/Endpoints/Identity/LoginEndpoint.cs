@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Ecommerce.Storefront.ApiClients.Carts.Services;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Ecommerce.Storefront.Endpoints;
 
@@ -9,6 +10,7 @@ public sealed class LoginEndpoint
         app.MapPost("/login", async (
                 [FromForm] LoginRequest request,
                 IIdentityApiClient identityApiClient,
+                ICartMergeService cartMergeService,
                 IStorefrontAuthenticationService authenticationService,
                 CancellationToken cancellationToken) =>
         {
@@ -25,6 +27,7 @@ public sealed class LoginEndpoint
             await authenticationService.SignInAsync(
                 authentication,
                 cancellationToken);
+            await cartMergeService.MergeGuestCartAsync(cancellationToken);
 
             return Results.Redirect("/");
         })

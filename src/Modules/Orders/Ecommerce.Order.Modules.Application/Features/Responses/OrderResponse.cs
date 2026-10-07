@@ -1,16 +1,13 @@
-﻿
-
-using Ecommerce.Order.Modules.Domain.Entities;
-using Ecommerce.Order.Modules.Domain.Enums;
-using Ecommerce.Order.Modules.Domain.ValueObjects;
+﻿using Ecommerce.Order.Modules.Domain.Enums;
 
 namespace Ecommerce.Order.Modules.Application.Features.Responses;
 
 public sealed record OrderResponse(
     Guid Id,
     string OrderNumber,
-    Guid CustomerId,
+    Guid? CustomerId,
     string CustomerName,
+    string CustomerEmail, 
     OrderStatus Status,
     AddressResponse ShippingAddress,
     IReadOnlyCollection<OrderItemResponse> Items,
@@ -22,4 +19,3 @@ public sealed record OrderResponse(
     DateTime? ShippedAtUtc,
     DateTime? CancelledAtUtc,
     string? CancellationReason);
-

@@ -1,4 +1,6 @@
 ﻿
+using Ecommerce.Cart.Modules.Presentation.Endpoints;
+
 namespace Ecommerce.Cart.Modules.Presentation.Carts;
 
 public sealed class CartsModule : IModule
@@ -19,8 +21,9 @@ public sealed class CartsModule : IModule
         new RemoveCartItemEndpoint().MapEndpoint(app);
         new ChangeCartItemQuantityEndpoint().MapEndpoint(app);
         new RemoveCartEndpoint().MapEndpoint(app);
-
+        new MergeGuestCartEndpoint().MapEndpoint(app);
         new RemoveCouponEndpoint().MapEndpoint(app);
         new ApplyCouponEndpoint().MapEndpoint(app);
+        new ClearGuestCartEndpoint().MapEndpoint(app);
     }
 }

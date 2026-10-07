@@ -18,6 +18,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="ApiClients\Orders\Contacts\" />
     <Folder Include="Components\Pages\Notifications\" />
   </ItemGroup>
 

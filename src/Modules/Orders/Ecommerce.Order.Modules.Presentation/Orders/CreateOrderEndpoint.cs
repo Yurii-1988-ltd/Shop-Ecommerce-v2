@@ -1,7 +1,4 @@
-﻿
-using Ecommerce.Shared.Contracts.Orders;
-
-namespace Ecommerce.Order.Modules.Presentation.Orders;
+﻿namespace Ecommerce.Order.Modules.Presentation.Orders;
 
 internal sealed class CreateOrderEndpoint
 {
@@ -17,7 +14,8 @@ internal sealed class CreateOrderEndpoint
                 request.CustomerEmail,
                 request.ShippingAddress,
                 request.Items,
-                request.Currency);
+                request.Currency,
+                request.GuestId);
 
             var result = await sender.Send(
                 command,
